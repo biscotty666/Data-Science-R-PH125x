@@ -5,3 +5,6 @@
 [Chapter 2 R basics](docs/Pt02.html)
 
 [Chapter 3 Programming basics](docs/Pt03.html)
+
+[Chapter 4 The tidyverse](docs/Pt04.html)
+
