@@ -4,6 +4,7 @@ output:
   html_document:
     df_print: paged
     css: "style.css"
+    toc: true
 ---
 
 [Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
@@ -301,6 +302,94 @@ length(levels(murders$region))
 ```{r}
 table(murders$region)
 ```
+
+## 2.6.1 Creating vectors
+
+`c()` stands for *concatenate*
+
+```{r}
+codes <- c(380, 124, 818)
+codes
+```
+
+
+```{r}
+country <- c("italy", "canada", "egypt")
+country
+```
+
+## 2.6.2 Names
+
+Assign names to vector entries. `""` are optional for names.
+
+```{r}
+codes <- c(italy = 380, canada = 124, egypt = 818)
+codes
+```
+```{r}
+class(codes)
+```
+```{r}
+names(codes)
+```
+
+<span class="hl2">Assign names with `names()`</span>
+
+```{r}
+country <- c("italy", "canada", "egypt")
+codes <- c(380, 124, 818)
+names(codes) <- country
+codes
+```
+
+## 2.6.3 Sequences
+
+`seq(start, end, skip)` to generate vectors
+
+```{r}
+seq(1, 10, 2)
+```
+
+**Shorthand for vector creation**
+
+```{r}
+1:10
+```
+
+When we use these functions, R produces integers, not numerics, because they are typically used to index something:
+
+```{r}
+class(1:10)
+```
+
+However, if we create a sequence including non-integers, the class changes:
+
+```{r}
+class(seq(1, 10, 0.5))
+```
+
+## 2.6.4 Subsetting
+
+```{r}
+codes[2]
+```
+```{r}
+codes[c(1, 3)]
+```
+```{r}
+codes[1:2]
+```
+```{r}
+codes["canada"]
+```
+```{r}
+codes[c("egypt","italy")]
+```
+
+## 2.7 Corecion
+
+
+
 
 
 
