@@ -1631,6 +1631,8 @@ display: none;
 
 <div id="TOC">
 <ul>
+<li><a href="#list-of-r-commands" id="toc-list-of-r-commands">List of R
+commands</a></li>
 <li><a href="#the-very-basics" id="toc-the-very-basics">2.2 The very
 basics</a></li>
 <li><a href="#data-types" id="toc-data-types">2.4 Data types</a>
@@ -1663,11 +1665,11 @@ availables (NA)</a></li>
 <li><a href="#exercises-1" id="toc-exercises-1">2.8 Exercises</a></li>
 <li><a href="#sorting" id="toc-sorting">2.9 Sorting</a>
 <ul>
-<li><a href="#sort" id="toc-sort">2.9.1 <code>sort()</code></a></li>
-<li><a href="#order" id="toc-order">2.9.2 <code>order()</code></a></li>
+<li><a href="#sort" id="toc-sort">2.9.1 <span id="sort"><code>sort()</code></span></a></li>
+<li><a href="#order" id="toc-order">2.9.2 <span id="order"><code>order()</code></span></a></li>
 <li><a href="#max-and-which.max" id="toc-max-and-which.max">2.9.3
 <code>max</code> and <code>which.max</code></a></li>
-<li><a href="#rank" id="toc-rank">2.9.4 <code>rank()</code></a></li>
+<li><a href="#rank" id="toc-rank">2.9.4 <span id="rank"><code>rank()</code></span></a></li>
 <li><a href="#beware-of-recycling" id="toc-beware-of-recycling">2.9.5
 Beware of recycling</a></li>
 </ul></li>
@@ -1696,18 +1698,46 @@ Logical operators</a></li>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
+<div id="list-of-r-commands" class="section level1">
+<h1>List of R commands</h1>
+<p>|<a href="#pc-in-pc"><code>%in%</code></a>|
+<a href="#args"><code>args</code></a>|
+<a href="#as-character"><code>as.character</code></a>|
+<a href="#as-data-frame"><code>as.data.frame</code></a>|
+<a href="#as-numeric"><code>as.numeric</code></a>|
+<a href="#class"><code>class</code></a>|
+<a href="#data"><code>data</code></a>|
+<a href="#data-frame"><code>data.frame</code></a>|
+<a href="#identical"><code>identical</code></a>|
+<a href="#is-na"><code>is.na</code></a>|
+<a href="#length"><code>length</code></a>|
+<a href="#levels"><code>levels</code></a>|
+<a href="#ls"><code>ls</code></a>|
+<a href="#match"><code>match</code></a>|
+<a href="#max"><code>max</code></a>|
+<a href="#mean"><code>mean</code></a>|
+<a href="#names"><code>names</code></a>|
+<a href="#order"><code>order</code></a>|
+<a href="#reorder"><code>reorder</code></a>|
+<a href="#rank"><code>rank</code></a>|
+<a href="#seq"><code>seq</code></a>|
+<a href="#sort"><code>sort</code></a>|
+<a href="#str"><code>str</code></a>|
+<a href="#sum"><code>sum</code></a>|
+<a href="#table"><code>table</code></a>|
+<a href="#which"><code>which</code></a>|
+<a href="#which-max"><code>which.max</code></a>|</p>
+</div>
 <div id="the-very-basics" class="section level1">
 <h1>2.2 The very basics</h1>
-<p><span class="hl2">Hello</span> <code>ls()</code></p>
+<p>Show all variables in the environment: <span id="ls">ls()`</span></p>
 <pre class="r"><code>ls()</code></pre>
 <pre><code>## character(0)</code></pre>
-<p>If you want a quick look at the arguments without opening the help
-system, you can type: <code>args(function)</code></p>
+<p>Show arguments associated with a function: <span id="args"><code>args(function)</code></span></p>
 <pre class="r"><code>args(log)</code></pre>
 <pre><code>## function (x, base = exp(1)) 
 ## NULL</code></pre>
-<p>You can see all the available datasets by typing
-<code>data()</code></p>
+<p>Show all the available datasets by typing <span id="data"><code>data()</code></span></p>
 <pre class="r"><code>data()</code></pre>
 <p>This shows you the object name for these datasets. These datasets are
 objects that can be used by simply typing the name. For example, if you
@@ -1805,7 +1835,7 @@ c &lt;- -1
 </div>
 <div id="data-types" class="section level1">
 <h1>2.4 Data types</h1>
-<p>Print class of object <code>class(object)</code></p>
+<p>Print class of object <span id="class"><code>class(object)</code></span></p>
 <pre class="r"><code>a &lt;- 2
 class(a)</code></pre>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
@@ -1820,7 +1850,7 @@ data(murders)</code></pre>
 </div>
 <div id="examining-an-object" class="section level2">
 <h2>2.4.2 Examining an object</h2>
-<p><code>str()</code> Object structure</p>
+<p><span id="str"><code>str()</code></span> Object structure</p>
 <pre class="r"><code>str(murders)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    51 obs. of  5 variables:
 ##  $ state     : chr  &quot;Alabama&quot; &quot;Alaska&quot; &quot;Arizona&quot; &quot;Arkansas&quot; ...
@@ -1828,7 +1858,8 @@ data(murders)</code></pre>
 ##  $ region    : Factor w/ 4 levels &quot;Northeast&quot;,&quot;South&quot;,..: 2 4 4 2 4 4 1 2 2 2 ...
 ##  $ population: num  4779736 710231 6392017 2915918 37253956 ...
 ##  $ total     : num  135 19 232 93 1257 ...</code></pre>
-<p><code>names()</code> Variable (column) names</p>
+<p>&lt;span id=“names<code>&gt;names()</code></span> Variable (column)
+names</p>
 <pre class="r"><code>names(murders)</code></pre>
 <pre><code>## [1] &quot;state&quot;      &quot;abb&quot;        &quot;region&quot;     &quot;population&quot; &quot;total&quot;</code></pre>
 <p><code>head()</code></p>
@@ -1856,8 +1887,8 @@ data(murders)</code></pre>
 these types of objects vectors. A single number is technically a vector
 of length 1, but in general we use the term vectors to refer to objects
 with several entries.</p>
-<p><code>length()</code> tells you how many entries are in the
-vector:</p>
+<p><span id="length"><code>length()</code></span> tells you how many
+entries are in the vector:</p>
 <pre class="r"><code>pop &lt;- murders$population
 length(pop)</code></pre>
 <pre><code>## [1] 51</code></pre>
@@ -1879,13 +1910,14 @@ like this: 1L. Note the class by typing: class(1L)</span></p>
 <p>2.4.5 Factors</p>
 <pre class="r"><code>class(murders$region)</code></pre>
 <pre><code>## [1] &quot;factor&quot;</code></pre>
-<p><code>levels()</code></p>
+<p><span id="levels"><code>levels()</code></span></p>
 <pre class="r"><code>levels(murders$region)</code></pre>
 <pre><code>## [1] &quot;Northeast&quot;     &quot;South&quot;         &quot;North Central&quot; &quot;West&quot;</code></pre>
 <p>In the background, R stores these levels as integers and keeps a map
 to keep track of the labels. This is more memory efficient than storing
 all the characters.</p>
-<p><code>reorder()</code> change the order of levels</p>
+<p><span id="reorder"><code>reorder()</code></span> change the order of
+levels</p>
 <p>For example, in the murders dataset regions are ordered from east to
 west. The function reorder lets us change the order of the levels of a
 factor variable based on a summary computed on a numeric vector. We will
@@ -1988,7 +2020,7 @@ mat</code></pre>
 <pre><code>##      [,1] [,2]
 ## [1,]    5    9
 ## [2,]    6   10</code></pre>
-<p>Convert matrices to data frames <code>as.data.frame()</code></p>
+<p>Convert matrices to data frames <span id="as-data-frame"><code>as.data.frame()</code></span></p>
 <pre class="r"><code>as.data.frame(mat)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -2043,7 +2075,7 @@ class(a)</code></pre>
 <pre><code>## [1] &quot;character&quot;</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Now use the square brackets to extract the state abbreviations and
-assign them to the object b. Use the identical function to determine if
+assign them to the object b. Use the <span id="identical"><code>identical()</code></span> function to determine if
 a and b are the same.</li>
 </ol>
 <pre class="r"><code>b &lt;- murders[[&quot;abb&quot;]]
@@ -2059,10 +2091,10 @@ dataset.</p>
 <pre class="r"><code>length(levels(murders$region))</code></pre>
 <pre><code>## [1] 4</code></pre>
 <ol start="6" style="list-style-type: decimal">
-<li>The function table takes a vector and returns the frequency of each
-element. You can quickly see how many states are in each region by
-applying this function. Use this function in one line of code to create
-a table of states per region.</li>
+<li>The function <strong><span id="table"><code>table()</code></span></strong> takes a vector and
+returns the frequency of each element. You can quickly see how many
+states are in each region by applying this function. Use this function
+in one line of code to create a table of states per region.</li>
 </ol>
 <p><code>table()</code> returns frequency of each element</p>
 <pre class="r"><code>table(murders$region)</code></pre>
@@ -2104,7 +2136,8 @@ codes</code></pre>
 </div>
 <div id="sequences" class="section level2">
 <h2>2.6.3 Sequences</h2>
-<p><code>seq(start, end, skip)</code> to generate vectors</p>
+<p><span id="seq"><code>seq(start, end, skip)</code></span> to generate
+vectors</p>
 <pre class="r"><code>seq(1, 10, 2)</code></pre>
 <pre><code>## [1] 1 3 5 7 9</code></pre>
 <p><strong>Shorthand for vector creation</strong></p>
@@ -2152,10 +2185,12 @@ class(x)</code></pre>
 <pre><code>## [1] &quot;character&quot;</code></pre>
 <p>R coerced the data into characters.</p>
 <p>Changing data types</p>
+<p><span id="as-character"><code>as.character()</code></span></p>
 <pre class="r"><code>x &lt;- 1:5
 y &lt;- as.character(x)
 y</code></pre>
 <pre><code>## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot;</code></pre>
+<p><span id="as-numeric"><code>as.numeric()</code></span></p>
 <pre class="r"><code>as.numeric(y)</code></pre>
 <pre><code>## [1] 1 2 3 4 5</code></pre>
 <div id="not-availables-na" class="section level2">
@@ -2262,7 +2297,7 @@ as.numeric(x)</code></pre>
 some insights into the safety of different states in the context of gun
 murders.</p>
 <div id="sort" class="section level2">
-<h2>2.9.1 <code>sort()</code></h2>
+<h2>2.9.1 <span id="sort"><code>sort()</code></span></h2>
 <p>Say we want to rank the states from least to most gun murders. The
 function sort sorts a vector in increasing order. We can therefore see
 the largest number of gun murders by typing:</p>
@@ -2275,7 +2310,7 @@ sort(murders$total)</code></pre>
 ## [46]  413  457  517  669  805 1257</code></pre>
 </div>
 <div id="order" class="section level2">
-<h2>2.9.2 <code>order()</code></h2>
+<h2>2.9.2 <span id="order"><code>order()</code></span></h2>
 <p>Takes a vector as input and returns the vector of indexes that sorts
 the input vector.</p>
 <pre class="r"><code>x &lt;- c(31, 4, 15, 92, 65)
@@ -2299,15 +2334,17 @@ murders$abb[ind]</code></pre>
 </div>
 <div id="max-and-which.max" class="section level2">
 <h2>2.9.3 <code>max</code> and <code>which.max</code></h2>
+<p><span id="max"><code>max()</code></span></p>
 <pre class="r"><code>max(murders$total)</code></pre>
 <pre><code>## [1] 1257</code></pre>
-<p><code>which.max()</code> returns the index of the largest value</p>
+<p><span id="which-max"><code>which.max()</code></span> returns the
+index of the largest value</p>
 <pre class="r"><code>i_max &lt;- which.max(murders$total)
 murders$state[i_max]</code></pre>
 <pre><code>## [1] &quot;California&quot;</code></pre>
 </div>
 <div id="rank" class="section level2">
-<h2>2.9.4 <code>rank()</code></h2>
+<h2>2.9.4 <span id="rank"><code>rank()</code></span></h2>
 <pre class="r"><code>x &lt;- c(31, 4, 15, 92, 65)
 rank(x)</code></pre>
 <pre><code>## [1] 3 1 2 5 4</code></pre>
@@ -2371,7 +2408,8 @@ state_names[which.min(pop)]</code></pre>
 <li>You can create a data frame using the <code>data.frame</code>
 function. Here is a quick example:</li>
 </ol>
-<p><strong><code>data.frame()</code></strong></p>
+<p><strong>&lt;span
+id=“data-frame&gt;<code>data.frame()</code></span></strong></p>
 <pre class="r"><code>temp &lt;- c(35, 88, 42, 84, 81, 30)
 city &lt;- c(&quot;Beijing&quot;, &quot;Lagos&quot;, &quot;Paris&quot;, &quot;Rio de Janeiro&quot;, 
           &quot;San Juan&quot;, &quot;Toronto&quot;)
@@ -2416,13 +2454,13 @@ examine the object using:</li>
 <pre class="r"><code>data(&quot;na_example&quot;)  
 str(na_example)</code></pre>
 <pre><code>##  int [1:1000] 2 1 3 2 1 3 1 4 3 2 ...</code></pre>
-<p>However, when we compute the average with the function mean, we
-obtain an NA:</p>
+<p>However, when we compute the average with the function <span id="mean"><code>mean()</code></span>, we obtain an NA:</p>
 <pre class="r"><code>mean(na_example)</code></pre>
 <pre><code>## [1] NA</code></pre>
-<p>The is.na function returns a logical vector that tells us which
-entries are NA. Assign this logical vector to an object called ind and
-determine how many NAs does na_example have.</p>
+<p>The <span id="is-na"><code>is.na()</code></span> function returns a
+logical vector that tells us which entries are NA. Assign this logical
+vector to an object called ind and determine how many NAs does
+na_example have.</p>
 <pre class="r"><code>ind &lt;- is.na(na_example)
 length(ind)</code></pre>
 <pre><code>## [1] 1000</code></pre>
@@ -2525,8 +2563,8 @@ related to the question above:</p>
 murders$state[ind]</code></pre>
 <pre><code>## [1] &quot;Hawaii&quot;        &quot;Iowa&quot;          &quot;New Hampshire&quot; &quot;North Dakota&quot; 
 ## [5] &quot;Vermont&quot;</code></pre>
-<p>Since TRUE = 1 and FALSE = 0, <code>sum</code> returns the number of
-true values</p>
+<p>Since TRUE = 1 and FALSE = 0, <span id="sum"><code>sum</code></span>
+returns the number of true values</p>
 <pre class="r"><code>sum(ind)</code></pre>
 <pre><code>## [1] 5</code></pre>
 </div>
@@ -2542,8 +2580,8 @@ murders$state[ind]</code></pre>
 <h2>2.13.3 <code>which</code></h2>
 <p>Suppose we want to look up California’s murder rate. For this type of
 operation, it is convenient to convert vectors of logicals into indexes
-instead of keeping long vectors of logicals. The function which tells us
-which entries of a logical vector are TRUE. So we can type:</p>
+instead of keeping long vectors of logicals. The function <span id="which"><code>which()</code></span> tells us which entries of a
+logical vector are TRUE. So we can type:</p>
 <pre class="r"><code>ind &lt;- which(murders$state == &quot;California&quot;)
 murder_rate[ind]</code></pre>
 <pre><code>## [1] 3.374138</code></pre>
@@ -2552,8 +2590,9 @@ murder_rate[ind]</code></pre>
 <h2>2.13.4 <code>match()</code></h2>
 <p>If instead of just one state we want to find out the murder rates for
 several states, say New York, Florida, and Texas, we can use the
-function match. This function tells us which indexes of a second vector
-match each of the entries of a first vector:</p>
+function <span id="match"><code>match()</code></span>. This function
+tells us which indexes of a second vector match each of the entries of a
+first vector:</p>
 <pre class="r"><code>ind &lt;- match(c(&quot;New York&quot;, &quot;Florida&quot;, &quot;Texas&quot;), murders$state)
 ind</code></pre>
 <pre><code>## [1] 33 10 44</code></pre>
@@ -2564,8 +2603,9 @@ ind</code></pre>
 <h2>2.13.5 <code>%in%</code></h2>
 <p>If rather than an index we want a logical that tells us whether or
 not each element of a first vector is in a second, we can use the
-function %in%. Let’s imagine you are not sure if Boston, Dakota, and
-Washington are states. You can find out like this:</p>
+function <span id="pc-in-pc"><code>%in%</code></span>. Let’s imagine you
+are not sure if Boston, Dakota, and Washington are states. You can find
+out like this:</p>
 <pre class="r"><code>c(&quot;Boston&quot;, &quot;Dakota&quot;, &quot;Washington&quot;) %in% murders$state</code></pre>
 <pre><code>## [1] FALSE FALSE  TRUE</code></pre>
 <p><strong>Advanced</strong>: There is a connection between match and

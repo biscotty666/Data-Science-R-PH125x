@@ -9,21 +9,53 @@ output:
 
 [Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
 
+# List of R commands
+
+|<a href="#pc-in-pc">`%in%`</a>|
+<a href="#args">`args`</a>|
+<a href="#as-character">`as.character`</a>|
+<a href="#as-data-frame">`as.data.frame`</a>|
+<a href="#as-numeric">`as.numeric`</a>|
+<a href="#class">`class`</a>|
+<a href="#data">`data`</a>|
+<a href="#data-frame">`data.frame`</a>|
+<a href="#identical">`identical`</a>|
+<a href="#is-na">`is.na`</a>|
+<a href="#length">`length`</a>|
+<a href="#levels">`levels`</a>|
+<a href="#ls">`ls`</a>|
+<a href="#match">`match`</a>|
+<a href="#max">`max`</a>|
+<a href="#mean">`mean`</a>|
+<a href="#names">`names`</a>|
+<a href="#order">`order`</a>|
+<a href="#reorder">`reorder`</a>|
+<a href="#rank">`rank`</a>|
+<a href="#seq">`seq`</a>|
+<a href="#sort">`sort`</a>|
+<a href="#str">`str`</a>|
+<a href="#sum">`sum`</a>|
+<a href="#table">`table`</a>|
+<a href="#which">`which`</a>|
+<a href="#which-max">`which.max`</a>|
+
+
+
 # 2.2 The very basics
 
-<span class="hl2">Hello</span> `ls()`
+Show all variables in the environment: <span id="ls">ls()`</span>
 
 ```{r}
 ls()
 ```
 
-If you want a quick look at the arguments without opening the help system, you can type: `args(function)`
+Show arguments associated with a function: <span id="args">`args(function)`</span>
 
 ```{r}
 args(log)
 ```
 
-You can see all the available datasets by typing `data()`
+Show all the available datasets by typing <span id="data">`data()`</span>
 
 ```{r}
 data()
@@ -49,7 +81,7 @@ c <- -1
 
 # 2.4 Data types
 
-Print class of object `class(object)`
+Print class of object <span id="class">`class(object)`</span>
 
 ```{r}
 a <- 2
@@ -72,13 +104,13 @@ class(murders)
 
 ## 2.4.2 Examining an object
 
-`str()` Object structure
+<span id="str">`str()`</span> Object structure
 
 ```{r}
 str(murders)
 ```
 
-`names()` Variable (column) names
+<span id="names`>names()`</span> Variable (column) names
 
 ```{r}
 names(murders)
@@ -100,7 +132,7 @@ murders$population
 
 The object murders$population is not one number but several. We call these types of objects vectors. A single number is technically a vector of length 1, but in general we use the term vectors to refer to objects with several entries. 
 
-`length()` tells you how many entries are in the vector:
+<span id="length">`length()`</span> tells you how many entries are in the vector:
 
 ```{r}
 pop <- murders$population
@@ -131,7 +163,7 @@ Mathematically, the values in pop are integers and there is an integer class in 
 class(murders$region)
 ```
 
-`levels()`
+<span id="levels">`levels()`</span>
 
 ```{r}
 levels(murders$region)
@@ -139,7 +171,7 @@ levels(murders$region)
 
 In the background, R stores these levels as integers and keeps a map to keep track of the labels. This is more memory efficient than storing all the characters.
 
-`reorder()` change the order of levels
+<span id="reorder">`reorder()`</span> change the order of levels
 
 For example, in the murders dataset regions are ordered from east to west. The function reorder lets us change the order of the levels of a factor variable based on a summary computed on a numeric vector. We will demonstrate this with a simple example, and will see more advanced ones in the Data Visualization part of the book.
 
@@ -227,7 +259,7 @@ mat[, 2:3]
 mat[1:2, 2:3]
 ```
 
-Convert matrices to data frames `as.data.frame()`
+Convert matrices to data frames <span id="as-data-frame">`as.data.frame()`</span>
 ```{r}
 as.data.frame(mat)
 ```
@@ -277,7 +309,7 @@ class(a)
 ```
 
 
-4. Now use the square brackets to extract the state abbreviations and assign them to the object b. Use the identical function to determine if a and b are the same.
+4. Now use the square brackets to extract the state abbreviations and assign them to the object b. Use the <span id="identical">`identical()`</span> function to determine if a and b are the same.
 
 ```{r}
 b <- murders[["abb"]]
@@ -295,7 +327,7 @@ length(levels(murders$region))
 ```
 
 
-6. The function table takes a vector and returns the frequency of each element. You can quickly see how many states are in each region by applying this function. Use this function in one line of code to create a table of states per region.
+6. The function **<span id="table">`table()`</span>** takes a vector and returns the frequency of each element. You can quickly see how many states are in each region by applying this function. Use this function in one line of code to create a table of states per region.
 
 `table()` returns frequency of each element
 
@@ -347,7 +379,7 @@ codes
 
 ## 2.6.3 Sequences
 
-`seq(start, end, skip)` to generate vectors
+<span id="seq">`seq(start, end, skip)`</span> to generate vectors
 
 ```{r}
 seq(1, 10, 2)
@@ -402,11 +434,13 @@ R coerced the data into characters.
 
 Changing data types
 
+<span id="as-character">`as.character()`</span>
 ```{r}
 x <- 1:5
 y <- as.character(x)
 y
 ```
+<span id="as-numeric">`as.numeric()`</span>
 ```{r}
 as.numeric(y)
 ```
@@ -507,7 +541,7 @@ as.numeric(x)
 
 Now that we have mastered some basic R knowledge, let’s try to gain some insights into the safety of different states in the context of gun murders.
 
-## 2.9.1 `sort()`
+## 2.9.1 <span id="sort">`sort()`</span>
 
 Say we want to rank the states from least to most gun murders. The function sort sorts a vector in increasing order. We can therefore see the largest number of gun murders by typing:
 
@@ -517,7 +551,7 @@ data(murders)
 sort(murders$total)
 ```
 
-## 2.9.2 `order()`
+## 2.9.2 <span id="order">`order()`</span>
 
 Takes a vector as input and returns the vector of indexes that sorts the input vector. 
 
@@ -543,18 +577,19 @@ murders$abb[ind]
 
 ## 2.9.3 `max` and `which.max`
 
+<span id="max">`max()`</span>
 ```{r}
 max(murders$total)
 ```
 
-`which.max()` returns the index of the largest value
+<span id="which-max">`which.max()`</span> returns the index of the largest value
 
 ```{r}
 i_max <- which.max(murders$total)
 murders$state[i_max]
 ```
 
-## 2.9.4 `rank()`
+## 2.9.4 <span id="rank">`rank()`</span>
 
 ```{r}
 x <- c(31, 4, 15, 92, 65)
@@ -610,7 +645,7 @@ state_names[which.min(pop)]
 
 5. You can create a data frame using the `data.frame` function. Here is a quick example:
 
-**`data.frame()`**
+**<span id="data-frame>`data.frame()`</span>**
 
 ```{r}
 temp <- c(35, 88, 42, 84, 81, 30)
@@ -645,13 +680,13 @@ data("na_example")
 str(na_example)
 ```
 
-However, when we compute the average with the function mean, we obtain an NA:
+However, when we compute the average with the function <span id="mean">`mean()`</span>, we obtain an NA:
 
 ```{r}
 mean(na_example)
 ```
 
-The is.na function returns a logical vector that tells us which entries are NA. Assign this logical vector to an object called ind and determine how many NAs does na_example have.
+The <span id="is-na">`is.na()`</span> function returns a logical vector that tells us which entries are NA. Assign this logical vector to an object called ind and determine how many NAs does na_example have.
 
 ```{r}
 ind <- is.na(na_example)
@@ -740,7 +775,7 @@ ind <- murder_rate <= 0.71
 murders$state[ind]
 ```
 
-Since TRUE = 1 and FALSE = 0, `sum` returns the number of true values
+Since TRUE = 1 and FALSE = 0, <span id="sum">`sum`</span> returns the number of true values
 
 ```{r}
 sum(ind)
@@ -759,7 +794,7 @@ murders$state[ind]
 
 ## 2.13.3 `which`
 
-Suppose we want to look up California’s murder rate. For this type of operation, it is convenient to convert vectors of logicals into indexes instead of keeping long vectors of logicals. The function which tells us which entries of a logical vector are TRUE. So we can type:
+Suppose we want to look up California’s murder rate. For this type of operation, it is convenient to convert vectors of logicals into indexes instead of keeping long vectors of logicals. The function <span id="which">`which()`</span> tells us which entries of a logical vector are TRUE. So we can type:
 
 ```{r}
 ind <- which(murders$state == "California")
@@ -768,7 +803,7 @@ murder_rate[ind]
 
 ## 2.13.4 `match()`
 
-If instead of just one state we want to find out the murder rates for several states, say New York, Florida, and Texas, we can use the function match. This function tells us which indexes of a second vector match each of the entries of a first vector:
+If instead of just one state we want to find out the murder rates for several states, say New York, Florida, and Texas, we can use the function <span id="match">`match()`</span>. This function tells us which indexes of a second vector match each of the entries of a first vector:
 
 ```{r}
 ind <- match(c("New York", "Florida", "Texas"), murders$state)
@@ -780,7 +815,7 @@ murder_rate[ind]
 
 ## 2.13.5 `%in%`
 
-If rather than an index we want a logical that tells us whether or not each element of a first vector is in a second, we can use the function %in%. Let’s imagine you are not sure if Boston, Dakota, and Washington are states. You can find out like this:
+If rather than an index we want a logical that tells us whether or not each element of a first vector is in a second, we can use the function <span id="pc-in-pc">`%in%`</span>. Let’s imagine you are not sure if Boston, Dakota, and Washington are states. You can find out like this:
 
 ```{r}
 c("Boston", "Dakota", "Washington") %in% murders$state
