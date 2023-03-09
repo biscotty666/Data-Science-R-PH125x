@@ -14,9 +14,13 @@ output:
 |<a href="#any">`any`</a>|
 <a href="#all">`all`</a>|
 <a href="#else">`else`</a>|
+<a href="#function">`function`</a>|
 <a href="#if">`if`</a>|
 <a href="#ifelse">`ifelse`</a>|
 <a href="#is-na">`is.na`</a>|
+<a href="#map_dbl">`map_dbl`</a>|
+<a href="#sapply">`sapply`</a>|
+<a href="#search">`search`</a>|
 
 # 3.1 Conditional expressions
 
@@ -87,24 +91,256 @@ any(z)
 all(z)
 ```
 
+# 3.2 Defining functions
+
+<span id="function">`function()`</span>
+
+```{r}
+avg <- function(x) {
+  s <- sum(x)
+  n <- length(x)
+  s/n
+}
+```
+```{r}
+x <- 1:100
+identical(mean(x), avg(x))
+```
+
+Notice that <span class="hl3:>variables defined inside a function are not saved in the workspace.</span> So while we use `s` and `n` when we call `avg`, the values are created and changed only during the call.
+
+ The general form of a function definition looks like this:
+ 
+ ```
+ my_function <- function(VARIABLE_NAME){
+  perform operations on VARIABLE_NAME and calculate VALUE
+  VALUE
+}
+ ```
+ 
+ Multiple arguments:
+```{r}
+avg <- function(x, arithmetic = TRUE) {
+  n <- length(x)
+  ifelse(arithmetic, sum(x)/n, prod(x)^(1/n))
+}
+```
+
+# 3.3 Namespaces
+
+```{r}
+library(dplyr)
+```
+
+Use <span id="search">`search()`</span> to see namespaces in search order
+
+```{r}
+search()
+```
+
+So what if we want to use the `stats` filter instead of the `dplyr` filter but `dplyr` appears first in the search list? You can force the use of a specific namespace by using double colons (::) like this:
+
+```
+stats::filter
+```
+
+# 3.4 For-loops
+
+<span id="for">`for()`</span>
+
+```{r}
+for (i in 1:5) {
+  print(i)
+}
+```
+```{r}
+compute_s_n <- function(n){
+  x <- 1:n
+  sum(x)
+}
+```
+
+```{r}
+m <- 25
+s_n <- vector(length = m)
+for (n in 1:m) {
+  s_n[n] <- compute_s_n(n)
+}
+```
+```{r}
+n <- 1:m
+plot(n, s_n)
+```
+
+# 3.5 Vectorization and functionals
+
+Although for-loops are an important concept to understand, in R we rarely use them. As you learn more R, you will realize that <span class="hl3">vectorization is preferred over for-loops</span> since it results in shorter and clearer code. We already saw examples in the Vector Arithmetic section. <span class="hl3>A vectorized function is a function that will apply the same operation on each of the vectors.</span>
+
+```{r}
+x <- 1:10
+sqrt(x)
+```
+```{r}
+y <- 1:10
+x * y
+```
+To make this calculation, there is no need for for-loops. However, not all functions work this way. For instance, the function we just wrote, compute_s_n, does not work element-wise since it is expecting a scalar. This piece of code does not run the function on each entry of n:
+
+```
+n <- 1:25
+compute_s_n(n)
+```
+
+**Functionals** are functions that help us apply the same function to each entry in a vector, matrix, data frame, or list. Here we cover the functional that operates on numeric, logical, and character vectors: <span id="sapply">`sapply()`</span>.
+
+```{r}
+x <- 1:10
+sapply(x, sqrt)
+```
+
+```{r}
+n <- 1:25
+s_n <- sapply(n, compute_s_n)
+s_n
+```
+Other functionals are `apply`, `lapply`, `tapply`, `mapply`, `vapply`, and `replicate`. We mostly use sapply, apply, and replicate in this book, but we recommend familiarizing yourselves with the others as they can be very useful.
+
+# 3.6 Exercises
+
+1. What will this conditional expression return?
+
+```{r}
+x <- c(1,2,-3,4)
+
+if(all(x>0)){
+  print("All Postives")
+} else{
+  print("Not all positives")
+}
+```
+
+2. Which of the following expressions is always FALSE when at least one entry of a logical vector x is TRUE?
+
+  a. all(x)
+  b. any(x)
+  c. any(!x)
+  d. all(!x)
+  
+  d
+  
+3. The function <span id="nchar">`nchar()`</span> tells you how many characters long a character vector is. Write a line of code that assigns to the object new_names the state abbreviation when the state name is longer than 8 characters.
+
+```{r}
+ind <- which(nchar(murders) > 8)
+new_names <- ifelse(nchar(murders) > 8, murders$abb, murders$state)
+new_names
+```
+
+4. Create a function `sum_n` that for any given value, say $n$, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.
+
+```{r}
+sum_n <- function (n) {
+  sum(1:n)
+}
+sum_n(5000)
+```
+
+5. Create a function `altman_plot` that takes two arguments, x and y, and plots the difference against the sum.
+
+```{r}
+altman_plot <- function(x, y) {
+  plot(x-y, x+y)
+}
+altman_plot(23,32)
+```
 
 
+6. After running the code below, what is the value of x?
+
+```
+x <- 3
+my_func <- function(y){
+  x <- 5
+  y+5
+}
+```
+
+x = 3
+
+7. Write a function `compute_s_n` that for any given $n$ computes the sum $S_n=1^2+2^2+3^2+\dots+n^2$. Report the value of the sum when $n=10$.
+
+```{r}
+compute_s_n <- function(n) {
+  total <- 0
+  for (x in 1:n) {
+    total <- total + x^2
+  }
+  total
+}
+```
+```{r}
+compute_s_n(10)
+```
 
 
+8. Define an empty numerical vector s_n of size 25 using s_n <- vector("numeric", 25) and store in the results of $S_1,S_2,\dots,S_25$ using a for-loop.
 
 
+```{r}
+s_n <- vector("numeric", 25)
+compute_sq <- function(n) {
+  n^2
+}
+```
+```{r}
+for (n in 1:25) {
+  s_n[n] <- compute_sq(n)
+}
+s_n
+```
+
+9. Repeat exercise 8, but this time use sapply.
+
+```{r}
+s_n <- sapply(1:25, compute_sq)
+s_n
+```
+
+10. Repeat exercise 8, but this time use <span id="map_dbl">`map_dbl`</span>.
 
 
+```{r}
+# install.packages("purrr")
+library("purrr")
+```
 
+```{r}
+s_n <- map_dbl(1:25, compute_sq)
+s_n
+```
 
+11. Plot $S_n$ versus $n$. Use points defined by $n=1,\dots,25$.
 
+```{r}
+n <- 1:25
+plot(n, s_n)
+```
 
+12. Confirm that the formula for this sum is $S_n=n(n+1)(2n+1)/6$.
 
+```{r}
+compute_s_n(5)
+```
+```{r}
+new_sum <- function(n) {
+  n*(n+1)*(2*n+1)/6
+}
+new_sum(5)
+```
 
-
-
-
-
+```{r}
+identical(compute_s_n(5), new_sum(5))
+```
 
 
 
