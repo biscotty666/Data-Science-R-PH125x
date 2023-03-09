@@ -1640,12 +1640,23 @@ display: none;
 <li><a href="#functions-in-this-chapter" id="toc-functions-in-this-chapter">Functions in this chapter</a></li>
 <li><a href="#tidy-data" id="toc-tidy-data">4.1 Tidy data</a></li>
 <li><a href="#exercises" id="toc-exercises">4.2 Exercises</a></li>
+<li><a href="#manipulating-data-frames" id="toc-manipulating-data-frames">4.3 Manipulating data frames</a>
+<ul>
+<li><a href="#mutate-add-columns" id="toc-mutate-add-columns">4.3.1
+<span id="mutate"><code>mutate()</code></span>: Add columns</a></li>
+<li><a href="#subsetting-with-filter" id="toc-subsetting-with-filter">4.3.2 Subsetting with <span id="filter"><code>filter()</code></span></a></li>
+<li><a href="#selecting-columns-with-select" id="toc-selecting-columns-with-select">4.3.3 Selecting columns with
+<span id="select"><code>select()</code></span></a></li>
+</ul></li>
 </ul>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <div id="functions-in-this-chapter" class="section level1">
 <h1>Functions in this chapter</h1>
+<p>|<a href="filter"><code>filter</code></a>|
+<a href="mutate"><code>mutate</code></a>|
+<a href="select"><code>select</code></a>|</p>
 <p>Up to now we have been manipulating vectors by reordering and
 subsetting them through indexing. However, once we start more advanced
 analyses, the preferred unit for data storage is not the vector but the
@@ -1729,6 +1740,112 @@ analysis rather than the format of the data.</p>
 </div>
 <div id="exercises" class="section level1">
 <h1>4.2 Exercises</h1>
+<ol style="list-style-type: decimal">
+<li>Examine the built-in dataset <code>co2</code>. Which of the
+following is true:</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li><code>co2</code> is tidy data: it has one year for each row.</li>
+<li><code>co2</code> is not tidy: we need at least one column with a
+character vector.</li>
+<li><code>co2</code> is not tidy: it is a matrix instead of a data
+frame.</li>
+<li><code>co2</code> is not tidy: to be tidy we would have to wrangle it
+to have three columns (year, month and value), then each co2 observation
+would have a row.</li>
+</ol>
+<p>d</p>
+<pre class="r"><code># co2</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Examine the built-in dataset <code>ChickWeight</code>. Which of the
+following is true:</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li><code>ChickWeight</code> is not tidy: each chick has more than one
+row.</li>
+<li><code>ChickWeight</code> is tidy: each observation (a weight) is
+represented by one row. The chick from which this measurement came is
+one of the variables.</li>
+<li><code>ChickWeight</code> is not tidy: we are missing the year
+column. d.<code>ChickWeight</code> is tidy: it is stored in a data
+frame.</li>
+</ol>
+<pre class="r"><code>class(ChickWeight)</code></pre>
+<pre><code>## [1] &quot;nfnGroupedData&quot; &quot;nfGroupedData&quot;  &quot;groupedData&quot;    &quot;data.frame&quot;</code></pre>
+<p>d</p>
+<ol start="3" style="list-style-type: decimal">
+<li>Examine the built-in dataset <code>BOD</code>. Which of the
+following is true:</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li><code>BOD</code> is not tidy: it only has six rows.</li>
+<li><code>BOD</code> is not tidy: the first column is just an
+index.</li>
+<li><code>BOD</code> is tidy: each row is an observation with two values
+(time and demand)</li>
+<li><code>BOD</code> is tidy: all small datasets are tidy by
+definition.</li>
+</ol>
+<pre class="r"><code>BOD</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Time"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["demand"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"8.3"},{"1":"2","2":"10.3"},{"1":"3","2":"19.0"},{"1":"4","2":"16.0"},{"1":"5","2":"15.6"},{"1":"7","2":"19.8"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>c</p>
+<ol start="4" style="list-style-type: decimal">
+<li>Which of the following built-in datasets is tidy (you can pick more
+than one):</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>BJsales No</li>
+<li>EuStockMarkets Yes</li>
+<li>DNase Yes</li>
+<li>Formaldehyde Yes</li>
+<li>Orange Yes</li>
+<li>UCBAdmissions No</li>
+</ol>
+</div>
+<div id="manipulating-data-frames" class="section level1">
+<h1>4.3 Manipulating data frames</h1>
+<div id="mutate-add-columns" class="section level2">
+<h2>4.3.1 <span id="mutate"><code>mutate()</code></span>: Add
+columns</h2>
+<p>We want all the necessary information for our analysis to be included
+in the data table. So the first task is to add the murder rates to our
+murders data frame. The function mutate takes the data frame as a first
+argument and the name and values of the variable as a second argument
+using the convention name = values. So, to add murder rates, we use:</p>
+<pre class="r"><code>library(dslabs)
+data(&quot;murders&quot;)
+murders &lt;- mutate(murders, 
+                  rate = total / population * 10^5)
+head(murders)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.824424","_rn_":"1"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.675186","_rn_":"2"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.629527","_rn_":"3"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.189390","_rn_":"4"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.374138","_rn_":"5"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.292453","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="subsetting-with-filter" class="section level2">
+<h2>4.3.2 Subsetting with <span id="filter"><code>filter()</code></span></h2>
+<pre class="r"><code>filter(murders, rate &lt;= 0.71)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="selecting-columns-with-select" class="section level2">
+<h2>4.3.3 Selecting columns with <span id="select"><code>select()</code></span></h2>
+<pre class="r"><code>new_table &lt;- select(murders, state, region, rate)
+filter(new_table, rate &lt;= 0.71)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["region"],"name":[2],"type":["fct"],"align":["left"]},{"label":["rate"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"West","3":"0.5145920"},{"1":"Iowa","2":"North Central","3":"0.6893484"},{"1":"New Hampshire","2":"Northeast","3":"0.3798036"},{"1":"North Dakota","2":"North Central","3":"0.5947151"},{"1":"Vermont","2":"Northeast","3":"0.3196211"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 </div>
 
 
