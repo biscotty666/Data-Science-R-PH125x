@@ -770,7 +770,7 @@ mean(murder_rate)
 
 ## 2.13.1 Subsetting with logicals
 
-Imagine you are moving from Italy where, according to an ABC news report, the murder rate is only 0.71 per 100,000. You would prefer to move to a state with a similar murder rate. Another powerful feature of R is that we can use logicals to index vectors. <span class="hl2>If we compare a vector to a single number, it actually performs the test for each entry.</span> The following is an example related to the question above:
+Imagine you are moving from Italy where, according to an ABC news report, the murder rate is only 0.71 per 100,000. You would prefer to move to a state with a similar murder rate. Another powerful feature of R is that we can use logicals to index vectors. <span class="hl2">If we compare a vector to a single number, it actually performs the test for each entry.</span> The following is an example related to the question above:
 
 ```{r}
 ind <- murder_rate <= 0.71
@@ -836,19 +836,133 @@ which(murders$state%in%c("New York", "Florida", "Texas"))
 
 1. Compute the per 100,000 murder rate for each state and store it in an object called murder_rate. Then use logical operators to create a logical vector named low that tells us which entries of murder_rate are lower than 1.
 
+```{r}
+murder_rate <- murders$total / murders$population * 100000
+low <- murder_rate < 1
+low
+```
+
 2. Now use the results from the previous exercise and the function which to determine the indices of murder_rate associated with values lower than 1.
+
+```{r}
+ind <- which(murder_rate < 1)
+ind
+```
+
 
 3. Use the results from the previous exercise to report the names of the states with murder rates lower than 1.
 
+```{r}
+murders$state[ind]
+```
+
+
 4. Now extend the code from exercises 2 and 3 to report the states in the Northeast with murder rates lower than 1. Hint: use the previously defined logical vector low and the logical operator &.
+
+```{r}
+northeast <- murders$region == "Northeast"
+ind <- low & northeast
+murders$state[ind]
+```
 
 5. In a previous exercise we computed the murder rate for each state and the average of these numbers. How many states are below the average?
 
+```{r}
+avg <- mean(murder_rate)
+ind <- which(murder_rate < avg)
+length(murders$state[ind])
+```
+
 6. Use the match function to identify the states with abbreviations AK, MI, and IA. Hint: start by defining an index of the entries of murders$abb that match the three abbreviations, then use the [ operator to extract the states.
+
+```{r}
+ind <- match(c("AK", "MI", "IA"), murders$abb)
+murders$state[ind]
+```
 
 7. Use the %in% operator to create a logical vector that answers the question: which of the following are actual abbreviations: MA, ME, MI, MO, MU?
 
+```{r}
+abb_exists <- which(murders$abb %in% c("MA", "ME", "MI", "MO", "MU"))
+murders$state[abb_exists]
+```
+
 8. Extend the code you used in exercise 7 to report the one entry that is not an actual abbreviation. Hint: use the ! operator, which turns FALSE into TRUE and vice versa, then which to obtain an index.
+
+```{r}
+abb_exists_not <- which(!murders$abb %in% c("MA", "ME", "MI", "MO", "MU"))
+abb_exists_not
+```
+
+# 2.15 Basic plots
+
+## 2.15.1 <span id="plot">`plot()`</span>
+
+```{r}
+x <- murders$population / 10^6
+y <- murders$total
+plot(x, y)
+```
+
+<span class="hl2">For a quick plot that avoids accessing variables twice, we can use the <span id="with">`with()`</span> function:</span>
+
+```{r}
+with(murders, plot(population, total))
+```
+
+## 2.15.2 <span id="hist">`hist()`</span>
+
+```{r}
+x <- with(murders, total / population * 10^5)
+hist(x)
+```
+
+We can see that there is a wide range of values with most of them between 2 and 3 and one very extreme case with a murder rate of more than 15:
+
+```{r}
+murders$state[which.max(x)]
+```
+
+## 2.15.3 <span id="boxplot">`boxplot()`</span>
+
+```{r}
+murders$rate <- with(murders, total / population * 10^5)
+boxplot(rate~region, data = murders)
+```
+
+## 2.15.4 <span class="image">`image()`</span>
+
+```{r}
+x <- matrix(1:120, 12, 10)
+image(x)
+```
+
+# 2.16 Exercises
+
+1. We made a plot of total murders versus population and noted a strong relationship. Not surprisingly, states with larger populations had more murders.
+
+```{r}
+# library(dslabs)
+# data(murders)
+population_in_millions <- murders$population/10^6
+total_gun_murders <- murders$total
+plot(population_in_millions, total_gun_murders)
+```
+
+Keep in mind that many states have populations below 5 million and are bunched up. We may gain further insights from making this plot in the log scale. Transform the variables using the log10 transformation and then plot them.
+
+2. Create a histogram of the state populations.
+
+```{r}
+state_pops = murders$population
+plot(state_pops)
+```
+
+3. Generate boxplots of the state populations by region.
+
+```{r}
+boxplot(state_pops~region, data = murders)
+```
 
 
 
