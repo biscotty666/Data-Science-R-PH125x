@@ -1,0 +1,17 @@
+---
+title: "2 R basics"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+
+
+
+
+
+

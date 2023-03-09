@@ -16,10 +16,13 @@ output:
 <a href="#as-character">`as.character`</a>|
 <a href="#as-data-frame">`as.data.frame`</a>|
 <a href="#as-numeric">`as.numeric`</a>|
+<a href="#boxplot">`boxplot`</a>|
 <a href="#class">`class`</a>|
 <a href="#data">`data`</a>|
 <a href="#data-frame">`data.frame`</a>|
+<a href="#hist">`hist`</a>|
 <a href="#identical">`identical`</a>|
+<a href="#image">`image`</a>|
 <a href="#is-na">`is.na`</a>|
 <a href="#length">`length`</a>|
 <a href="#levels">`levels`</a>|
@@ -29,6 +32,7 @@ output:
 <a href="#mean">`mean`</a>|
 <a href="#names">`names`</a>|
 <a href="#order">`order`</a>|
+<a href="#plot">`plot`</a>|
 <a href="#reorder">`reorder`</a>|
 <a href="#rank">`rank`</a>|
 <a href="#seq">`seq`</a>|
