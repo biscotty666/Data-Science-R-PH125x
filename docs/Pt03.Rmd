@@ -1,5 +1,5 @@
 ---
-title: "2 R basics"
+title: "3 Programming basics"
 output:
   html_document:
     df_print: paged
@@ -8,6 +8,99 @@ output:
 ---
 
 [Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+# Functions in this chapter
+
+|<a href="#any">`any`</a>|
+<a href="#all">`all`</a>|
+<a href="#else">`else`</a>|
+<a href="#if">`if`</a>|
+<a href="#ifelse">`ifelse`</a>|
+<a href="#is-na">`is.na`</a>|
+
+# 3.1 Conditional expressions
+
+<span id="if">`if()`</span>, 
+<span id="else">`else`</span>
+
+```{r}
+a <- 0
+
+if (a != 0) {
+  print(1/a)
+} else {
+  print("No reciprocal for 0")
+}
+```
+
+Let’s look at one more example using the US murders data frame:
+
+```{r}
+library(dslabs)
+data(murders)
+murder_rate <- murders$total / murders$population * 10^5
+```
+
+Here is a very simple example that tells us which states, if any, have a murder rate lower than 0.5 per 100,000. The if statement protects us from the case in which no state satisfies the condition.
+
+```{r}
+ind <- which.min(murder_rate)
+
+if (murder_rate[ind] < 0.5) {
+  print(murders$state[ind])
+} else {
+  print("No state has a murder rate that low")
+}
+```
+```{r}
+ind <- which.min(murder_rate)
+
+if (murder_rate[ind] < 0.25) {
+  print(murders$state[ind])
+} else {
+  print("No state has a murder rate that low")
+}
+```
+
+<span id="ifelse">`ifelse()`</span>
+
+```{r}
+a <- c(0, 1, 2, -4, 5)
+result <- ifelse(a > 0, 1/a, NA)
+result
+```
+
+<span class="hl3">Here is an example of how this function can be readily used to replace all the missing values in a vector with zeros:</span>
+<span id="is-na">`is.na()`</span>
+
+```{r}
+data("na_example")
+no_nas <- ifelse(is.na(na_example), 0, na_example)
+sum(is.na(no_nas))
+```
+
+Two other functions are <span id="any">`any()`</span> and <span id="all">`all()`</span>. The `any` function takes a vector of logicals and returns `TRUE` if any of the entries are `TRUE`. The `all` function takes a vector of logicals and returns `TRUE` if all of the entries are `TRUE`. Here is an example:
+
+```{r}
+z <- c(TRUE, TRUE, FALSE)
+any(z)
+all(z)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

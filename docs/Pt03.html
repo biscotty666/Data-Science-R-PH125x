@@ -11,7 +11,7 @@
 
 
 
-<title>2 R basics</title>
+<title>3 Programming basics</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1528,6 +1528,9 @@ background-color: #EEDEEE;
 }
 .hl2 {
 background-color: #EEDEEE;
+}
+.hl3 {
+background-color: #BBFA45;
 }</style>
 
 
@@ -1625,12 +1628,85 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">2 R basics</h1>
+<h1 class="title toc-ignore">3 Programming basics</h1>
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#functions-in-this-chapter" id="toc-functions-in-this-chapter">Functions in this chapter</a></li>
+<li><a href="#conditional-expressions" id="toc-conditional-expressions">3.1 Conditional expressions</a></li>
+</ul>
+</div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
+<div id="functions-in-this-chapter" class="section level1">
+<h1>Functions in this chapter</h1>
+<p>|<a href="#any"><code>any</code></a>|
+<a href="#all"><code>all</code></a>|
+<a href="#else"><code>else</code></a>|
+<a href="#if"><code>if</code></a>|
+<a href="#ifelse"><code>ifelse</code></a>|
+<a href="#is-na"><code>is.na</code></a>|</p>
+</div>
+<div id="conditional-expressions" class="section level1">
+<h1>3.1 Conditional expressions</h1>
+<p><span id="if"><code>if()</code></span>, <span id="else"><code>else</code></span></p>
+<pre class="r"><code>a &lt;- 0
+
+if (a != 0) {
+  print(1/a)
+} else {
+  print(&quot;No reciprocal for 0&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;No reciprocal for 0&quot;</code></pre>
+<p>Let’s look at one more example using the US murders data frame:</p>
+<pre class="r"><code>library(dslabs)
+data(murders)
+murder_rate &lt;- murders$total / murders$population * 10^5</code></pre>
+<p>Here is a very simple example that tells us which states, if any,
+have a murder rate lower than 0.5 per 100,000. The if statement protects
+us from the case in which no state satisfies the condition.</p>
+<pre class="r"><code>ind &lt;- which.min(murder_rate)
+
+if (murder_rate[ind] &lt; 0.5) {
+  print(murders$state[ind])
+} else {
+  print(&quot;No state has a murder rate that low&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;Vermont&quot;</code></pre>
+<pre class="r"><code>ind &lt;- which.min(murder_rate)
+
+if (murder_rate[ind] &lt; 0.25) {
+  print(murders$state[ind])
+} else {
+  print(&quot;No state has a murder rate that low&quot;)
+}</code></pre>
+<pre><code>## [1] &quot;No state has a murder rate that low&quot;</code></pre>
+<p><span id="ifelse"><code>ifelse()</code></span></p>
+<pre class="r"><code>a &lt;- c(0, 1, 2, -4, 5)
+result &lt;- ifelse(a &gt; 0, 1/a, NA)
+result</code></pre>
+<pre><code>## [1]  NA 1.0 0.5  NA 0.2</code></pre>
+<p><span class="hl3">Here is an example of how this function can be
+readily used to replace all the missing values in a vector with
+zeros:</span> <span id="is-na"><code>is.na()</code></span></p>
+<pre class="r"><code>data(&quot;na_example&quot;)
+no_nas &lt;- ifelse(is.na(na_example), 0, na_example)
+sum(is.na(no_nas))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<p>Two other functions are <span id="any"><code>any()</code></span> and
+<span id="all"><code>all()</code></span>. The <code>any</code> function
+takes a vector of logicals and returns <code>TRUE</code> if any of the
+entries are <code>TRUE</code>. The <code>all</code> function takes a
+vector of logicals and returns <code>TRUE</code> if all of the entries
+are <code>TRUE</code>. Here is an example:</p>
+<pre class="r"><code>z &lt;- c(TRUE, TRUE, FALSE)
+any(z)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>all(z)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+</div>
 
 
 
