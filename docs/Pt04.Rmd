@@ -12,6 +12,7 @@ output:
 # Functions in this chapter
 
 |<a href="arrange">`arrange`</a>|
+<a href="as_tibble">`as_tibble`</a>|
 <a href="filter">`filter`</a>|
 <a href="group_by">`group_by`</a>|
 <a href="mutate">`mutate`</a>|
@@ -22,6 +23,7 @@ output:
 <a href="slices">`slice_max`</a>|
 <a href="slices">`slice_min`</a>|
 <a href="summarize">`summarize()`</a>|
+<a href="tibble">`tibble()`</a>|
 
 Up to now we have been manipulating vectors by reordering and subsetting them through indexing. However, once we start more advanced analyses, the preferred unit for data storage is not the vector but the data frame. In this chapter we learn to work directly with data frames, which greatly facilitate the organization of information. We will be using data frames for the majority of this book. We will focus on a specific data format referred to as **tidy** and on specific collection of packages that are particularly helpful for working with tidy data referred to as the **tidyverse**.
 
@@ -459,6 +461,170 @@ murders |>
   slice_max(rate, n = 5)
 ```
 
+# 4.10 Exercises
+
+For these exercises, we will be using the data from the survey collected by the United States National Center for Health Statistics (NCHS). This center has conducted a series of health and nutrition surveys since the 1960’s. Starting in 1999, about 5,000 individuals of all ages have been interviewed every year and they complete the health examination component of the survey. Part of the data is made available via the **NHANES** package.
+
+```{r}
+library(NHANES)
+data(NHANES)
+```
+
+The NHANES data has many missing values. The `mean` and `sd` functions in R will return `NA` if any of the entries of the input vector is an `NA`. Here is an example:
+```{r}
+library(dslabs)
+data(na_example)
+mean(na_example)
+sd(na_example)
+```
+To ignore the NAs we can use the `na.rm` argument:
+```{r}
+mean(na_example, na.rm = TRUE)
+sd(na_example, na.rm = TRUE)
+```
+Let’s now explore the NHANES data.
+
+1. We will provide some basic facts about blood pressure. First let’s select a group to set the standard. We will use 20-to-29-year-old females. `AgeDecade` is a categorical variable with these ages. Note that the category is coded like ” 20-29”, with a space in front! What is the average and standard deviation of systolic blood pressure as saved in the BPSysAve variable? Save it to a variable called ref.
+
+```{r}
+NHANES |>
+  head()
+```
+
+```{r}
+ref <- NHANES |>
+  filter(AgeDecade == " 20-29") |>
+  summarise(mean(BPSysAve, na.rm = TRUE))
+ref
+```
+
+
+Hint: Use filter and summarize and use the na.rm = TRUE argument when computing the average and standard deviation. You can also filter the NA values using filter.
+
+2. Using a pipe, assign the average to a numeric variable ref_avg. Hint: Use the code similar to above and then pull.
+
+```{r}
+ref_avg <- NHANES |>
+  filter(AgeDecade == " 20-29") |>
+  pull(BPSysAve) |>
+  mean(na.rm = TRUE)
+ref_avg
+```
+3. Now report the min and max values for the same group.
+
+```{r}
+ref_min <- NHANES |>
+  filter(AgeDecade == " 20-29") |>
+  pull(BPSysAve) |>
+  min(na.rm = TRUE)
+ref_min
+ref_max <- NHANES |>
+  filter(AgeDecade == " 20-29") |>
+  pull(BPSysAve) |>
+  max(na.rm = TRUE)
+ref_max
+```
+
+4. Compute the average and standard deviation for females, but for each age group separately rather than a selected decade as in question 1. Note that the age groups are defined by AgeDecade. Hint: rather than filtering by age and gender, filter by Gender and then use group_by.
+
+```{r}
+NHANES |>
+  filter(Gender == "female") |>
+  group_by(AgeDecade) |>
+  summarise(average = mean(BPSysAve, na.rm = TRUE), standard_deviation = sd(BPSysAve, na.rm = TRUE))
+```
+5. Repeat exercise 4 for males.
+
+```{r}
+NHANES |>
+  filter(Gender == "male") |>
+  group_by(AgeDecade) |>
+  summarise(average = mean(BPSysAve, na.rm = TRUE), standard_deviation = sd(BPSysAve, na.rm = TRUE))
+```
+
+6. We can actually combine both summaries for exercises 4 and 5 into one line of code. This is because group_by permits us to group by more than one variable. Obtain one big summary table using group_by(AgeDecade, Gender).
+
+```{r}
+NHANES |>
+  group_by(Gender, AgeDecade) |>
+  summarise(average = mean(BPSysAve, na.rm = TRUE), standard_deviation = sd(BPSysAve, na.rm = TRUE))
+```
+
+7. For males between the ages of 40-49, compare systolic blood pressure across race as reported in the Race1 variable. Order the resulting table from lowest to highest average systolic blood pressure.
+
+```{r}
+NHANES |>
+  filter(Gender == "male", AgeDecade == " 40-49") |>
+  group_by(Race1)|>
+  summarise(average = mean(BPSysAve, na.rm = TRUE), 
+            standard_deviation = sd(BPSysAve, na.rm = TRUE)) |>
+  arrange(average)
+```
+
+# 4.11 Tibbles
+
+Tidy data must be stored in data frames. We introduced the data frame in Section 2.4.1 and have been using the `murders` data frame throughout the book. In Section 4.7.3 we introduced the `group_by` function, which permits stratifying data before computing summary statistics. But where is the group information stored in the data frame?
+
+```{r}
+murders |> group_by(region)
+```
+```{r}
+murders |> group_by(region) |> class()
+```
+The `tbl`, pronounced tibble, is a special kind of data frame. <span class="hl3">The functions `group_by` and `summarize` always return this type of data frame.</span> The `group_by` function returns a special kind of tbl, the **`grouped_df`**. We will say more about these later. For consistency, the `dplyr` manipulation verbs (`select`, `filter`, `mutate`, and `arrange`) preserve the class of the input: if they receive a regular data frame they return a regular data frame, while if they receive a tibble they return a tibble. But tibbles are the preferred format in the tidyverse and as a result tidyverse functions that produce a data frame from scratch return a tibble. For example, in Chapter 5 we will see that tidyverse functions used to import data create tibbles.
+
+Tibbles are very similar to data frames. In fact, you can think of them as a modern version of data frames. Nonetheless there are three important differences which we describe next.
+
+## 4.11.1 Tibbles display better
+
+The print method for tibbles is more readable than that of a data frame. To see this, compare the outputs of typing `murders` and the output of `murders` if we convert it to a tibble. We can do this using <span id="as_tibble">`as_tibble(murders)`</span>. If using RStudio, output for a tibble adjusts to your window size. To see this, change the width of your R console and notice how more/less columns are shown.
+
+```{r}
+murders
+```
+```{r}
+as_tibble(murders)
+```
+
+## 4.11.2 Subsets of tibbles are tibbles
+
+If you subset the columns of a data frame, you may get back an object that is not a data frame, such as a vector or scalar. For example:
+
+```{r}
+class(murders[,4])
+```
+```{r}
+class(as_tibble(murders[,4]))
+```
+A related feature is that tibbles will give you a warning if you try to access a column that does not exist. If we accidentally write Population instead of population this:
+
+```{r}
+murders$Population
+```
+```{r}
+as_tibble(murders)$Poplation
+```
+
+## 4.11.3 Tibbles can have complex entries
+
+```{r}
+tibble(id=c(1, 2, 3), func = c(mean, median, sd))
+```
+## 4.11.4 Tibbles can be grouped
+
+The function `group_by` returns a special kind of tibble: a grouped tibble. This class stores information that lets you know which rows are in which groups. The tidyverse functions, in particular the summarize function, are aware of the group information.
+
+## 4.11.5 Create a tibble using <span id="tibble">`tibble()`</span> instead of `data.frame`
+
+It is sometimes useful for us to create our own data frames. To create a data frame in the tibble format, you can do this by using the `tibble` function.
+```{r}
+tibble(names = c("John", "Juan", "Jean", "Yao"),
+       exam_1 = c(95, 80, 90, 85),
+       exam_2 = c(90, 85, 85, 90)) -> grades
+grades
+```
+
+# 4.12 The placeholder
 
 
 
@@ -470,6 +636,13 @@ murders |>
 
 
 
+
+
+
+
+```{r}
+
+```
 
 
 
