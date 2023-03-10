@@ -1661,17 +1661,25 @@ Multiple summaries</a></li>
 with <span id="group_by"><code>group_by()</code></span></a></li>
 </ul></li>
 <li><a href="#pull" id="toc-pull">4.8 <span id="pull"><code>pull()</code></span></a></li>
+<li><a href="#sorting-data-frames-arrange" id="toc-sorting-data-frames-arrange">4.9 Sorting data frames: <span id="arrange"><code>arrange()</code></span></a>
+<ul>
+<li><a href="#nested-sorting" id="toc-nested-sorting">4.9.1 Nested
+sorting</a></li>
+<li><a href="#the-top-n" id="toc-the-top-n">4.9.2 <span id="top_n">The
+top <span class="math inline">\(n\)</span></span></a></li>
+</ul></li>
 </ul>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <div id="functions-in-this-chapter" class="section level1">
 <h1>Functions in this chapter</h1>
-<p>|<a href="filter"><code>filter</code></a>|
+<p>|<a href="arrange"><code>arrange</code></a>|
+<a href="filter"><code>filter</code></a>|
 <a href="group_by"><code>group_by</code></a>|
 <a href="mutate"><code>mutate</code></a>| <a href="the-pipe">The pipe
 <code>|&gt;</code></a>| <a href="pull"><code>pull</code></a>|
-<a href="rank"><code>rank``&lt;/a&gt;| &lt;a href=&quot;select&quot;&gt;</code>select<code>&lt;/a&gt;| &lt;a href=&quot;summarize&quot;&gt;</code>summarize()`</a>|</p>
+<a href="rank"><code>rank``&lt;/a&gt;| &lt;a href=&quot;select&quot;&gt;</code>select<code>&lt;/a&gt;| &lt;a href=&quot;slices&quot;&gt;</code>slice_max<code>&lt;/a&gt;| &lt;a href=&quot;slices&quot;&gt;</code>slice_min<code>&lt;/a&gt;| &lt;a href=&quot;summarize&quot;&gt;</code>summarize()`</a>|</p>
 <p>Up to now we have been manipulating vectors by reordering and
 subsetting them through indexing. However, once we start more advanced
 analyses, the preferred unit for data storage is not the vector but the
@@ -2180,6 +2188,118 @@ murder rate in the four regions of the country using the
 </div>
 <div id="pull" class="section level1">
 <h1>4.8 <span id="pull"><code>pull()</code></span></h1>
+<p>The <code>us_murder_rate</code> object defined above represents just
+one number. Yet we are storing it in a data frame:</p>
+<pre class="r"><code>class(us_murder_rate)</code></pre>
+<pre><code>## [1] &quot;data.frame&quot;</code></pre>
+<p>since, <span class="hl4">as most <code>dplyr</code> functions,
+<code>summarize</code> always returns a data frame.</span></p>
+<p>This might be problematic if we want to use this result with
+functions that require a numeric value. Here we show a useful trick for
+accessing values stored in data when using pipes: when a data object is
+piped that object and its columns can be accessed using the pull
+function. To understand what we mean take a look at this line of
+code:</p>
+<pre class="r"><code>us_murder_rate |&gt; pull(rate)</code></pre>
+<pre><code>## [1] 3.034555</code></pre>
+<p>This returns the value in the <code>rate</code> column of
+<code>us_murder_rate</code> <span class="hl4">making it equivalent to
+<code>us_murder_rate$rate</code>.</span></p>
+<p>To get a number from the original data table with one line of code we
+can type:</p>
+<pre class="r"><code>us_murder_rate &lt;- murders |&gt;
+  summarise(rate = sum(total) / sum(population) * 10^5) |&gt;
+  pull(rate)
+
+us_murder_rate</code></pre>
+<pre><code>## [1] 3.034555</code></pre>
+<pre class="r"><code>class(us_murder_rate)</code></pre>
+<pre><code>## [1] &quot;numeric&quot;</code></pre>
+</div>
+<div id="sorting-data-frames-arrange" class="section level1">
+<h1>4.9 Sorting data frames: <span id="arrange"><code>arrange()</code></span></h1>
+<p>When examining a dataset, it is often convenient to sort the table by
+the different columns. We know about the <code>order</code> and
+<code>sort</code> function, but for ordering entire tables, the
+<code>dplyr</code> function <code>arrange</code> is useful. For example,
+here we order the states by population size:</p>
+<pre class="r"><code>murders |&gt;
+  arrange(population) |&gt;
+  head()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Wyoming","2":"WY","3":"West","4":"563626","5":"5","6":"0.8871131","7":"43","_rn_":"1"},{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.4527532","7":"1","_rn_":"2"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51","_rn_":"3"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"48","_rn_":"4"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.6751860","7":"27","_rn_":"5"},{"1":"South Dakota","2":"SD","3":"North Central","4":"814180","5":"8","6":"0.9825837","7":"41","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>With <code>arrange</code> we get to decide which column to sort by.
+To see the states by murder rate, from lowest to highest, we arrange by
+<code>rate</code> instead:</p>
+<pre class="r"><code>murders |&gt;
+  arrange(rate) |&gt;
+  head()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51","_rn_":"1"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"50","_rn_":"2"},{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920","7":"49","_rn_":"3"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"48","_rn_":"4"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484","7":"47","_rn_":"5"},{"1":"Idaho","2":"ID","3":"West","4":"1567582","5":"12","6":"0.7655102","7":"46","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Note that the default behavior is to order in ascending order. In
+<code>dplyr</code>, the function <span id="desc"><code>desc</code></span> transforms a vector so that it is in
+descending order. To <span class="hl4">sort the table in descending
+order</span>, we can type:</p>
+<pre class="r"><code>murders |&gt;
+  arrange(desc(rate)) |&gt;
+  head()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.452753","7":"1","_rn_":"1"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.742581","7":"2","_rn_":"2"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.359892","7":"3","_rn_":"3"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.074866","7":"4","_rn_":"4"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.475323","7":"5","_rn_":"5"},{"1":"Delaware","2":"DE","3":"South","4":"897934","5":"38","6":"4.231937","7":"6","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="nested-sorting" class="section level2">
+<h2>4.9.1 Nested sorting</h2>
+<p>If we are ordering by a column with ties, we can use a second column
+to break the tie. Similarly, a third column can be used to break ties
+between first and second and so on. Here we order by region, then within
+region we order by murder rate:</p>
+<pre class="r"><code>murders |&gt;
+  arrange(region, rate) |&gt;
+  head()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51","_rn_":"1"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"50","_rn_":"2"},{"1":"Maine","2":"ME","3":"Northeast","4":"1328361","5":"11","6":"0.8280881","7":"44","_rn_":"3"},{"1":"Rhode Island","2":"RI","3":"Northeast","4":"1052567","5":"16","6":"1.5200933","7":"35","_rn_":"4"},{"1":"Massachusetts","2":"MA","3":"Northeast","4":"6547629","5":"118","6":"1.8021791","7":"32","_rn_":"5"},{"1":"New York","2":"NY","3":"Northeast","4":"19378102","5":"517","6":"2.6679599","7":"29","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="the-top-n" class="section level2">
+<h2>4.9.2 <span id="top_n">The top <span class="math inline">\(n\)</span></span></h2>
+<p>In the code above, we have used the function <code>head</code> to
+avoid having the page fill up with the entire dataset. If we want to see
+a larger proportion, we can use the <code>top_n</code> function. This
+function takes a data frame as it’s first argument, the number of rows
+to show in the second, and the variable to filter by in the third. Here
+is an example of how to see the top 5 rows:</p>
+<pre class="r"><code>murders |&gt;
+  top_n(5, rate)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.452753","7":"1"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.742581","7":"2"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.074866","7":"4"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.359892","7":"3"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.475323","7":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Note that rows are not sorted by rate, only filtered. If we want to
+sort, we need to use arrange. Note that if the third argument is left
+blank, top_n filters by the last column.</p>
+<p>From the docs:</p>
+<p><strong>[Superseded] top_n() has been superseded in favour of <span id="slices"><code>slice_min()</code>/<code>slice_max()</code></span>.
+While it will not be deprecated in the near future, retirement means
+that we will only perform critical bug fixes, so we recommend moving to
+the newer alternatives.</strong></p>
+<pre class="r"><code>murders |&gt;
+  slice_max(rate, n = 5)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.452753","7":"1"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.742581","7":"2"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.359892","7":"3"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.074866","7":"4"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.475323","7":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
 </div>
 
 
