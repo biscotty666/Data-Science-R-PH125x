@@ -1649,8 +1649,7 @@ display: none;
 <span id="select"><code>select()</code></span></a></li>
 </ul></li>
 <li><a href="#exercises-1" id="toc-exercises-1">4.4 Exercises</a></li>
-<li><a href="#the-pipe-or" id="toc-the-pipe-or">4.5 The pipe:
-<code>|&gt;</code> or ’%&gt;%`</a></li>
+<li><a href="#the-pipe-or" id="toc-the-pipe-or">4.5 <span id="the-pipe">The pipe: <code>|&gt;</code> or ’%&gt;%`</span></a></li>
 <li><a href="#exercises-2" id="toc-exercises-2">4.6 Exercises</a></li>
 <li><a href="#summarizing-data" id="toc-summarizing-data">4.7
 Summarizing data</a>
@@ -1661,6 +1660,7 @@ Multiple summaries</a></li>
 <li><a href="#group-then-summarize-with-group_by" id="toc-group-then-summarize-with-group_by">4.7.3 Group then summarize
 with <span id="group_by"><code>group_by()</code></span></a></li>
 </ul></li>
+<li><a href="#pull" id="toc-pull">4.8 <span id="pull"><code>pull()</code></span></a></li>
 </ul>
 </div>
 
@@ -1668,8 +1668,10 @@ with <span id="group_by"><code>group_by()</code></span></a></li>
 <div id="functions-in-this-chapter" class="section level1">
 <h1>Functions in this chapter</h1>
 <p>|<a href="filter"><code>filter</code></a>|
-<a href="mutate"><code>mutate</code></a>|
-<a href="select"><code>select</code></a>|</p>
+<a href="group_by"><code>group_by</code></a>|
+<a href="mutate"><code>mutate</code></a>| <a href="the-pipe">The pipe
+<code>|&gt;</code></a>| <a href="pull"><code>pull</code></a>|
+<a href="rank"><code>rank``&lt;/a&gt;| &lt;a href=&quot;select&quot;&gt;</code>select<code>&lt;/a&gt;| &lt;a href=&quot;summarize&quot;&gt;</code>summarize()`</a>|</p>
 <p>Up to now we have been manipulating vectors by reordering and
 subsetting them through indexing. However, once we start more advanced
 analyses, the preferred unit for data storage is not the vector but the
@@ -1882,11 +1884,11 @@ head(murders)</code></pre>
   </script>
 </div>
 <ol start="2" style="list-style-type: decimal">
-<li>If rank(x) gives you the ranks of x from lowest to highest, rank(-x)
-gives you the ranks from highest to lowest. Use the function mutate to
-add a column rank containing the rank, from highest to lowest murder
-rate. Make sure you redefine murders so we can keep using this
-variable.</li>
+<li>If <span id="rank"><code>rank(x)</code></span> gives you the ranks
+of x from lowest to highest, <code>rank(-x)</code> gives you the ranks
+from highest to lowest. Use the function <code>mutate</code> to add a
+column rank containing the rank, from highest to lowest murder rate.
+Make sure you redefine murders so we can keep using this variable.</li>
 </ol>
 <pre class="r"><code>murders &lt;- mutate(murders,
        rank = rank(-murders$total))
@@ -1975,7 +1977,8 @@ name, the rate, and the rank.</p>
 </div>
 </div>
 <div id="the-pipe-or" class="section level1">
-<h1>4.5 The pipe: <code>|&gt;</code> or ’%&gt;%`</h1>
+<h1>4.5 <span id="the-pipe">The pipe: <code>|&gt;</code> or
+’%&gt;%`</span></h1>
 <pre class="r"><code>murders |&gt; 
   select(state, region, rate) |&gt;
   filter(rate &lt;= 0.71)</code></pre>
@@ -2174,6 +2177,9 @@ murder rate in the four regions of the country using the
   </script>
 </div>
 </div>
+</div>
+<div id="pull" class="section level1">
+<h1>4.8 <span id="pull"><code>pull()</code></span></h1>
 </div>
 
 
