@@ -19,6 +19,7 @@ output:
 <a href="the-pipe">The pipe `|>`</a>|
 <a href="pull">`pull`</a>|
 <a href="rank">`rank``</a>|
+<a href="sapply">`sapply`</a>|
 <a href="select">`select`</a>|
 <a href="slices">`slice_max`</a>|
 <a href="slices">`slice_min`</a>|
@@ -361,7 +362,7 @@ heights |>
 heights |> group_by(sex)
 ```
 
-The result does not look very different from heights, <span class="hl3">except we see Groups: sex [2] when we print the object</span>. Although not immediately obvious from its appearance, <span class="hl3">this is now a special data frame called a grouped data frame,</span> and `dplyr` functions, in particular `summarize`, will behave differently when acting on this object. Conceptually, you can think of this table as many tables, with the same columns but not necessarily the same number of rows, stacked together in one object. When we summarize the data after grouping, this is what happens:
+The result does not look very different from heights, <span class="hl4">except we see Groups: sex [2] when we print the object</span>. Although not immediately obvious from its appearance, <span class="hl4">this is now a special data frame called a grouped data frame,</span> and `dplyr` functions, in particular `summarize`, will behave differently when acting on this object. Conceptually, you can think of this table as many tables, with the same columns but not necessarily the same number of rows, stacked together in one object. When we summarize the data after grouping, this is what happens:
 
 ```{r}
 heights |>
@@ -571,7 +572,7 @@ murders |> group_by(region)
 ```{r}
 murders |> group_by(region) |> class()
 ```
-The `tbl`, pronounced tibble, is a special kind of data frame. <span class="hl3">The functions `group_by` and `summarize` always return this type of data frame.</span> The `group_by` function returns a special kind of tbl, the **`grouped_df`**. We will say more about these later. For consistency, the `dplyr` manipulation verbs (`select`, `filter`, `mutate`, and `arrange`) preserve the class of the input: if they receive a regular data frame they return a regular data frame, while if they receive a tibble they return a tibble. But tibbles are the preferred format in the tidyverse and as a result tidyverse functions that produce a data frame from scratch return a tibble. For example, in Chapter 5 we will see that tidyverse functions used to import data create tibbles.
+The `tbl`, pronounced tibble, is a special kind of data frame. <span class="hl4">The functions `group_by` and `summarize` always return this type of data frame.</span> The `group_by` function returns a special kind of tbl, the **`grouped_df`**. We will say more about these later. For consistency, the `dplyr` manipulation verbs (`select`, `filter`, `mutate`, and `arrange`) preserve the class of the input: if they receive a regular data frame they return a regular data frame, while if they receive a tibble they return a tibble. But tibbles are the preferred format in the tidyverse and as a result tidyverse functions that produce a data frame from scratch return a tibble. For example, in Chapter 5 we will see that tidyverse functions used to import data create tibbles.
 
 Tibbles are very similar to data frames. In fact, you can think of them as a modern version of data frames. Nonetheless there are three important differences which we describe next.
 
@@ -626,23 +627,73 @@ grades
 
 # 4.12 The placeholder
 
+One of the advantages of using the pipe |> is that we do not have to keep naming new objects as we manipulate the data frame. The object on the left-hand side of the pipe is used as the first argument of the function on the right-hand side of the pipe. <span class="hl4">But what if we want to pass it as argument to the right-hand side function that is not the first?</span> The answer is the placeholder operator `_` **(for the `%>%` pipe the placeholder is `.`)**. Below is a simple example that passes the base argument to the log function. The following three are equivalent:
+```{r}
+log(8, base = 2)
+2 |> log(8, base = _)
+2 %>% log(8, base = .)
+```
 
+## 4.13 The purrr package
 
-
-
-
-
-
-
-
-
-
-
-
+In Section 3.5 we learned about the <span id="sapply">`sapply`</span> function, which permitted us to apply the same function to each element of a vector. We constructed a function and used sapply to compute the sum of the first `n` integers for several values of `n` like this:
 
 ```{r}
-
+compute_s_n <- function(n) {
+  x <- 1:n
+  sum(x)
+}
+n <- 1:25
+s_n <- sapply(n, compute_s_n)
+s_n
 ```
+This type of operation, applying the same function or procedure to elements of an object, is quite common in data analysis. The **purrr** package includes functions similar to `sapply` but that better interact with other tidyverse functions. The main advantage is that we can better control the output type of functions. In contrast, `sapply` can return several different object types; for example, we might expect a numeric result from a line of code, but sapply might convert our result to character under some circumstances. **purrr** functions will never do this: they will return objects of a specified type or return an error if this is not possible.
+
+The first purrr function we will learn is <span id="map">`map()`</span>, which works very similar to `sapply` but always, without exception, returns a list:
+
+```{r}
+library(purrr)
+s_n <- map(n, compute_s_n)
+class(s_n)
+```
+If we want a numeric vector, we can instead use <span id="map_dbl">`map_dbl`</span> which always returns a vector of numeric values.
+```{r}
+s_n <- map_dbl(n, compute_s_n)
+class(s_n)
+```
+<span class="hl4">This produces the same results as the sapply call shown above.</span>
+
+A particularly useful **purrr** function for interacting with the rest of the tidyverse is `map_df`, which always returns a tibble data frame. However, the function being called needs to return a vector or a list with names. For this reason, the following code would result in a Argument 1 must have names error:
+
+```{r}
+# s_n <- map_df(n, compute_s_n)
+```
+
+<span class="hl4">We need to change the function to make this work:</span>
+
+```{r}
+## compute_s_n <- function(n) {
+##   x <- 1:n
+##   sum(x)
+##  }
+
+compute_s_n <- function(n) {
+  x <- 1:n
+  tibble(sum = sum(x))
+}
+s_n <- map_df(n, compute_s_n)
+s_n
+```
+
+# 4.14 Tidyverse conditionals
+
+
+
+
+
+
+
+
 
 
 
