@@ -218,6 +218,165 @@ murders |>
   select(state, rate, rank)
 ```
 
+# 4.5 The pipe: `|>` or '%>%`
+
+```{r}
+murders |> 
+  select(state, region, rate) |>
+  filter(rate <= 0.71)
+```
+
+```{r}
+16 |> sqrt() |> log2()
+```
+
+# 4.6 Exercises
+
+1. The pipe `|>` can be used to perform operations sequentially without having to define intermediate objects. Start by redefining murder to include rate and rank.
+
+```{r}
+murders <- mutate(murders, rate =  total / population * 100000, 
+                  rank = rank(-rate))
+```
+In the solution to the previous exercise, we did the following:
+
+```
+my_states <- filter(murders, region %in% c("Northeast", "West") & 
+                      rate < 1)
+
+select(my_states, state, rate, rank)
+```
+The pipe `|>` permits us to perform both operations sequentially without having to define an intermediate variable my_states. We therefore could have mutated and selected in the same line like this:
+
+```
+mutate(murders, rate =  total / population * 100000, 
+       rank = rank(-rate)) |>
+  select(state, rate, rank)
+```
+Notice that select no longer has a data frame as the first argument. The first argument is assumed to be the result of the operation conducted right before the `|>`.
+
+Repeat the previous exercise, but now instead of creating a new object, show the result and only include the state, rate, and rank columns. Use a pipe |> to do this in just one line.
+
+```{r}
+murders |>
+  mutate(rate = total / population * 10^5,
+         rank = rank(-rate)) |>
+  filter(region %in% c("Northeast", "West") &
+           rate < 1) |>
+  select(state, rate, rank) -> my_states
+my_states
+```
+
+
+2. Reset murders to the original table by using data(murders). Use a pipe to create a new data frame called my_states that considers only states in the Northeast or West which have a murder rate lower than 1, and contains only the state, rate and rank columns. The pipe should also have four components separated by three |>. The code should look something like this:
+
+my_states <- murders |>
+  mutate SOMETHING |> 
+  filter SOMETHING |> 
+  select SOMETHING
+
+# 4.7 Summarizing data
+
+An important part of exploratory data analysis is summarizing data. The average and standard deviation are two examples of widely used summary statistics. More informative summaries can often be achieved by first splitting data into groups. In this section, we cover two new dplyr verbs that make these computations easier: summarize and group_by. We learn to access resulting values using the pull function.
+
+## 4.7.1 <span id="summarize">`summarize()`</span>
+
+```{r}
+library(dplyr)
+library(dslabs)
+data(heights)
+head(heights)
+```
+
+The following code computes the average and standard deviation for females:
+
+```{r}
+s <- heights |>
+  filter(sex == "Female") |>
+  summarise(average = mean(height), standard_deviation = sd(height))
+s
+```
+
+```{r}
+s$average
+s$standard_deviation
+```
+
+For another example of how we can use the summarize function, let’s compute the average murder rate for the United States. Remember our data table includes total murders and population size for each state and we have already used dplyr to add a murder rate column:
+
+```
+murders <- murders |> mutate(rate = total/population*100000)
+```
+
+Remember that the US murder rate is **not** the average of the state murder rates:
+
+```{r}
+summarise(murders, mean(rate))
+```
+
+This is because in the computation above the small states are given the same weight as the large ones. The US murder rate is the total number of murders in the US divided by the total US population. So the correct computation is:
+
+```{r}
+us_murder_rate <- murders |>
+  summarise(rate = sum(total) / sum(population) * 100000)
+us_murder_rate
+```
+
+## 4.7.2 Multiple summaries
+
+Suppose we want three summaries from the same variable such as the median, minimum, and maximum heights. The <span id="quantile">`quantile()`</span> function: `quantile(x, c(0.5, 0, 1))` returns the median (50th percentile), the min (0th percentile), and max (100th percentile) of the vector x. We can use it with summarize like this:
+
+```{r}
+heights |>
+  filter(sex == "Female") |>
+  summarise(median_min_max = quantile(height, c(0.5, 0, 1)))
+```
+However, notice that the summaries are returned in a row each. To obtain the results in different columns, we have to define a function that returns a data frame like this:
+
+```{r}
+median_min_max <- function(x) {
+  qs <- quantile(x, c(0.5, 0, 1))
+  data.frame(median = qs[1],
+             minimum = qs[2],
+             maximum = qs[3])
+}
+heights |>
+  filter(sex == "Female") |>
+  summarise(median_min_max(height))
+```
+
+## 4.7.3 Group then summarize with <span id="group_by">`group_by()`</span>
+
+```{r}
+heights |> group_by(sex)
+```
+
+The result does not look very different from heights, <span class="hl3">except we see Groups: sex [2] when we print the object</span>. Although not immediately obvious from its appearance, <span class="hl3">this is now a special data frame called a grouped data frame,</span> and `dplyr` functions, in particular `summarize`, will behave differently when acting on this object. Conceptually, you can think of this table as many tables, with the same columns but not necessarily the same number of rows, stacked together in one object. When we summarize the data after grouping, this is what happens:
+
+```{r}
+heights |>
+  group_by(sex) |>
+  summarise(average = mean(height), standard_deviation = sd(height))
+```
+The summarize function applies the summarization to each group separately.
+
+For another example, let’s compute the median, minimum, and maximum murder rate in the four regions of the country using the `median_min_max` defined above:
+
+```{r}
+murders |>
+  group_by(region) |>
+  summarise(median_min_max(rate))
+```
+
+
+
+
+
+
+
+
+
+
 
 
 
