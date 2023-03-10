@@ -1687,7 +1687,12 @@ placeholder</a>
 <li><a href="#the-purrr-package" id="toc-the-purrr-package">4.13 The
 purrr package</a></li>
 </ul></li>
-<li><a href="#tidyverse-conditionals" id="toc-tidyverse-conditionals">4.14 Tidyverse conditionals</a></li>
+<li><a href="#tidyverse-conditionals" id="toc-tidyverse-conditionals">4.14 Tidyverse conditionals</a>
+<ul>
+<li><a href="#case_when" id="toc-case_when">4.14.1 <span id="case_when"><code>case_when()</code></span></a></li>
+<li><a href="#between" id="toc-between">4.14.2 <span id="between"><code>between()</code></span></a></li>
+</ul></li>
+<li><a href="#exercises-4" id="toc-exercises-4">4.15 Exercises</a></li>
 </ul>
 </div>
 
@@ -2652,6 +2657,109 @@ s_n</code></pre>
 </div>
 <div id="tidyverse-conditionals" class="section level1">
 <h1>4.14 Tidyverse conditionals</h1>
+<div id="case_when" class="section level2">
+<h2>4.14.1 <span id="case_when"><code>case_when()</code></span></h2>
+<p>The <code>case_when</code> function is useful for vectorizing
+conditional statements. It is similar to <code>ifelse</code> but can
+output any number of values, as opposed to just <code>TRUE</code> or
+<code>FALSE</code>. Here is an example splitting numbers into negative,
+positive, and 0:</p>
+<pre class="r"><code>x &lt;- c(-2, -1, 0, 1, 2)
+case_when(x &lt; 0 ~ &quot;Negative&quot;,
+          x &gt; 0 ~ &quot;Positive&quot;,
+          TRUE ~ &quot;Zero&quot;)</code></pre>
+<pre><code>## [1] &quot;Negative&quot; &quot;Negative&quot; &quot;Zero&quot;     &quot;Positive&quot; &quot;Positive&quot;</code></pre>
+<p>A common use for this function is to define categorical variables
+based on existing variables. For example, suppose we want to compare the
+murder rates in four groups of states: New England, West Coast, South,
+and other. For each state, we need to ask if it is in New England, if it
+is not we ask if it is in the West Coast, if not we ask if it is in the
+South, and if not we assign other. Here is how we use case_when to do
+this:</p>
+<pre class="r"><code>murders |&gt;
+  mutate(group = case_when(
+    abb %in% c(&quot;ME&quot;, &quot;NH&quot;, &quot;VT&quot;, &quot;MA&quot;, &quot;RI&quot;, &quot;CT&quot;) ~ &quot;New England&quot;,
+    abb %in% c(&quot;WA&quot;, &quot;OR&quot;, &quot;CA&quot;) ~ &quot;West Coast&quot;,
+    region == &quot;South&quot; ~ &quot;South&quot;,
+    TRUE ~ &quot;Other&quot;)) |&gt;
+  group_by(group) |&gt;
+  summarise(rate = sum(total) / sum(population) * 10^5)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["group"],"name":[1],"type":["chr"],"align":["left"]},{"label":["rate"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"New England","2":"1.723796"},{"1":"Other","2":"2.708144"},{"1":"South","2":"3.626558"},{"1":"West Coast","2":"2.899001"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="between" class="section level2">
+<h2>4.14.2 <span id="between"><code>between()</code></span></h2>
+<p>A common operation in data analysis is to determine if a value falls
+inside an interval. We can check this using conditionals. For example,
+to check if the elements of a vector x are between a and b we can
+type</p>
+<pre><code>x &gt;= a</code></pre>
+<p>However, this can become cumbersome, especially within the tidyverse
+approach. The between function performs the same operation.</p>
+<pre><code>between(x, a, b)</code></pre>
+</div>
+</div>
+<div id="exercises-4" class="section level1">
+<h1>4.15 Exercises</h1>
+<ol style="list-style-type: decimal">
+<li>Load the murders dataset. Which of the following is true?</li>
+</ol>
+<ol style="list-style-type: lower-alpha">
+<li>murders is in tidy format and is stored in a tibble.</li>
+<li>murders is in tidy format and is stored in a data frame. TRUE</li>
+<li>murders is not in tidy format and is stored in a tibble.</li>
+<li>murders is not in tidy format and is stored in a data frame.</li>
+</ol>
+<pre class="r"><code>murders</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.8244238","7":"23"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.6751860","7":"27"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.6295273","7":"10"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.1893901","7":"17"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.3741383","7":"14"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.2924531","7":"38"},{"1":"Connecticut","2":"CT","3":"Northeast","4":"3574097","5":"97","6":"2.7139722","7":"25"},{"1":"Delaware","2":"DE","3":"South","4":"897934","5":"38","6":"4.2319369","7":"6"},{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.4527532","7":"1"},{"1":"Florida","2":"FL","3":"South","4":"19687653","5":"669","6":"3.3980688","7":"13"},{"1":"Georgia","2":"GA","3":"South","4":"9920000","5":"376","6":"3.7903226","7":"9"},{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920","7":"49"},{"1":"Idaho","2":"ID","3":"West","4":"1567582","5":"12","6":"0.7655102","7":"46"},{"1":"Illinois","2":"IL","3":"North Central","4":"12830632","5":"364","6":"2.8369608","7":"22"},{"1":"Indiana","2":"IN","3":"North Central","4":"6483802","5":"142","6":"2.1900730","7":"31"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484","7":"47"},{"1":"Kansas","2":"KS","3":"North Central","4":"2853118","5":"63","6":"2.2081106","7":"30"},{"1":"Kentucky","2":"KY","3":"South","4":"4339367","5":"116","6":"2.6732010","7":"28"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.7425810","7":"2"},{"1":"Maine","2":"ME","3":"Northeast","4":"1328361","5":"11","6":"0.8280881","7":"44"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.0748655","7":"4"},{"1":"Massachusetts","2":"MA","3":"Northeast","4":"6547629","5":"118","6":"1.8021791","7":"32"},{"1":"Michigan","2":"MI","3":"North Central","4":"9883640","5":"413","6":"4.1786225","7":"7"},{"1":"Minnesota","2":"MN","3":"North Central","4":"5303925","5":"53","6":"0.9992600","7":"40"},{"1":"Mississippi","2":"MS","3":"South","4":"2967297","5":"120","6":"4.0440846","7":"8"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.3598917","7":"3"},{"1":"Montana","2":"MT","3":"West","4":"989415","5":"12","6":"1.2128379","7":"39"},{"1":"Nebraska","2":"NE","3":"North Central","4":"1826341","5":"32","6":"1.7521372","7":"33"},{"1":"Nevada","2":"NV","3":"West","4":"2700551","5":"84","6":"3.1104763","7":"19"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"50"},{"1":"New Jersey","2":"NJ","3":"Northeast","4":"8791894","5":"246","6":"2.7980319","7":"24"},{"1":"New Mexico","2":"NM","3":"West","4":"2059179","5":"67","6":"3.2537239","7":"15"},{"1":"New York","2":"NY","3":"Northeast","4":"19378102","5":"517","6":"2.6679599","7":"29"},{"1":"North Carolina","2":"NC","3":"South","4":"9535483","5":"286","6":"2.9993237","7":"20"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"48"},{"1":"Ohio","2":"OH","3":"North Central","4":"11536504","5":"310","6":"2.6871225","7":"26"},{"1":"Oklahoma","2":"OK","3":"South","4":"3751351","5":"111","6":"2.9589340","7":"21"},{"1":"Oregon","2":"OR","3":"West","4":"3831074","5":"36","6":"0.9396843","7":"42"},{"1":"Pennsylvania","2":"PA","3":"Northeast","4":"12702379","5":"457","6":"3.5977513","7":"11"},{"1":"Rhode Island","2":"RI","3":"Northeast","4":"1052567","5":"16","6":"1.5200933","7":"35"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.4753235","7":"5"},{"1":"South Dakota","2":"SD","3":"North Central","4":"814180","5":"8","6":"0.9825837","7":"41"},{"1":"Tennessee","2":"TN","3":"South","4":"6346105","5":"219","6":"3.4509357","7":"12"},{"1":"Texas","2":"TX","3":"South","4":"25145561","5":"805","6":"3.2013603","7":"16"},{"1":"Utah","2":"UT","3":"West","4":"2763885","5":"22","6":"0.7959810","7":"45"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51"},{"1":"Virginia","2":"VA","3":"South","4":"8001024","5":"250","6":"3.1246001","7":"18"},{"1":"Washington","2":"WA","3":"West","4":"6724540","5":"93","6":"1.3829942","7":"37"},{"1":"West Virginia","2":"WV","3":"South","4":"1852994","5":"27","6":"1.4571013","7":"36"},{"1":"Wisconsin","2":"WI","3":"North Central","4":"5686986","5":"97","6":"1.7056487","7":"34"},{"1":"Wyoming","2":"WY","3":"West","4":"563626","5":"5","6":"0.8871131","7":"43"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Use as_tibble to convert the murders data table into a tibble and
+save it in an object called murders_tibble.</li>
+</ol>
+<pre class="r"><code>murders_tibble &lt;- as_tibble(murders)
+murders_tibble</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.8244238","7":"23"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.6751860","7":"27"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.6295273","7":"10"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.1893901","7":"17"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.3741383","7":"14"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.2924531","7":"38"},{"1":"Connecticut","2":"CT","3":"Northeast","4":"3574097","5":"97","6":"2.7139722","7":"25"},{"1":"Delaware","2":"DE","3":"South","4":"897934","5":"38","6":"4.2319369","7":"6"},{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.4527532","7":"1"},{"1":"Florida","2":"FL","3":"South","4":"19687653","5":"669","6":"3.3980688","7":"13"},{"1":"Georgia","2":"GA","3":"South","4":"9920000","5":"376","6":"3.7903226","7":"9"},{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920","7":"49"},{"1":"Idaho","2":"ID","3":"West","4":"1567582","5":"12","6":"0.7655102","7":"46"},{"1":"Illinois","2":"IL","3":"North Central","4":"12830632","5":"364","6":"2.8369608","7":"22"},{"1":"Indiana","2":"IN","3":"North Central","4":"6483802","5":"142","6":"2.1900730","7":"31"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484","7":"47"},{"1":"Kansas","2":"KS","3":"North Central","4":"2853118","5":"63","6":"2.2081106","7":"30"},{"1":"Kentucky","2":"KY","3":"South","4":"4339367","5":"116","6":"2.6732010","7":"28"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.7425810","7":"2"},{"1":"Maine","2":"ME","3":"Northeast","4":"1328361","5":"11","6":"0.8280881","7":"44"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.0748655","7":"4"},{"1":"Massachusetts","2":"MA","3":"Northeast","4":"6547629","5":"118","6":"1.8021791","7":"32"},{"1":"Michigan","2":"MI","3":"North Central","4":"9883640","5":"413","6":"4.1786225","7":"7"},{"1":"Minnesota","2":"MN","3":"North Central","4":"5303925","5":"53","6":"0.9992600","7":"40"},{"1":"Mississippi","2":"MS","3":"South","4":"2967297","5":"120","6":"4.0440846","7":"8"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.3598917","7":"3"},{"1":"Montana","2":"MT","3":"West","4":"989415","5":"12","6":"1.2128379","7":"39"},{"1":"Nebraska","2":"NE","3":"North Central","4":"1826341","5":"32","6":"1.7521372","7":"33"},{"1":"Nevada","2":"NV","3":"West","4":"2700551","5":"84","6":"3.1104763","7":"19"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"50"},{"1":"New Jersey","2":"NJ","3":"Northeast","4":"8791894","5":"246","6":"2.7980319","7":"24"},{"1":"New Mexico","2":"NM","3":"West","4":"2059179","5":"67","6":"3.2537239","7":"15"},{"1":"New York","2":"NY","3":"Northeast","4":"19378102","5":"517","6":"2.6679599","7":"29"},{"1":"North Carolina","2":"NC","3":"South","4":"9535483","5":"286","6":"2.9993237","7":"20"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"48"},{"1":"Ohio","2":"OH","3":"North Central","4":"11536504","5":"310","6":"2.6871225","7":"26"},{"1":"Oklahoma","2":"OK","3":"South","4":"3751351","5":"111","6":"2.9589340","7":"21"},{"1":"Oregon","2":"OR","3":"West","4":"3831074","5":"36","6":"0.9396843","7":"42"},{"1":"Pennsylvania","2":"PA","3":"Northeast","4":"12702379","5":"457","6":"3.5977513","7":"11"},{"1":"Rhode Island","2":"RI","3":"Northeast","4":"1052567","5":"16","6":"1.5200933","7":"35"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.4753235","7":"5"},{"1":"South Dakota","2":"SD","3":"North Central","4":"814180","5":"8","6":"0.9825837","7":"41"},{"1":"Tennessee","2":"TN","3":"South","4":"6346105","5":"219","6":"3.4509357","7":"12"},{"1":"Texas","2":"TX","3":"South","4":"25145561","5":"805","6":"3.2013603","7":"16"},{"1":"Utah","2":"UT","3":"West","4":"2763885","5":"22","6":"0.7959810","7":"45"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51"},{"1":"Virginia","2":"VA","3":"South","4":"8001024","5":"250","6":"3.1246001","7":"18"},{"1":"Washington","2":"WA","3":"West","4":"6724540","5":"93","6":"1.3829942","7":"37"},{"1":"West Virginia","2":"WV","3":"South","4":"1852994","5":"27","6":"1.4571013","7":"36"},{"1":"Wisconsin","2":"WI","3":"North Central","4":"5686986","5":"97","6":"1.7056487","7":"34"},{"1":"Wyoming","2":"WY","3":"West","4":"563626","5":"5","6":"0.8871131","7":"43"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>Use the group_by function to convert murders into a tibble that is
+grouped by region.</li>
+</ol>
+<pre class="r"><code>murders |&gt;
+  group_by(region)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.8244238","7":"23"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.6751860","7":"27"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.6295273","7":"10"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.1893901","7":"17"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.3741383","7":"14"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.2924531","7":"38"},{"1":"Connecticut","2":"CT","3":"Northeast","4":"3574097","5":"97","6":"2.7139722","7":"25"},{"1":"Delaware","2":"DE","3":"South","4":"897934","5":"38","6":"4.2319369","7":"6"},{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.4527532","7":"1"},{"1":"Florida","2":"FL","3":"South","4":"19687653","5":"669","6":"3.3980688","7":"13"},{"1":"Georgia","2":"GA","3":"South","4":"9920000","5":"376","6":"3.7903226","7":"9"},{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920","7":"49"},{"1":"Idaho","2":"ID","3":"West","4":"1567582","5":"12","6":"0.7655102","7":"46"},{"1":"Illinois","2":"IL","3":"North Central","4":"12830632","5":"364","6":"2.8369608","7":"22"},{"1":"Indiana","2":"IN","3":"North Central","4":"6483802","5":"142","6":"2.1900730","7":"31"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484","7":"47"},{"1":"Kansas","2":"KS","3":"North Central","4":"2853118","5":"63","6":"2.2081106","7":"30"},{"1":"Kentucky","2":"KY","3":"South","4":"4339367","5":"116","6":"2.6732010","7":"28"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.7425810","7":"2"},{"1":"Maine","2":"ME","3":"Northeast","4":"1328361","5":"11","6":"0.8280881","7":"44"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.0748655","7":"4"},{"1":"Massachusetts","2":"MA","3":"Northeast","4":"6547629","5":"118","6":"1.8021791","7":"32"},{"1":"Michigan","2":"MI","3":"North Central","4":"9883640","5":"413","6":"4.1786225","7":"7"},{"1":"Minnesota","2":"MN","3":"North Central","4":"5303925","5":"53","6":"0.9992600","7":"40"},{"1":"Mississippi","2":"MS","3":"South","4":"2967297","5":"120","6":"4.0440846","7":"8"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.3598917","7":"3"},{"1":"Montana","2":"MT","3":"West","4":"989415","5":"12","6":"1.2128379","7":"39"},{"1":"Nebraska","2":"NE","3":"North Central","4":"1826341","5":"32","6":"1.7521372","7":"33"},{"1":"Nevada","2":"NV","3":"West","4":"2700551","5":"84","6":"3.1104763","7":"19"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"50"},{"1":"New Jersey","2":"NJ","3":"Northeast","4":"8791894","5":"246","6":"2.7980319","7":"24"},{"1":"New Mexico","2":"NM","3":"West","4":"2059179","5":"67","6":"3.2537239","7":"15"},{"1":"New York","2":"NY","3":"Northeast","4":"19378102","5":"517","6":"2.6679599","7":"29"},{"1":"North Carolina","2":"NC","3":"South","4":"9535483","5":"286","6":"2.9993237","7":"20"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"48"},{"1":"Ohio","2":"OH","3":"North Central","4":"11536504","5":"310","6":"2.6871225","7":"26"},{"1":"Oklahoma","2":"OK","3":"South","4":"3751351","5":"111","6":"2.9589340","7":"21"},{"1":"Oregon","2":"OR","3":"West","4":"3831074","5":"36","6":"0.9396843","7":"42"},{"1":"Pennsylvania","2":"PA","3":"Northeast","4":"12702379","5":"457","6":"3.5977513","7":"11"},{"1":"Rhode Island","2":"RI","3":"Northeast","4":"1052567","5":"16","6":"1.5200933","7":"35"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.4753235","7":"5"},{"1":"South Dakota","2":"SD","3":"North Central","4":"814180","5":"8","6":"0.9825837","7":"41"},{"1":"Tennessee","2":"TN","3":"South","4":"6346105","5":"219","6":"3.4509357","7":"12"},{"1":"Texas","2":"TX","3":"South","4":"25145561","5":"805","6":"3.2013603","7":"16"},{"1":"Utah","2":"UT","3":"West","4":"2763885","5":"22","6":"0.7959810","7":"45"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51"},{"1":"Virginia","2":"VA","3":"South","4":"8001024","5":"250","6":"3.1246001","7":"18"},{"1":"Washington","2":"WA","3":"West","4":"6724540","5":"93","6":"1.3829942","7":"37"},{"1":"West Virginia","2":"WV","3":"South","4":"1852994","5":"27","6":"1.4571013","7":"36"},{"1":"Wisconsin","2":"WI","3":"North Central","4":"5686986","5":"97","6":"1.7056487","7":"34"},{"1":"Wyoming","2":"WY","3":"West","4":"563626","5":"5","6":"0.8871131","7":"43"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Write tidyverse code that is equivalent to this code:</li>
+</ol>
+<p>exp(mean(log(murders$population))) Write it using the pipe so that
+each function is called without arguments. Use the dot operator to
+access the population. Hint: The code should start with murders
+|&gt;.</p>
+<pre class="r"><code>murders |&gt;
+  pull(population) |&gt; 
+  log() |&gt;
+  mean() |&gt;
+  exp()</code></pre>
+<pre><code>## [1] 3675209</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Use the <code>map_df</code> to create a data frame with three
+columns named n, s_n, and s_n_2. The first column should contain the
+numbers 1 through 100. The second and third columns should each contain
+the sum of 1 through <span class="math inline">\(n\)</span> with <span class="math inline">\(n\)</span> the row number.</li>
+</ol>
 </div>
 
 
