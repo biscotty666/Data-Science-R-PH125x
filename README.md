@@ -1,3 +1,5 @@
+<div style="background-color: #f0f8ff;">
+
 # Data-Science-R-PH125.1x
 
 [View Pages](https://biscotty666.github.io/Data-Science-R-PH125.1x/)
@@ -44,3 +46,5 @@ Functions in Chapter 2:
 [Chapter 4 The tidyverse](docs/Pt04.html)
 
 [Chapter 5 Importing data](docs/Pt05.html)
+
+</div>
