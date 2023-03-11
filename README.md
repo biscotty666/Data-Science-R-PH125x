@@ -80,20 +80,20 @@ Functions in Chapter 4:
 
 Functions in Chapter 5:
 
-|<a href="docs/Pt05#file-create">`file.create`</a>|
-<a href="docs/Pt05#file-copy">`file.copy`</a>|
-<a href="docs/Pt05#file-link">`file.link`</a>|
-<a href="docs/Pt05#file-path">`file.path`</a>|
-<a href="docs/Pt05#file-remove">`file.remove`</a>|
-<a href="docs/Pt05#file-rename">`file.rename`</a>|
-<a href="docs/Pt05#file-symlink">`file.symlink`</a>|
-<a href="docs/Pt05#list-files">`list.files`</a>|
-<a href="docs/Pt05#read-csv">`read_csv`</a>|
-<a href="docs/Pt05#read.csv">`read.csv`</a>|
-<a href="docs/Pt05#read-lines">`read_lines`</a>|
-<a href="docs/Pt05#scan">`scan`</a>|
-<a href="docs/Pt05#spec">`spec`</a>|
-<a href="docs/Pt05#system-file">`system.file`</a>|
-<a href="docs/Pt05#view">`View`</a>|
+<a href="docs/Pt05#file-create">`file.create`</a>,
+<a href="docs/Pt05#file-copy">`file.copy`</a>,
+<a href="docs/Pt05#file-link">`file.link`</a>,
+<a href="docs/Pt05#file-path">`file.path`</a>,
+<a href="docs/Pt05#file-remove">`file.remove`</a>,
+<a href="docs/Pt05#file-rename">`file.rename`</a>,
+<a href="docs/Pt05#file-symlink">`file.symlink`</a>,
+<a href="docs/Pt05#list-files">`list.files`</a>,
+<a href="docs/Pt05#read-csv">`read_csv`</a>,
+<a href="docs/Pt05#read.csv">`read.csv`</a>,
+<a href="docs/Pt05#read-lines">`read_lines`</a>,
+<a href="docs/Pt05#scan">`scan`</a>,
+<a href="docs/Pt05#spec">`spec`</a>,
+<a href="docs/Pt05#system-file">`system.file`</a>,
+<a href="docs/Pt05#view">`View`</a>
 
 ### [Chapter 6 data.table](docs/Pt06.html)
