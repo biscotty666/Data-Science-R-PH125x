@@ -1656,6 +1656,11 @@ packages</a>
 <li><a href="#readr" id="toc-readr">5.2.1 readr</a></li>
 <li><a href="#readxl" id="toc-readxl">5.2.2 readxl</a></li>
 </ul></li>
+<li><a href="#exercises" id="toc-exercises">5.3 Exercises</a></li>
+<li><a href="#downloading-files" id="toc-downloading-files">5.4
+Downloading files</a></li>
+<li><a href="#r-base-importing-functions" id="toc-r-base-importing-functions">5.5 R-base importing
+functions</a></li>
 </ul>
 </div>
 
@@ -1671,7 +1676,9 @@ packages</a>
 <a href="#file-symlink"><code>file.symlink</code></a>|
 <a href="#list-files"><code>list.files</code></a>|
 <a href="#read-csv"><code>read_csv</code></a>|
+<a href="#read.csv"><code>read.csv</code></a>|
 <a href="#read-lines"><code>read_lines</code></a>|
+<a href="#scan"><code>scan</code></a>|
 <a href="#spec"><code>spec</code></a>|
 <a href="#system-file"><code>system.file</code></a>|
 <a href="#view"><code>View</code></a>|</p>
@@ -1936,6 +1943,154 @@ in an Excel file. These names can then be passed to the
 <code>sheet</code> argument in the three functions above to read sheets
 other than the first.</span></p>
 </div>
+</div>
+<div id="exercises" class="section level1">
+<h1>5.3 Exercises</h1>
+<ol style="list-style-type: decimal">
+<li>Use the <code>read_csv</code> function to read each of the files
+that the following code saves in the files object:</li>
+</ol>
+<pre class="r"><code>path &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;)
+files &lt;- list.files(path)
+files</code></pre>
+<pre><code>## [1] &quot;2010_bigfive_regents.xls&quot;                               
+## [2] &quot;carbon_emissions.csv&quot;                                   
+## [3] &quot;fertility-two-countries-example.csv&quot;                    
+## [4] &quot;HRlist2.txt&quot;                                            
+## [5] &quot;life-expectancy-and-fertility-two-countries-example.csv&quot;
+## [6] &quot;murders.csv&quot;                                            
+## [7] &quot;olive.csv&quot;                                              
+## [8] &quot;RD-Mortality-Report_2015-18-180531.pdf&quot;                 
+## [9] &quot;ssa-death-probability.csv&quot;</code></pre>
+<pre class="r"><code>testread &lt;- read_csv(file.path(path, files[4]))</code></pre>
+<pre><code>## Rows: 95 Columns: 1
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): Sun 4.8 5840 G2
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>testread &lt;- read_csv(file.path(path, files[7]))</code></pre>
+<pre><code>## New names:
+## • `` -&gt; `...1`</code></pre>
+<pre><code>## Warning: One or more parsing issues, call `problems()` on your data frame for details,
+## e.g.:
+##   dat &lt;- vroom(...)
+##   problems(dat)</code></pre>
+<pre><code>## Rows: 572 Columns: 11
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (2): Region, eicosenoic
+## dbl (9): ...1, Area, palmitic, palmitoleic, stearic, oleic, linoleic, linole...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Note that the last one, the olive file, gives us a warning. This is
+because the first line of the file is missing the header for the first
+column.</li>
+</ol>
+<p>Read the help file for read_csv to figure out how to read in the file
+without reading this header. If you skip the header, you should not get
+this warning. Save the result to an object called dat.</p>
+<pre class="r"><code>dat &lt;- read_csv(file.path(path, files[7]), skip = 1)</code></pre>
+<pre><code>## New names:
+## Rows: 571 Columns: 12
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+## (1): North-Apulia dbl (11): 1...1, 1...3, 1...4, 1075, 75, 226, 7823, 672, 36,
+## 60, 29
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `1` -&gt; `1...1`
+## • `1` -&gt; `1...3`
+## • `1` -&gt; `1...4`</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>A problem with the previous approach is that we don’t know what the
+columns represent.</li>
+</ol>
+<pre class="r"><code>names(dat)</code></pre>
+<pre><code>##  [1] &quot;1...1&quot;        &quot;North-Apulia&quot; &quot;1...3&quot;        &quot;1...4&quot;        &quot;1075&quot;        
+##  [6] &quot;75&quot;           &quot;226&quot;          &quot;7823&quot;         &quot;672&quot;          &quot;36&quot;          
+## [11] &quot;60&quot;           &quot;29&quot;</code></pre>
+<p>Use the readLines function to read in just the first line (we later
+learn how to extract values from the output).</p>
+<pre class="r"><code>readLines(file.path(path, files[7]), n = 1)</code></pre>
+<pre><code>## [1] &quot;,Region,Area,palmitic,palmitoleic,stearic,oleic,linoleic,linolenic,arachidic,eicosenoic&quot;</code></pre>
+</div>
+<div id="downloading-files" class="section level1">
+<h1>5.4 Downloading files</h1>
+<p>Another common place for data to reside is on the internet. When
+these data are in files, we can download them and then import them or
+even read them directly from the web. For example, we note that because
+our dslabs package is on GitHub, the file we downloaded with the package
+has a url:</p>
+<pre class="r"><code>url &lt;- &quot;https://raw.githubusercontent.com/rafalab/dslabs/master/inst/extdata/murders.csv&quot;
+dat &lt;- read_csv(url)</code></pre>
+<pre><code>## Rows: 51 Columns: 5
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (3): state, abb, region
+## dbl (2): population, total
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>If you want to have a local copy of the file, you can use the <span id="download-file"><strong><code>download.file</code></strong></span>
+function:</p>
+<pre class="r"><code>download.file(url, &quot;download.csv&quot;)</code></pre>
+<p>This will download the file and save it on your system with the name
+murders.csv. You can use any name here, not necessarily murders.csv.
+Note that when using download.file you should be careful as <span class="pink">it will overwrite existing files without
+warning.</span></p>
+<pre class="r"><code>file.remove(&quot;download.csv&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>Two functions that are sometimes useful when downloading data from
+the internet are <span id="tempdir"><strong><code>tempdir</code></strong></span> and <span id="tempfile"><strong><code>tempfile</code></strong></span>. The first
+creates a directory with a random name that is very likely to be unique.
+Similarly, tempfile creates a character string, not a file, that is
+likely to be a unique filename. So you can run a command like this which
+erases the temporary file once it imports the data:</p>
+<pre class="r"><code>tmp_filename &lt;- tempfile()
+download.file(url, tmp_filename)
+dat &lt;- read_csv(tmp_filename)</code></pre>
+<pre><code>## Rows: 51 Columns: 5
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (3): state, abb, region
+## dbl (2): population, total
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>file.remove(tmp_filename)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="r-base-importing-functions" class="section level1">
+<h1>5.5 R-base importing functions</h1>
+<p>R-base also provides import functions. These have similar names to
+those in the tidyverse, for example <code>read.table</code>, &lt;span
+id=“read.csv<code>&gt;read.csv</code></span> and
+<code>read.delim</code>. You can obtain an data frame like
+<code>dat</code> using:</p>
+<pre class="r"><code>dat2 &lt;- read.csv(filename)</code></pre>
+<p>An often useful R-base importing function is <span id="scan"><code>scan</code></span>, as it provides much flexibility.
+When reading in spreadsheets many things can go wrong. The file might
+have a multiline header, be missing cells, or it might use an unexpected
+encoding13. We recommend you read this post about common issues found
+here: <a href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/" class="uri">https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/</a>.</p>
+<p>With experience you will learn how to deal with different challenges.
+Carefully reading the help files for the functions discussed here will
+be useful. With scan you can read-in each cell of a file. <span class="pink"><code>what</code> declares the data type to be read
+in</span>. Here is an example:</p>
+<pre class="r"><code>path &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;)
+filename &lt;- &quot;murders.csv&quot;
+x &lt;- scan(file.path(path, filename), sep = &quot;,&quot;, what = &quot;c&quot;)
+x[1:20]</code></pre>
+<pre><code>##  [1] &quot;state&quot;      &quot;abb&quot;        &quot;region&quot;     &quot;population&quot; &quot;total&quot;     
+##  [6] &quot;Alabama&quot;    &quot;AL&quot;         &quot;South&quot;      &quot;4779736&quot;    &quot;135&quot;       
+## [11] &quot;Alaska&quot;     &quot;AK&quot;         &quot;West&quot;       &quot;710231&quot;     &quot;19&quot;        
+## [16] &quot;Arizona&quot;    &quot;AZ&quot;         &quot;West&quot;       &quot;6392017&quot;    &quot;232&quot;</code></pre>
+<p><span class="pink">Note that the tidyverse provides read_lines, a
+similarly useful function.</span></p>
 </div>
 
 
