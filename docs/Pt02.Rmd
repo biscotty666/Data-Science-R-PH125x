@@ -114,7 +114,7 @@ class(murders)
 str(murders)
 ```
 
-<span id="names`>names()`</span> Variable (column) names
+<span id="names">names()`</span> Variable (column) names
 
 ```{r}
 names(murders)

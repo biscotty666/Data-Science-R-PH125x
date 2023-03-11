@@ -4,7 +4,7 @@
 
 ### [Chapter 2 R basics](docs/Pt02.html)
 
-Functions in Chapter 2:
+Function index:
 
 <a href="docs/Pt02.html#pc-in-pc">`%in%`</a>,
 <a href="docs/Pt02.html#args">`args`</a>,
@@ -40,7 +40,7 @@ Functions in Chapter 2:
 
 ### [Chapter 3 Programming basics](docs/Pt03.html)
 
-Functions in Chapter 3:
+Function index:
 
 <a href="docs/Pt03.html#any">`any`</a>,
 <a href="docs/Pt03.html#all">`all`</a>,
@@ -55,7 +55,7 @@ Functions in Chapter 3:
 
 ### [Chapter 4 The tidyverse](docs/Pt04.html)
 
-Functions in Chapter 4:
+Function index:
 
 <a href="docs/Pt04#arrange">`arrange`</a>,
 <a href="docs/Pt04#as_tibble">`as_tibble`</a>,
@@ -78,7 +78,7 @@ Functions in Chapter 4:
 
 ### [Chapter 5 Importing data](docs/Pt05.html)
 
-Functions in Chapter 5:
+Function index:
 
 <a href="docs/Pt05#file-create">`file.create`</a>,
 <a href="docs/Pt05#file-copy">`file.copy`</a>,

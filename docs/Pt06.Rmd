@@ -11,8 +11,9 @@ output:
 
 # Functions in this chapter
 
-|<a href="#file-create">`file.create`</a>|
-<a href="#file-copy">`file.copy`</a>|
+|[`:=`](#col-eq)|
+[`copy`](#copy)|
+[`setDT`](#setdt)|
 
 In this book, we use tidyverse packages to illustrate because beginners find the code readable and this permits us to focus on data analysis and statistical concepts. However, there are other approaches to wrangling and analyzing data in R that are faster and better at handling large objects. The data.table package, for example, is one of the most popular and we therefore provide a very quick introduction in this chapter . There are several online resources, including this introduction15 for those wanting to learn more.
 
@@ -22,6 +23,119 @@ library(data.table)
 ```
 
 # 6.1 Manipulating data tables
+
+We will provide example code showing the **data.table** approaches to **dplyr**’s `mutate`, `filter`, `select`, `group_by`, and `summarize` shown in Chapter 4. As in that chapter, we will use the 1murders1 dataset:
+
+The first step when using **data.table** is to convert the data frame into a **data.table** object using the <span id="setdt">`setDT`</span> function:
+
+```{r}
+library(dslabs)
+data(murders)
+murders <- setDT(murders)
+murders
+```
+
+<span class="purple">Without this initial step, most of the approaches shown below will not work.</span>
+
+# 6.1.1 Selecting
+
+Selecting with **data.table** is done in a similar way to subsetting matrices. While with **dplyr** we write:
+```
+select(murders, state, region)
+```
+In **data.table**, we use notation similar to what is used with matrices:
+
+```{r}
+murders[, c("state", "region")] |> head()
+```
+
+## 6.1.2 Adding a column or changing columns
+
+We learned to use the **dplyr** `mutate` function with this example:
+```
+murders <- mutate(murders, rate = total / population * 100000)
+```
+**data.table** uses an approach that avoids a new assignment (update by reference). This can help with large datasets that take up most of your computer’s memory. The **data.table** <span id="col-eq">`:=`</span> function permits us to do this:
+
+```{r}
+murders[, rate := total / population * 100000]
+```
+
+This adds a new column, `rate`, to the table. Notice that, as in **dplyr**, we used `total` and `population` without quotes.
+
+We can see that the new column is added:
+
+```{r}
+head(murders)
+```
+
+To define new multiple columns, we can use the := function with multiple arguments:
+
+```{r}
+murders[, ":="(rate = total / population * 10^5, rank = rank(population))]
+head(murders)
+```
+
+## 6.1.3 Technical detail: reference versus copy
+
+The **data.table** package is designed to avoid wasting memory. So if you make a copy of a table, like this:
+```
+x <- data.table(a = 1)
+y <- x
+```
+`y` is actually referencing `x`, it is not an new object: it’s just another name for `x`. Until you change `y`, a new object will not be made. However, the `:= ` function changes by reference so if you change `x`, a new object is not made and `y` continues to be just another name for `x`:
+```
+x[,a := 2]
+y
+#>    a
+#> 1: 2
+```
+You can also change `x` like this:
+```
+y[,a := 1]
+x
+#>    a
+#> 1: 1
+```
+To avoid this, you can use the <span id="copy">`copy`</span> function which forces the creation of an actual copy:
+```
+x <- data.table(a = 1)
+y <- copy(x)
+x[,a := 2]
+y
+#>    a
+#> 1: 1
+```
+## 6.1.4 Subsetting
+
+With **dplyr**, we filtered like this:
+```
+filter(murders, rate <= 0.7)
+```
+With **data.table**, we again use an approach similar to subsetting matrices, except **data.table** knows that `rate` refers to a column name and not an object in the R environment:
+
+```{r}
+murders[rate <= 0.7]
+```
+
+<span class="purple">Notice that we can combine the filter and select into one succint command.</span> Here are the state names and rates for those with rates below 0.7.
+
+```{r}
+murders[rate <= 0.7, .(state, rate)]
+```
+
+Compare to the dplyr approach:
+```{r}
+murders |> dplyr::filter(rate <= 0.7) |> dplyr::select(state, rate)
+```
+
+
+# 6.2 Exercises
+
+
+
+
+
 
 
 

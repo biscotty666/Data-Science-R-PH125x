@@ -1540,7 +1540,11 @@ background-color: #BBFA45;
 }
 .pink {
 background-color: rgb(233, 5, 150,0.2);
-}</style>
+}
+.purple {
+background-color: rgb(176, 38, 255,0.3);
+}
+</style>
 
 
 
@@ -1645,14 +1649,22 @@ display: none;
 <ul>
 <li><a href="#functions-in-this-chapter" id="toc-functions-in-this-chapter">Functions in this chapter</a></li>
 <li><a href="#manipulating-data-tables" id="toc-manipulating-data-tables">6.1 Manipulating data tables</a></li>
+<li><a href="#selecting" id="toc-selecting">6.1.1 Selecting</a>
+<ul>
+<li><a href="#adding-a-column-or-changing-columns" id="toc-adding-a-column-or-changing-columns">6.1.2 Adding a column or
+changing columns</a></li>
+<li><a href="#technical-detail-reference-versus-copy" id="toc-technical-detail-reference-versus-copy">6.1.3 Technical detail:
+reference versus copy</a></li>
+<li><a href="#subsetting" id="toc-subsetting">6.1.4 Subsetting</a></li>
+</ul></li>
+<li><a href="#exercises" id="toc-exercises">6.2 Exercises</a></li>
 </ul>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <div id="functions-in-this-chapter" class="section level1">
 <h1>Functions in this chapter</h1>
-<p>|<a href="#file-create"><code>file.create</code></a>|
-<a href="#file-copy"><code>file.copy</code></a>|</p>
+<p>|<a href="#col-eq"><code>:=</code></a>| <a href="#copy"><code>copy</code></a>| <a href="#setdt"><code>setDT</code></a>|</p>
 <p>In this book, we use tidyverse packages to illustrate because
 beginners find the code readable and this permits us to focus on data
 analysis and statistical concepts. However, there are other approaches
@@ -1666,6 +1678,133 @@ library(data.table)</code></pre>
 </div>
 <div id="manipulating-data-tables" class="section level1">
 <h1>6.1 Manipulating data tables</h1>
+<p>We will provide example code showing the <strong>data.table</strong>
+approaches to <strong>dplyr</strong>’s <code>mutate</code>,
+<code>filter</code>, <code>select</code>, <code>group_by</code>, and
+<code>summarize</code> shown in Chapter 4. As in that chapter, we will
+use the 1murders1 dataset:</p>
+<p>The first step when using <strong>data.table</strong> is to convert
+the data frame into a <strong>data.table</strong> object using the <span id="setdt"><code>setDT</code></span> function:</p>
+<pre class="r"><code>library(dslabs)
+data(murders)
+murders &lt;- setDT(murders)
+murders</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65"},{"1":"Connecticut","2":"CT","3":"Northeast","4":"3574097","5":"97"},{"1":"Delaware","2":"DE","3":"South","4":"897934","5":"38"},{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99"},{"1":"Florida","2":"FL","3":"South","4":"19687653","5":"669"},{"1":"Georgia","2":"GA","3":"South","4":"9920000","5":"376"},{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7"},{"1":"Idaho","2":"ID","3":"West","4":"1567582","5":"12"},{"1":"Illinois","2":"IL","3":"North Central","4":"12830632","5":"364"},{"1":"Indiana","2":"IN","3":"North Central","4":"6483802","5":"142"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21"},{"1":"Kansas","2":"KS","3":"North Central","4":"2853118","5":"63"},{"1":"Kentucky","2":"KY","3":"South","4":"4339367","5":"116"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351"},{"1":"Maine","2":"ME","3":"Northeast","4":"1328361","5":"11"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293"},{"1":"Massachusetts","2":"MA","3":"Northeast","4":"6547629","5":"118"},{"1":"Michigan","2":"MI","3":"North Central","4":"9883640","5":"413"},{"1":"Minnesota","2":"MN","3":"North Central","4":"5303925","5":"53"},{"1":"Mississippi","2":"MS","3":"South","4":"2967297","5":"120"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321"},{"1":"Montana","2":"MT","3":"West","4":"989415","5":"12"},{"1":"Nebraska","2":"NE","3":"North Central","4":"1826341","5":"32"},{"1":"Nevada","2":"NV","3":"West","4":"2700551","5":"84"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5"},{"1":"New Jersey","2":"NJ","3":"Northeast","4":"8791894","5":"246"},{"1":"New Mexico","2":"NM","3":"West","4":"2059179","5":"67"},{"1":"New York","2":"NY","3":"Northeast","4":"19378102","5":"517"},{"1":"North Carolina","2":"NC","3":"South","4":"9535483","5":"286"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4"},{"1":"Ohio","2":"OH","3":"North Central","4":"11536504","5":"310"},{"1":"Oklahoma","2":"OK","3":"South","4":"3751351","5":"111"},{"1":"Oregon","2":"OR","3":"West","4":"3831074","5":"36"},{"1":"Pennsylvania","2":"PA","3":"Northeast","4":"12702379","5":"457"},{"1":"Rhode Island","2":"RI","3":"Northeast","4":"1052567","5":"16"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207"},{"1":"South Dakota","2":"SD","3":"North Central","4":"814180","5":"8"},{"1":"Tennessee","2":"TN","3":"South","4":"6346105","5":"219"},{"1":"Texas","2":"TX","3":"South","4":"25145561","5":"805"},{"1":"Utah","2":"UT","3":"West","4":"2763885","5":"22"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2"},{"1":"Virginia","2":"VA","3":"South","4":"8001024","5":"250"},{"1":"Washington","2":"WA","3":"West","4":"6724540","5":"93"},{"1":"West Virginia","2":"WV","3":"South","4":"1852994","5":"27"},{"1":"Wisconsin","2":"WI","3":"North Central","4":"5686986","5":"97"},{"1":"Wyoming","2":"WY","3":"West","4":"563626","5":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p><span class="purple">Without this initial step, most of the
+approaches shown below will not work.</span></p>
+</div>
+<div id="selecting" class="section level1">
+<h1>6.1.1 Selecting</h1>
+<p>Selecting with <strong>data.table</strong> is done in a similar way
+to subsetting matrices. While with <strong>dplyr</strong> we write:</p>
+<pre><code>select(murders, state, region)</code></pre>
+<p>In <strong>data.table</strong>, we use notation similar to what is
+used with matrices:</p>
+<pre class="r"><code>murders[, c(&quot;state&quot;, &quot;region&quot;)] |&gt; head()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["region"],"name":[2],"type":["fct"],"align":["left"]}],"data":[{"1":"Alabama","2":"South"},{"1":"Alaska","2":"West"},{"1":"Arizona","2":"West"},{"1":"Arkansas","2":"South"},{"1":"California","2":"West"},{"1":"Colorado","2":"West"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="adding-a-column-or-changing-columns" class="section level2">
+<h2>6.1.2 Adding a column or changing columns</h2>
+<p>We learned to use the <strong>dplyr</strong> <code>mutate</code>
+function with this example:</p>
+<pre><code>murders &lt;- mutate(murders, rate = total / population * 100000)</code></pre>
+<p><strong>data.table</strong> uses an approach that avoids a new
+assignment (update by reference). This can help with large datasets that
+take up most of your computer’s memory. The <strong>data.table</strong>
+<span id="col-eq"><code>:=</code></span> function permits us to do
+this:</p>
+<pre class="r"><code>murders[, rate := total / population * 100000]</code></pre>
+<p>This adds a new column, <code>rate</code>, to the table. Notice that,
+as in <strong>dplyr</strong>, we used <code>total</code> and
+<code>population</code> without quotes.</p>
+<p>We can see that the new column is added:</p>
+<pre class="r"><code>head(murders)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.824424"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.675186"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.629527"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.189390"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.374138"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.292453"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>To define new multiple columns, we can use the := function with
+multiple arguments:</p>
+<pre class="r"><code>murders[, &quot;:=&quot;(rate = total / population * 10^5, rank = rank(population))]
+head(murders)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.824424","7":"29"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.675186","7":"5"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.629527","7":"36"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.189390","7":"20"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.374138","7":"51"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.292453","7":"30"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="technical-detail-reference-versus-copy" class="section level2">
+<h2>6.1.3 Technical detail: reference versus copy</h2>
+<p>The <strong>data.table</strong> package is designed to avoid wasting
+memory. So if you make a copy of a table, like this:</p>
+<pre><code>x &lt;- data.table(a = 1)
+y &lt;- x</code></pre>
+<p><code>y</code> is actually referencing <code>x</code>, it is not an
+new object: it’s just another name for <code>x</code>. Until you change
+<code>y</code>, a new object will not be made. However, the
+<code>:=</code> function changes by reference so if you change
+<code>x</code>, a new object is not made and <code>y</code> continues to
+be just another name for <code>x</code>:</p>
+<pre><code>x[,a := 2]
+y
+#&gt;    a
+#&gt; 1: 2</code></pre>
+<p>You can also change <code>x</code> like this:</p>
+<pre><code>y[,a := 1]
+x
+#&gt;    a
+#&gt; 1: 1</code></pre>
+<p>To avoid this, you can use the <span id="copy"><code>copy</code></span> function which forces the creation of
+an actual copy:</p>
+<pre><code>x &lt;- data.table(a = 1)
+y &lt;- copy(x)
+x[,a := 2]
+y
+#&gt;    a
+#&gt; 1: 1</code></pre>
+</div>
+<div id="subsetting" class="section level2">
+<h2>6.1.4 Subsetting</h2>
+<p>With <strong>dplyr</strong>, we filtered like this:</p>
+<pre><code>filter(murders, rate &lt;= 0.7)</code></pre>
+<p>With <strong>data.table</strong>, we again use an approach similar to
+subsetting matrices, except <strong>data.table</strong> knows that
+<code>rate</code> refers to a column name and not an object in the R
+environment:</p>
+<pre class="r"><code>murders[rate &lt;= 0.7]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920","7":"12"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484","7":"22"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"10"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"4"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p><span class="purple">Notice that we can combine the filter and select
+into one succint command.</span> Here are the state names and rates for
+those with rates below 0.7.</p>
+<pre class="r"><code>murders[rate &lt;= 0.7, .(state, rate)]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["rate"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"0.5145920"},{"1":"Iowa","2":"0.6893484"},{"1":"New Hampshire","2":"0.3798036"},{"1":"North Dakota","2":"0.5947151"},{"1":"Vermont","2":"0.3196211"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Compare to the dplyr approach:</p>
+<pre class="r"><code>murders |&gt; dplyr::filter(rate &lt;= 0.7) |&gt; dplyr::select(state, rate)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["rate"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"0.5145920"},{"1":"Iowa","2":"0.6893484"},{"1":"New Hampshire","2":"0.3798036"},{"1":"North Dakota","2":"0.5947151"},{"1":"Vermont","2":"0.3196211"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="exercises" class="section level1">
+<h1>6.2 Exercises</h1>
 </div>
 
 
