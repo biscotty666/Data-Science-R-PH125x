@@ -16,9 +16,9 @@ output:
 <a href="filter">`filter`</a>|
 <a href="group_by">`group_by`</a>|
 <a href="mutate">`mutate`</a>|
-<a href="the-pipe">The pipe `|>`</a>|
+<a href="the-pipe">The pipe</a>|
 <a href="pull">`pull`</a>|
-<a href="rank">`rank``</a>|
+<a href="rank">`rank`</a>|
 <a href="sapply">`sapply`</a>|
 <a href="select">`select`</a>|
 <a href="slices">`slice_max`</a>|
