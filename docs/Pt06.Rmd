@@ -1,0 +1,28 @@
+---
+title: "6 data.table"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+# Functions in this chapter
+
+|<a href="#file-create">`file.create`</a>|
+<a href="#file-copy">`file.copy`</a>|
+
+
+
+
+
+
+
+
+
+
+
+
+

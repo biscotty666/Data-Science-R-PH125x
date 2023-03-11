@@ -4,6 +4,9 @@
 
 [Chapter 2 R basics](docs/Pt02.html)
 
+|<a href="docs/Pt02.html#pc-in-pc">`%in%`</a>|
+
+
 [Chapter 3 Programming basics](docs/Pt03.html)
 
 [Chapter 4 The tidyverse](docs/Pt04.html)
