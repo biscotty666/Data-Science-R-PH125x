@@ -11,5 +11,170 @@ output:
 
 # Functions in this chapter
 
-|<a href="#arrange">`arrange`</a>|
-<a href="#as_tibble">`as_tibble`</a>|
+|<a href="#file-create">`file.create`</a>|
+<a href="#file-copy">`file.copy`</a>|
+<a href="#file-link">`file.link`</a>|
+<a href="#file-path">`file.path`</a>|
+<a href="#file-remove">`file.remove`</a>|
+<a href="#file-rename">`file.rename`</a>|
+<a href="#file-symlink">`file.symlink`</a>|
+<a href="#list-files">`list.files`</a>|
+<a href="#spec">`spec`</a>|
+<a href="#system-file">`system.file`</a>|
+
+```{r}
+filename <- "murders.csv"
+dir <- system.file("extdata", package = "dslabs") 
+fullpath <- file.path(dir, filename)
+file.copy(fullpath, "murders.csv")
+```
+```{r}
+library(tidyverse)
+dat <- read_csv(filename)
+```
+
+Examine data frame columns <span id="spec">**`spec()`**</span>
+
+```{r}
+spec(dat)
+```
+
+# 5.1 Paths and the working directory
+
+## 5.1.4 Generating path names
+
+Find the full file names of files in packages etc. <span id="system-file">**`system.file()`**</span>
+
+```{r}
+filename <- "murders.csv"
+dir <- system.file("extdata", package = "dslabs") 
+fullpath <- file.path(dir, filename)
+fullpath
+```
+
+The function `system.file` provides the full path of the folder containing all the files and directories relevant to the package specified by the package argument. By exploring the directories in dir we find that the extdata contains the file we want:
+
+```{r}
+dir <- system.file(package = "dslabs") 
+filename %in% list.files(file.path(dir, "extdata"))
+```
+
+The `system.file` function permits us to provide a subdirectory as a first argument, so we can obtain the fullpath of the extdata directory like this:
+
+```{r}
+dir <- system.file("extdata", package = "dslabs") 
+dir
+```
+
+Construct Path to File <span id="file-path">**`file.path()`**</span>
+
+```{r}
+fullpath <- file.path(dir, filename)
+fullpath
+```
+
+## 5.1.5 Copying files using paths `file.copy()`
+
+The final line of code we used to copy the file into our home directory used
+the function `file.copy`. This function takes two arguments: the file to copy and the name to give it in the new directory.
+
+```{r}
+file.copy(fullpath, "murders.csv")
+```
+
+<span id="list-files">**`list.files()`**</span> to list files
+
+```{r}
+list.files()
+```
+
+## File manipulation
+
+- <span id="file-create">**`file.create()`**</span>
+creates files with the given names if they do not already exist and truncates them if they do.
+```{r}
+file.create("test.txt")
+```
+
+- <span id="file-exists">**`file.exists()`**</span> returns a logical vector indicating whether the files named by its argument exist.
+
+```{r}
+file.exists("test.txt")
+```
+
+- <span id="file-rename">**`file.rename()`**</span> 
+attempts to rename files (and from and to must be of the same length). Where file permissions allow this will overwrite an existing element of to. 
+
+```{r}
+file.rename("test.txt", "test1.txt")
+```
+
+- <span id="file-copy">**`file.copy()`**</span>
+```
+file.copy(from, to, overwrite = recursive, recursive = FALSE,
+          copy.mode = TRUE, copy.date = FALSE)
+```
+```{r}
+file.copy("test1.txt", "test2.txt")
+```
+
+- <span id="file-append">**`file.append()`**</span>
+attempts to append the files named by its second argument to those named by its first.
+
+```{r}
+file.append("test2.txt", "test1.txt")
+```
+
+- <span id="file-link">**`file.link()`**</span> and <span id="file-symlink">**`file.symlink()`**</span>
+make symbolic and hard links on those file systems which support them
+
+```{r}
+file.symlink("test1.txt", "testsym.txt")
+```
+
+- <span id="file-remove">**`file.remove()`**</span>
+attempts to remove the files named in its argument. 
+
+```{r}
+file.remove(c("testsym.txt", "test1.txt", "test2.txt"))
+```
+
+# 5.2 The readr and readxl packages
+
+In this section we introduce the main tidyverse data importing functions. We will use the murders.csv file provided by the dslabs package as an example. To simplify the illustration we will copy the file to our working directory using the following code:
+```
+filename <- "murders.csv"
+dir <- system.file("extdata", package = "dslabs") 
+fullpath <- file.path(dir, filename)
+file.copy(fullpath, "murders.csv")
+```
+## 5.2.1 readr
+
+The readr library includes functions for reading data stored in text file spreadsheets into R. <span class="pink">readr is part of the tidyverse package, or you can load it directly</span>:
+
+```
+library(readr)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

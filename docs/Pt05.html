@@ -1534,6 +1534,9 @@ background-color: #BBFA45;
 }
 .hl4 {
 background-color: #BBFA45;
+}
+.pink {
+background-color: rgb(233, 5, 150,0.2);
 }</style>
 
 
@@ -1638,14 +1641,185 @@ display: none;
 <div id="TOC">
 <ul>
 <li><a href="#functions-in-this-chapter" id="toc-functions-in-this-chapter">Functions in this chapter</a></li>
+<li><a href="#paths-and-the-working-directory" id="toc-paths-and-the-working-directory">5.1 Paths and the working
+directory</a>
+<ul>
+<li><a href="#generating-path-names" id="toc-generating-path-names">5.1.4 Generating path names</a></li>
+<li><a href="#copying-files-using-paths-file.copy" id="toc-copying-files-using-paths-file.copy">5.1.5 Copying files using
+paths <code>file.copy()</code></a></li>
+<li><a href="#file-manipulation" id="toc-file-manipulation">File
+manipulation</a></li>
+</ul></li>
+<li><a href="#the-readr-and-readxl-packages" id="toc-the-readr-and-readxl-packages">5.2 The readr and readxl
+packages</a>
+<ul>
+<li><a href="#readr" id="toc-readr">5.2.1 readr</a></li>
+</ul></li>
 </ul>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <div id="functions-in-this-chapter" class="section level1">
 <h1>Functions in this chapter</h1>
-<p>|<a href="#arrange"><code>arrange</code></a>|
-<a href="#as_tibble"><code>as_tibble</code></a>|</p>
+<p>|<a href="#file-create"><code>file.create</code></a>|
+<a href="#file-copy"><code>file.copy</code></a>|
+<a href="#file-link"><code>file.link</code></a>|
+<a href="#file-path"><code>file.path</code></a>|
+<a href="#file-remove"><code>file.remove</code></a>|
+<a href="#file-rename"><code>file.rename</code></a>|
+<a href="#file-symlink"><code>file.symlink</code></a>|
+<a href="#list-files"><code>list.files</code></a>|
+<a href="#spec"><code>spec</code></a>|
+<a href="#system-file"><code>system.file</code></a>|</p>
+<pre class="r"><code>filename &lt;- &quot;murders.csv&quot;
+dir &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;) 
+fullpath &lt;- file.path(dir, filename)
+file.copy(fullpath, &quot;murders.csv&quot;)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.0     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.4.1
+## ✔ ggplot2   3.4.1     ✔ tibble    3.1.8
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
+<pre class="r"><code>dat &lt;- read_csv(filename)</code></pre>
+<pre><code>## Rows: 51 Columns: 5
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (3): state, abb, region
+## dbl (2): population, total
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Examine data frame columns <span id="spec"><strong><code>spec()</code></strong></span></p>
+<pre class="r"><code>spec(dat)</code></pre>
+<pre><code>## cols(
+##   state = col_character(),
+##   abb = col_character(),
+##   region = col_character(),
+##   population = col_double(),
+##   total = col_double()
+## )</code></pre>
+</div>
+<div id="paths-and-the-working-directory" class="section level1">
+<h1>5.1 Paths and the working directory</h1>
+<div id="generating-path-names" class="section level2">
+<h2>5.1.4 Generating path names</h2>
+<p>Find the full file names of files in packages etc. <span id="system-file"><strong><code>system.file()</code></strong></span></p>
+<pre class="r"><code>filename &lt;- &quot;murders.csv&quot;
+dir &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;) 
+fullpath &lt;- file.path(dir, filename)
+fullpath</code></pre>
+<pre><code>## [1] &quot;/home/biscotty/R/x86_64-pc-linux-gnu-library/4.2/dslabs/extdata/murders.csv&quot;</code></pre>
+<p>The function <code>system.file</code> provides the full path of the
+folder containing all the files and directories relevant to the package
+specified by the package argument. By exploring the directories in dir
+we find that the extdata contains the file we want:</p>
+<pre class="r"><code>dir &lt;- system.file(package = &quot;dslabs&quot;) 
+filename %in% list.files(file.path(dir, &quot;extdata&quot;))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<p>The <code>system.file</code> function permits us to provide a
+subdirectory as a first argument, so we can obtain the fullpath of the
+extdata directory like this:</p>
+<pre class="r"><code>dir &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;) 
+dir</code></pre>
+<pre><code>## [1] &quot;/home/biscotty/R/x86_64-pc-linux-gnu-library/4.2/dslabs/extdata&quot;</code></pre>
+<p>Construct Path to File <span id="file-path"><strong><code>file.path()</code></strong></span></p>
+<pre class="r"><code>fullpath &lt;- file.path(dir, filename)
+fullpath</code></pre>
+<pre><code>## [1] &quot;/home/biscotty/R/x86_64-pc-linux-gnu-library/4.2/dslabs/extdata/murders.csv&quot;</code></pre>
+</div>
+<div id="copying-files-using-paths-file.copy" class="section level2">
+<h2>5.1.5 Copying files using paths <code>file.copy()</code></h2>
+<p>The final line of code we used to copy the file into our home
+directory used the function <code>file.copy</code>. This function takes
+two arguments: the file to copy and the name to give it in the new
+directory.</p>
+<pre class="r"><code>file.copy(fullpath, &quot;murders.csv&quot;)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<p><span id="list-files"><strong><code>list.files()</code></strong></span> to
+list files</p>
+<pre class="r"><code>list.files()</code></pre>
+<pre><code>##  [1] &quot;murders.csv&quot;  &quot;Pt02.html&quot;    &quot;Pt02.nb.html&quot; &quot;Pt02.Rmd&quot;     &quot;Pt03.html&quot;   
+##  [6] &quot;Pt03.Rmd&quot;     &quot;Pt04.html&quot;    &quot;Pt04.Rmd&quot;     &quot;Pt05.html&quot;    &quot;Pt05.Rmd&quot;    
+## [11] &quot;style.css&quot;</code></pre>
+</div>
+<div id="file-manipulation" class="section level2">
+<h2>File manipulation</h2>
+<ul>
+<li><span id="file-create"><strong><code>file.create()</code></strong></span>
+creates files with the given names if they do not already exist and
+truncates them if they do.</li>
+</ul>
+<pre class="r"><code>file.create(&quot;test.txt&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ul>
+<li><span id="file-exists"><strong><code>file.exists()</code></strong></span>
+returns a logical vector indicating whether the files named by its
+argument exist.</li>
+</ul>
+<pre class="r"><code>file.exists(&quot;test.txt&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ul>
+<li><span id="file-rename"><strong><code>file.rename()</code></strong></span>
+attempts to rename files (and from and to must be of the same length).
+Where file permissions allow this will overwrite an existing element of
+to.</li>
+</ul>
+<pre class="r"><code>file.rename(&quot;test.txt&quot;, &quot;test1.txt&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ul>
+<li><span id="file-copy"><strong><code>file.copy()</code></strong></span></li>
+</ul>
+<pre><code>file.copy(from, to, overwrite = recursive, recursive = FALSE,
+          copy.mode = TRUE, copy.date = FALSE)</code></pre>
+<pre class="r"><code>file.copy(&quot;test1.txt&quot;, &quot;test2.txt&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ul>
+<li><span id="file-append"><strong><code>file.append()</code></strong></span>
+attempts to append the files named by its second argument to those named
+by its first.</li>
+</ul>
+<pre class="r"><code>file.append(&quot;test2.txt&quot;, &quot;test1.txt&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ul>
+<li><span id="file-link"><strong><code>file.link()</code></strong></span> and
+<span id="file-symlink"><strong><code>file.symlink()</code></strong></span>
+make symbolic and hard links on those file systems which support
+them</li>
+</ul>
+<pre class="r"><code>file.symlink(&quot;test1.txt&quot;, &quot;testsym.txt&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<ul>
+<li><span id="file-remove"><strong><code>file.remove()</code></strong></span>
+attempts to remove the files named in its argument.</li>
+</ul>
+<pre class="r"><code>file.remove(c(&quot;testsym.txt&quot;, &quot;test1.txt&quot;, &quot;test2.txt&quot;))</code></pre>
+<pre><code>## [1] TRUE TRUE TRUE</code></pre>
+</div>
+</div>
+<div id="the-readr-and-readxl-packages" class="section level1">
+<h1>5.2 The readr and readxl packages</h1>
+<p>In this section we introduce the main tidyverse data importing
+functions. We will use the murders.csv file provided by the dslabs
+package as an example. To simplify the illustration we will copy the
+file to our working directory using the following code:</p>
+<pre><code>filename &lt;- &quot;murders.csv&quot;
+dir &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;) 
+fullpath &lt;- file.path(dir, filename)
+file.copy(fullpath, &quot;murders.csv&quot;)</code></pre>
+<div id="readr" class="section level2">
+<h2>5.2.1 readr</h2>
+<p>The readr library includes functions for reading data stored in text
+file spreadsheets into R. <span class="pink">readr is part of the
+tidyverse package, or you can load it directly</span>:</p>
+<pre><code>library(readr)</code></pre>
+</div>
 </div>
 
 
