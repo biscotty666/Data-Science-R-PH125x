@@ -759,7 +759,23 @@ murders |>
 ```
 
 5. Use the `map_df` to create a data frame with three columns named n, s_n, and s_n_2. The first column should contain the numbers 1 through 100. The second and third columns should each contain the sum of 1 through $n$ with $n$ the row number.
-
+```{r}
+n <- 1:100
+summer <- function (n) {
+  x <- 1:n
+  tibble(sum = sum(x))
+}
+n <- 1:100
+s_n <- map_df(n, summer)
+s_n_2 <- map_df(n, summer)
+my_df <- data.frame(
+  n = n,
+  s_n = s_n,
+  s_n_2 = s_n_2
+)
+names(my_df) <- c("n", "s_n", "s_n_2")
+my_df
+```
 
 
 
