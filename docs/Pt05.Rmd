@@ -1,0 +1,15 @@
+---
+title: "5 Importing data"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+# Functions in this chapter
+
+|<a href="#arrange">`arrange`</a>|
+<a href="#as_tibble">`as_tibble`</a>|

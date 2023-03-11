@@ -8,3 +8,4 @@
 
 [Chapter 4 The tidyverse](docs/Pt04.html)
 
+[Chapter 5 Importing data](docs/Pt05.html)
