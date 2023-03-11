@@ -19,8 +19,12 @@ output:
 <a href="#file-rename">`file.rename`</a>|
 <a href="#file-symlink">`file.symlink`</a>|
 <a href="#list-files">`list.files`</a>|
+<a href="#read-csv">`read_csv`</a>|
+<a href="#read-lines">`read_lines`</a>|
 <a href="#spec">`spec`</a>|
 <a href="#system-file">`system.file`</a>|
+<a href="#view">`View`</a>|
+
 
 ```{r}
 filename <- "murders.csv"
@@ -156,16 +160,57 @@ The readr library includes functions for reading data stored in text file spread
 library(readr)
 ```
 
+The following functions are available to read-in spreadsheets:
 
 
+|Function	|Format	|Typical suffix|
+|:--|:--|:--|
+|read_table	|white space separated values	|txt|
+|read_csv	|comma separated values	|csv|
+|read_csv2	|semicolon separated values	|csv|
+|read_tsv	|tab delimited separated values	|tsv|
+|read_delim	|general text file format, must define delimiter	|txt|
 
+Although the suffix usually tells us what type of file it is, there is no guarantee that these always match. We can open the file to take a look or use the function <span id="read-lines">**`read_lines`**</span> to look at a few lines:
 
+```{r}
+read_lines("murders.csv", n_max = 3)
+```
 
+This also shows that there is a header. Now we are ready to read-in the data into R. From the .csv suffix and the peek at the file, we know to use <span id="read-csv">**`read_csv`**</span>:
 
+```{r}
+dat <- read_csv(filename)
+```
 
+Note that we receive a message letting us know what data types were used for each column. Also note that dat is a tibble, not just a data frame. This is because read_csv is a tidyverse parser. We can confirm that the data has in fact been read-in with <span id="view">**`View()`**</span>:
 
+```{r}
+View(dat)
+```
 
+Finally, note that we can also use the full path for the file:
 
+```{r}
+dat <- read_csv(fullpath)
+```
+
+## 5.2.2 readxl
+
+You can load the readxl package using
+```{r}
+library(readxl)
+```
+
+The package provides functions to read-in Microsoft Excel formats:
+
+|Function	|Format	|Typical suffix|
+|:--|:--|:--|
+|read_excel	|auto detect the format	|xls, xlsx|
+|read_xls	|original format	|xls|
+|read_xlsx	|new format	|xlsx|
+
+The Microsoft Excel formats permit you to have more than one spreadsheet in one file. These are referred to as **sheets**. The functions listed above read the first sheet by default, but we can also read the others. <span class="pink">The `excel_sheets` function gives us the names of all the sheets in an Excel file. These names can then be passed to the `sheet` argument in the three functions above to read sheets other than the first.</span>
 
 
 

@@ -1654,6 +1654,7 @@ manipulation</a></li>
 packages</a>
 <ul>
 <li><a href="#readr" id="toc-readr">5.2.1 readr</a></li>
+<li><a href="#readxl" id="toc-readxl">5.2.2 readxl</a></li>
 </ul></li>
 </ul>
 </div>
@@ -1669,8 +1670,11 @@ packages</a>
 <a href="#file-rename"><code>file.rename</code></a>|
 <a href="#file-symlink"><code>file.symlink</code></a>|
 <a href="#list-files"><code>list.files</code></a>|
+<a href="#read-csv"><code>read_csv</code></a>|
+<a href="#read-lines"><code>read_lines</code></a>|
 <a href="#spec"><code>spec</code></a>|
-<a href="#system-file"><code>system.file</code></a>|</p>
+<a href="#system-file"><code>system.file</code></a>|
+<a href="#view"><code>View</code></a>|</p>
 <pre class="r"><code>filename &lt;- &quot;murders.csv&quot;
 dir &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;) 
 fullpath &lt;- file.path(dir, filename)
@@ -1819,6 +1823,118 @@ file.copy(fullpath, &quot;murders.csv&quot;)</code></pre>
 file spreadsheets into R. <span class="pink">readr is part of the
 tidyverse package, or you can load it directly</span>:</p>
 <pre><code>library(readr)</code></pre>
+<p>The following functions are available to read-in spreadsheets:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Function</th>
+<th align="left">Format</th>
+<th align="left">Typical suffix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">read_table</td>
+<td align="left">white space separated values</td>
+<td align="left">txt</td>
+</tr>
+<tr class="even">
+<td align="left">read_csv</td>
+<td align="left">comma separated values</td>
+<td align="left">csv</td>
+</tr>
+<tr class="odd">
+<td align="left">read_csv2</td>
+<td align="left">semicolon separated values</td>
+<td align="left">csv</td>
+</tr>
+<tr class="even">
+<td align="left">read_tsv</td>
+<td align="left">tab delimited separated values</td>
+<td align="left">tsv</td>
+</tr>
+<tr class="odd">
+<td align="left">read_delim</td>
+<td align="left">general text file format, must define delimiter</td>
+<td align="left">txt</td>
+</tr>
+</tbody>
+</table>
+<p>Although the suffix usually tells us what type of file it is, there
+is no guarantee that these always match. We can open the file to take a
+look or use the function <span id="read-lines"><strong><code>read_lines</code></strong></span> to look
+at a few lines:</p>
+<pre class="r"><code>read_lines(&quot;murders.csv&quot;, n_max = 3)</code></pre>
+<pre><code>## [1] &quot;state,abb,region,population,total&quot; &quot;Alabama,AL,South,4779736,135&quot;     
+## [3] &quot;Alaska,AK,West,710231,19&quot;</code></pre>
+<p>This also shows that there is a header. Now we are ready to read-in
+the data into R. From the .csv suffix and the peek at the file, we know
+to use <span id="read-csv"><strong><code>read_csv</code></strong></span>:</p>
+<pre class="r"><code>dat &lt;- read_csv(filename)</code></pre>
+<pre><code>## Rows: 51 Columns: 5
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (3): state, abb, region
+## dbl (2): population, total
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<p>Note that we receive a message letting us know what data types were
+used for each column. Also note that dat is a tibble, not just a data
+frame. This is because read_csv is a tidyverse parser. We can confirm
+that the data has in fact been read-in with <span id="view"><strong><code>View()</code></strong></span>:</p>
+<pre class="r"><code>View(dat)</code></pre>
+<p>Finally, note that we can also use the full path for the file:</p>
+<pre class="r"><code>dat &lt;- read_csv(fullpath)</code></pre>
+<pre><code>## Rows: 51 Columns: 5
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (3): state, abb, region
+## dbl (2): population, total
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div id="readxl" class="section level2">
+<h2>5.2.2 readxl</h2>
+<p>You can load the readxl package using</p>
+<pre class="r"><code>library(readxl)</code></pre>
+<p>The package provides functions to read-in Microsoft Excel
+formats:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Function</th>
+<th align="left">Format</th>
+<th align="left">Typical suffix</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">read_excel</td>
+<td align="left">auto detect the format</td>
+<td align="left">xls, xlsx</td>
+</tr>
+<tr class="even">
+<td align="left">read_xls</td>
+<td align="left">original format</td>
+<td align="left">xls</td>
+</tr>
+<tr class="odd">
+<td align="left">read_xlsx</td>
+<td align="left">new format</td>
+<td align="left">xlsx</td>
+</tr>
+</tbody>
+</table>
+<p>The Microsoft Excel formats permit you to have more than one
+spreadsheet in one file. These are referred to as
+<strong>sheets</strong>. The functions listed above read the first sheet
+by default, but we can also read the others. <span class="pink">The
+<code>excel_sheets</code> function gives us the names of all the sheets
+in an Excel file. These names can then be passed to the
+<code>sheet</code> argument in the three functions above to read sheets
+other than the first.</span></p>
 </div>
 </div>
 
