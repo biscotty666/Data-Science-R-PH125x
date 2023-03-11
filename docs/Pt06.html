@@ -1523,7 +1523,10 @@ if (window.hljs) {
 
 
 
-<style type="text/css">.hl1 {
+<style type="text/css">body {
+background-color: #f0f8ff;
+}
+.hl1 {
 background-color: #EEDEEE;
 }
 .hl2 {
@@ -1641,6 +1644,7 @@ display: none;
 <div id="TOC">
 <ul>
 <li><a href="#functions-in-this-chapter" id="toc-functions-in-this-chapter">Functions in this chapter</a></li>
+<li><a href="#manipulating-data-tables" id="toc-manipulating-data-tables">6.1 Manipulating data tables</a></li>
 </ul>
 </div>
 
@@ -1649,6 +1653,19 @@ display: none;
 <h1>Functions in this chapter</h1>
 <p>|<a href="#file-create"><code>file.create</code></a>|
 <a href="#file-copy"><code>file.copy</code></a>|</p>
+<p>In this book, we use tidyverse packages to illustrate because
+beginners find the code readable and this permits us to focus on data
+analysis and statistical concepts. However, there are other approaches
+to wrangling and analyzing data in R that are faster and better at
+handling large objects. The data.table package, for example, is one of
+the most popular and we therefore provide a very quick introduction in
+this chapter . There are several online resources, including this
+introduction15 for those wanting to learn more.</p>
+<pre class="r"><code># install.packages(&quot;data.table&quot;)
+library(data.table)</code></pre>
+</div>
+<div id="manipulating-data-tables" class="section level1">
+<h1>6.1 Manipulating data tables</h1>
 </div>
 
 

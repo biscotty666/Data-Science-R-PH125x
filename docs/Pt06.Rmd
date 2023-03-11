@@ -14,6 +14,14 @@ output:
 |<a href="#file-create">`file.create`</a>|
 <a href="#file-copy">`file.copy`</a>|
 
+In this book, we use tidyverse packages to illustrate because beginners find the code readable and this permits us to focus on data analysis and statistical concepts. However, there are other approaches to wrangling and analyzing data in R that are faster and better at handling large objects. The data.table package, for example, is one of the most popular and we therefore provide a very quick introduction in this chapter . There are several online resources, including this introduction15 for those wanting to learn more.
+
+```{r}
+# install.packages("data.table")
+library(data.table)
+```
+
+# 6.1 Manipulating data tables
 
 
 
