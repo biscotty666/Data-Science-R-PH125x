@@ -107,7 +107,7 @@ x <- 1:100
 identical(mean(x), avg(x))
 ```
 
-Notice that <span class="hl3:>variables defined inside a function are not saved in the workspace.</span> So while we use `s` and `n` when we call `avg`, the values are created and changed only during the call.
+Notice that <span class="hl3">variables defined inside a function are not saved in the workspace.</span> So while we use `s` and `n` when we call `avg`, the values are created and changed only during the call.
 
  The general form of a function definition looks like this:
  
