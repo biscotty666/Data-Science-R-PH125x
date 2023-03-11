@@ -1640,33 +1640,16 @@ display: none;
 <li><a href="#functions-in-this-chapter" id="toc-functions-in-this-chapter">Functions in this chapter</a></li>
 <li><a href="#tidy-data" id="toc-tidy-data">4.1 Tidy data</a></li>
 <li><a href="#exercises" id="toc-exercises">4.2 Exercises</a></li>
-<li><a href="#manipulating-data-frames" id="toc-manipulating-data-frames">4.3 Manipulating data frames</a>
-<ul>
-<li><a href="#mutate-add-columns" id="toc-mutate-add-columns">4.3.1
-<span id="mutate"><code>mutate()</code></span>: Add columns</a></li>
-<li><a href="#subsetting-with-filter" id="toc-subsetting-with-filter">4.3.2 Subsetting with <span id="filter"><code>filter()</code></span></a></li>
-<li><a href="#selecting-columns-with-select" id="toc-selecting-columns-with-select">4.3.3 Selecting columns with
-<span id="select"><code>select()</code></span></a></li>
-</ul></li>
+<li><a href="#manipulating-data-frames" id="toc-manipulating-data-frames">4.3 Manipulating data frames</a></li>
 <li><a href="#exercises-1" id="toc-exercises-1">4.4 Exercises</a></li>
-<li><a href="#the-pipe-or" id="toc-the-pipe-or">4.5 <span id="the-pipe">The pipe: <code>|&gt;</code> or ’%&gt;%`</span></a></li>
 <li><a href="#exercises-2" id="toc-exercises-2">4.6 Exercises</a></li>
 <li><a href="#summarizing-data" id="toc-summarizing-data">4.7
 Summarizing data</a>
 <ul>
-<li><a href="#summarize" id="toc-summarize">4.7.1 <span id="summarize"><code>summarize()</code></span></a></li>
 <li><a href="#multiple-summaries" id="toc-multiple-summaries">4.7.2
 Multiple summaries</a></li>
-<li><a href="#group-then-summarize-with-group_by" id="toc-group-then-summarize-with-group_by">4.7.3 Group then summarize
-with <span id="group_by"><code>group_by()</code></span></a></li>
-</ul></li>
-<li><a href="#pull" id="toc-pull">4.8 <span id="pull"><code>pull()</code></span></a></li>
-<li><a href="#sorting-data-frames-arrange" id="toc-sorting-data-frames-arrange">4.9 Sorting data frames: <span id="arrange"><code>arrange()</code></span></a>
-<ul>
 <li><a href="#nested-sorting" id="toc-nested-sorting">4.9.1 Nested
 sorting</a></li>
-<li><a href="#the-top-n" id="toc-the-top-n">4.9.2 <span id="top_n">The
-top <span class="math inline">\(n\)</span></span></a></li>
 </ul></li>
 <li><a href="#exercises-3" id="toc-exercises-3">4.10 Exercises</a></li>
 <li><a href="#tibbles" id="toc-tibbles">4.11 Tibbles</a>
@@ -1677,9 +1660,6 @@ tibbles</a></li>
 <li><a href="#tibbles-can-have-complex-entries" id="toc-tibbles-can-have-complex-entries">4.11.3 Tibbles can have
 complex entries</a></li>
 <li><a href="#tibbles-can-be-grouped" id="toc-tibbles-can-be-grouped">4.11.4 Tibbles can be grouped</a></li>
-<li><a href="#create-a-tibble-using-tibble-instead-of-data.frame" id="toc-create-a-tibble-using-tibble-instead-of-data.frame">4.11.5
-Create a tibble using <span id="tibble"><code>tibble()</code></span>
-instead of <code>data.frame</code></a></li>
 </ul></li>
 <li><a href="#the-placeholder" id="toc-the-placeholder">4.12 The
 placeholder</a>
@@ -1687,11 +1667,7 @@ placeholder</a>
 <li><a href="#the-purrr-package" id="toc-the-purrr-package">4.13 The
 purrr package</a></li>
 </ul></li>
-<li><a href="#tidyverse-conditionals" id="toc-tidyverse-conditionals">4.14 Tidyverse conditionals</a>
-<ul>
-<li><a href="#case_when" id="toc-case_when">4.14.1 <span id="case_when"><code>case_when()</code></span></a></li>
-<li><a href="#between" id="toc-between">4.14.2 <span id="between"><code>between()</code></span></a></li>
-</ul></li>
+<li><a href="#tidyverse-conditionals" id="toc-tidyverse-conditionals">4.14 Tidyverse conditionals</a></li>
 <li><a href="#exercises-4" id="toc-exercises-4">4.15 Exercises</a></li>
 </ul>
 </div>
@@ -1701,17 +1677,20 @@ purrr package</a></li>
 <h1>Functions in this chapter</h1>
 <p>|<a href="#arrange"><code>arrange</code></a>|
 <a href="#as_tibble"><code>as_tibble</code></a>|
+<a href="#between"><code>between</code></a>|
+<a href="#case_when"><code>case_when</code></a>|
 <a href="#filter"><code>filter</code></a>|
 <a href="#group_by"><code>group_by</code></a>|
-<a href="#mutate"><code>mutate</code></a>| <a href="#the-pipe">The
-pipe</a>| <a href="#pull"><code>pull</code></a>|
+<a href="#mutate"><code>mutate</code></a>| <a href="#the-pipe">The pipe
+</a>| <a href="#pull"><code>pull</code></a>|
+<a href="#quantile"><code>quantile</code></a>|
 <a href="#rank"><code>rank</code></a>|
 <a href="#sapply"><code>sapply</code></a>|
 <a href="#select"><code>select</code></a>|
 <a href="#slices"><code>slice_max</code></a>|
 <a href="#slices"><code>slice_min</code></a>|
-<a href="#summarize"><code>summarize()</code></a>|
-<a href="#tibble"><code>tibble()</code></a>|</p>
+<a href="#summarize"><code>summarize</code></a>|
+<a href="#tibble"><code>tibble</code></a>|</p>
 <p>Up to now we have been manipulating vectors by reordering and
 subsetting them through indexing. However, once we start more advanced
 analyses, the preferred unit for data storage is not the vector but the
@@ -1863,9 +1842,8 @@ than one):</li>
 </div>
 <div id="manipulating-data-frames" class="section level1">
 <h1>4.3 Manipulating data frames</h1>
-<div id="mutate-add-columns" class="section level2">
-<h2>4.3.1 <span id="mutate"><code>mutate()</code></span>: Add
-columns</h2>
+<p><span id="mutate"></span> ## 4.3.1 <code>mutate()</code>: Add
+columns</p>
 <p>We want all the necessary information for our analysis to be included
 in the data table. So the first task is to add the murder rates to our
 murders data frame. The function mutate takes the data frame as a first
@@ -1881,25 +1859,22 @@ head(murders)</code></pre>
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.824424","_rn_":"1"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.675186","_rn_":"2"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.629527","_rn_":"3"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.189390","_rn_":"4"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.374138","_rn_":"5"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.292453","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
-<div id="subsetting-with-filter" class="section level2">
-<h2>4.3.2 Subsetting with <span id="filter"><code>filter()</code></span></h2>
+<p><span id="filter"></span> ## 4.3.2 Subsetting with
+<code>filter()</code></p>
 <pre class="r"><code>filter(murders, rate &lt;= 0.71)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
-<div id="selecting-columns-with-select" class="section level2">
-<h2>4.3.3 Selecting columns with <span id="select"><code>select()</code></span></h2>
+<p><span id="select"></span> ## 4.3.3 Selecting columns with
+<code>select()</code></p>
 <pre class="r"><code>new_table &lt;- select(murders, state, region, rate)
 filter(new_table, rate &lt;= 0.71)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["region"],"name":[2],"type":["fct"],"align":["left"]},{"label":["rate"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"West","3":"0.5145920"},{"1":"Iowa","2":"North Central","3":"0.6893484"},{"1":"New Hampshire","2":"Northeast","3":"0.3798036"},{"1":"North Dakota","2":"North Central","3":"0.5947151"},{"1":"Vermont","2":"Northeast","3":"0.3196211"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
-</div>
 </div>
 </div>
 <div id="exercises-1" class="section level1">
@@ -2015,10 +1990,8 @@ name, the rate, and the rank.</p>
 {"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["rate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"0.5145920","3":"47.0"},{"1":"Idaho","2":"0.7655102","3":"43.5"},{"1":"Maine","2":"0.8280881","3":"45.0"},{"1":"New Hampshire","2":"0.3798036","3":"48.5"},{"1":"Oregon","2":"0.9396843","3":"36.0"},{"1":"Utah","2":"0.7959810","3":"39.0"},{"1":"Vermont","2":"0.3196211","3":"51.0"},{"1":"Wyoming","2":"0.8871131","3":"48.5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
-<div id="the-pipe-or" class="section level1">
-<h1>4.5 <span id="the-pipe">The pipe: <code>|&gt;</code> or
-’%&gt;%`</span></h1>
+<p><span id="the-pipe"></span> # 4.5 The pipe: <code>|&gt;</code> or
+’%&gt;%`</p>
 <pre class="r"><code>murders |&gt; 
   select(state, region, rate) |&gt;
   filter(rate &lt;= 0.71)</code></pre>
@@ -2077,8 +2050,10 @@ and contains only the state, rate and rank columns. The pipe should also
 have four components separated by three |&gt;. The code should look
 something like this:</li>
 </ol>
-<p>my_states &lt;- murders |&gt; mutate SOMETHING |&gt; filter SOMETHING
-|&gt; select SOMETHING</p>
+<pre><code>my_states &lt;- murders |&gt;
+  mutate SOMETHING |&gt; 
+  filter SOMETHING |&gt; 
+  select SOMETHING</code></pre>
 </div>
 <div id="summarizing-data" class="section level1">
 <h1>4.7 Summarizing data</h1>
@@ -2088,8 +2063,7 @@ summary statistics. More informative summaries can often be achieved by
 first splitting data into groups. In this section, we cover two new
 dplyr verbs that make these computations easier: summarize and group_by.
 We learn to access resulting values using the pull function.</p>
-<div id="summarize" class="section level2">
-<h2>4.7.1 <span id="summarize"><code>summarize()</code></span></h2>
+<p><span id="summarize"></span> ## 4.7.1 <code>summarize()</code></p>
 <pre class="r"><code>library(dplyr)
 library(dslabs)
 data(heights)
@@ -2139,7 +2113,6 @@ us_murder_rate</code></pre>
 {"columns":[{"label":["rate"],"name":[1],"type":["dbl"],"align":["right"]}],"data":[{"1":"3.034555"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
 <div id="multiple-summaries" class="section level2">
 <h2>4.7.2 Multiple summaries</h2>
 <p>Suppose we want three summaries from the same variable such as the
@@ -2177,9 +2150,8 @@ heights |&gt;
 {"columns":[{"label":["median"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["minimum"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["maximum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"64.98031","2":"51","3":"79"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
-<div id="group-then-summarize-with-group_by" class="section level2">
-<h2>4.7.3 Group then summarize with <span id="group_by"><code>group_by()</code></span></h2>
+<p><span id="group_by"></span> ## 4.7.3 Group then summarize with
+<code>group_by()</code></p>
 <pre class="r"><code>heights |&gt; group_by(sex)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -2216,10 +2188,7 @@ murder rate in the four regions of the country using the
 {"columns":[{"label":["region"],"name":[1],"type":["fct"],"align":["left"]},{"label":["median"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["minimum"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["maximum"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"Northeast","2":"1.802179","3":"0.3196211","4":"3.597751"},{"1":"South","2":"3.398069","3":"1.4571013","4":"16.452753"},{"1":"North Central","2":"1.971105","3":"0.5947151","4":"5.359892"},{"1":"West","2":"1.292453","3":"0.5145920","4":"3.629527"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
-</div>
-<div id="pull" class="section level1">
-<h1>4.8 <span id="pull"><code>pull()</code></span></h1>
+<p><span id="pull"></span> # 4.8 <code>pull()</code></p>
 <p>The <code>us_murder_rate</code> object defined above represents just
 one number. Yet we are storing it in a data frame:</p>
 <pre class="r"><code>class(us_murder_rate)</code></pre>
@@ -2247,9 +2216,7 @@ us_murder_rate</code></pre>
 <pre><code>## [1] 3.034555</code></pre>
 <pre class="r"><code>class(us_murder_rate)</code></pre>
 <pre><code>## [1] &quot;numeric&quot;</code></pre>
-</div>
-<div id="sorting-data-frames-arrange" class="section level1">
-<h1>4.9 Sorting data frames: <span id="arrange"><code>arrange()</code></span></h1>
+<p><span id="arrange"></span> # 4.9 Sorting data frames: ’arrange()`</p>
 <p>When examining a dataset, it is often convenient to sort the table by
 the different columns. We know about the <code>order</code> and
 <code>sort</code> function, but for ordering entire tables, the
@@ -2286,6 +2253,7 @@ order</span>, we can type:</p>
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.452753","7":"1","_rn_":"1"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.742581","7":"2","_rn_":"2"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.359892","7":"3","_rn_":"3"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.074866","7":"4","_rn_":"4"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.475323","7":"5","_rn_":"5"},{"1":"Delaware","2":"DE","3":"South","4":"897934","5":"38","6":"4.231937","7":"6","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
+</div>
 <div id="nested-sorting" class="section level2">
 <h2>4.9.1 Nested sorting</h2>
 <p>If we are ordering by a column with ties, we can use a second column
@@ -2300,9 +2268,7 @@ region we order by murder rate:</p>
 {"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51","_rn_":"1"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"50","_rn_":"2"},{"1":"Maine","2":"ME","3":"Northeast","4":"1328361","5":"11","6":"0.8280881","7":"44","_rn_":"3"},{"1":"Rhode Island","2":"RI","3":"Northeast","4":"1052567","5":"16","6":"1.5200933","7":"35","_rn_":"4"},{"1":"Massachusetts","2":"MA","3":"Northeast","4":"6547629","5":"118","6":"1.8021791","7":"32","_rn_":"5"},{"1":"New York","2":"NY","3":"Northeast","4":"19378102","5":"517","6":"2.6679599","7":"29","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
-<div id="the-top-n" class="section level2">
-<h2>4.9.2 <span id="top_n">The top <span class="math inline">\(n\)</span></span></h2>
+<p><span id="top_n"></span> ## 4.9.2 The top <span class="math inline">\(n\)</span></p>
 <p>In the code above, we have used the function <code>head</code> to
 avoid having the page fill up with the entire dataset. If we want to see
 a larger proportion, we can use the <code>top_n</code> function. This
@@ -2560,10 +2526,8 @@ Population instead of population this:</p>
 a grouped tibble. This class stores information that lets you know which
 rows are in which groups. The tidyverse functions, in particular the
 summarize function, are aware of the group information.</p>
-</div>
-<div id="create-a-tibble-using-tibble-instead-of-data.frame" class="section level2">
-<h2>4.11.5 Create a tibble using <span id="tibble"><code>tibble()</code></span> instead of
-<code>data.frame</code></h2>
+<p><span id="tibble"></span> ## 4.11.5 Create a tibble using
+<code>tibble()</code> instead of <code>data.frame</code></p>
 <p>It is sometimes useful for us to create our own data frames. To
 create a data frame in the tibble format, you can do this by using the
 <code>tibble</code> function.</p>
@@ -2663,8 +2627,7 @@ s_n</code></pre>
 </div>
 <div id="tidyverse-conditionals" class="section level1">
 <h1>4.14 Tidyverse conditionals</h1>
-<div id="case_when" class="section level2">
-<h2>4.14.1 <span id="case_when"><code>case_when()</code></span></h2>
+<p><span id="case_when"></span> ## 4.14.1 <code>case_when()</code></p>
 <p>The <code>case_when</code> function is useful for vectorizing
 conditional statements. It is similar to <code>ifelse</code> but can
 output any number of values, as opposed to just <code>TRUE</code> or
@@ -2695,9 +2658,7 @@ this:</p>
 {"columns":[{"label":["group"],"name":[1],"type":["chr"],"align":["left"]},{"label":["rate"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"New England","2":"1.723796"},{"1":"Other","2":"2.708144"},{"1":"South","2":"3.626558"},{"1":"West Coast","2":"2.899001"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-</div>
-<div id="between" class="section level2">
-<h2>4.14.2 <span id="between"><code>between()</code></span></h2>
+<p><span id="between"></span> ## 4.14.2 <code>between()</code></p>
 <p>A common operation in data analysis is to determine if a value falls
 inside an interval. We can check this using conditionals. For example,
 to check if the elements of a vector x are between a and b we can
@@ -2706,7 +2667,6 @@ type</p>
 <p>However, this can become cumbersome, especially within the tidyverse
 approach. The between function performs the same operation.</p>
 <pre><code>between(x, a, b)</code></pre>
-</div>
 </div>
 <div id="exercises-4" class="section level1">
 <h1>4.15 Exercises</h1>
