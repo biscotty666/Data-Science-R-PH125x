@@ -107,7 +107,7 @@ In **ggplot2** we <span class="blue">create graphs by adding layers</span>. Laye
 
 <blockquote>
 DATA |> ggplot() + LAYER 1 + LAYER 2 + … + LAYER N
-</blockquoate
+</blockquote>
 
 Usually, <span class="blue">the first added layer defines the geometry.</span> We want to make a scatterplot. What geometry do we use? Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is **`geom_point`**.
 
@@ -261,7 +261,7 @@ p +
 ```
 <span class="blue">Because we are in the log-scale now, the nudge must be made smaller.</span>
 
-This particular transformation is so common that **ggplot2** provides the specialized functions <span id="sx_log10>`scale_x_log10`</span> and <span id="sy_log10`>scale_y_log10`</span>, which we can use to rewrite the code like this:
+This particular transformation is so common that **ggplot2** provides the specialized functions <span id="sx_log10">`scale_x_log10`</span> and <span id="sy_log10">`scale_y_log10`</span>, which we can use to rewrite the code like this:
 
 ```{r}
 p +
