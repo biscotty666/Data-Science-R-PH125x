@@ -1,0 +1,84 @@
+---
+title: "8 ggplot2"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+R commands in this chapter
+
+<blockquote>“The greatest value of a picture is when it forces us to notice what we never expected to see.”</blockquote>
+
+
+
+Throughout the book, we will be creating plots using the **ggplot2** package.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+```
+
+Many other approaches are available for creating plots in R. In fact, the plotting capabilities that come with a basic installation of R are already quite powerful. There are also other packages for creating graphics such as **grid** and **lattice**. We chose to use <span class="blue">ggplot2 in this book because it breaks plots into components in a way that permits beginners to create relatively complex and aesthetically pleasing plots using syntax that is intuitive and comparatively easy to remember.</span>
+
+One reason **ggplot2** is generally more intuitive for beginners is that it uses a grammar of graphics23, the `gg` in **ggplot2**. 
+
+One limitation is that <span class="blue>**ggplot2** is designed to work exclusively with data tables in tidy format</span> (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, ggplot2 simplifies plotting code and the learning of grammar for a variety of plots.
+
+[ggplot2 Cheatsheet](https://posit.co/wp-content/uploads/2022/10/data-visualization-1.pdf)
+
+# 8.1 The components of a graph
+
+We will construct a graph that summarizes the US murders dataset that looks like this:
+
+<img src="http://rafalab.dfci.harvard.edu/dsbook/book_files/figure-html/ggplot-example-plot-1.png" />
+
+We can clearly see how much states vary across population size and the total number of murders. Not surprisingly, we also see a clear relationship between murder totals and population size. A state falling on the dashed grey line has the same murder rate as the US average. The four geographic regions are denoted with color, which depicts how most southern states have murder rates above the average.
+
+This data visualization shows us pretty much all the information in the data table. The code needed to make this plot is relatively simple. We will learn to create the plot part by part.
+
+The first step in learning ggplot2 is to be able to break a graph apart into components. Let’s break down the plot above and introduce some of the ggplot2 terminology. The main three components to note are:
+
+Data: The US murders data table is being summarized. We refer to this as the data component.
+Geometry: The plot above is a scatterplot. This is referred to as the geometry component. Other possible geometries are barplot, histogram, smooth densities, qqplot, and boxplot. We will learn more about these in the Data Visualization part of the book.
+Aesthetic mapping: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we map data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the aesthetic mapping component. How we define the mapping depends on what geometry we are using.
+We also note that:
+
+The points are labeled with the state abbreviations.
+The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.
+There are labels, a title, a legend, and we use the style of The Economist magazine.
+We will now construct the plot piece by piece.
+
+We start by loading the dataset:
+
+
+
+
+
+
+
+
+
+
+
+
+# Resources
+
+- ER Tufte (1983) The visual display of quantitative information. Graphics Press.
+- ER Tufte (1990) Envisioning information. Graphics Press.
+- ER Tufte (1997) Visual explanations. Graphics Press.
+- WS Cleveland (1993) Visualizing data. Hobart Press.
+- WS Cleveland (1994) The elements of graphing data. CRC Press.
+- A Gelman, C Pasarica, R Dodhia (2002) Let’s practice what we preach: Turning tables into - graphs. The American Statistician 56:121-130.
+- NB Robbins (2004) Creating more effective graphs. Wiley.
+- A Cairo (2013) The functional art: An introduction to information graphics and visualization. New Riders.
+- N Yau (2013) Data points: Visualization that means something. Wiley.
+
+
+
+
+
+

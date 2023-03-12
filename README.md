@@ -6,6 +6,8 @@ My notes and exercises from the book [Introduction to Data Science: Data Analysi
 
 [Github Repo](https://github.com/biscotty666/Data-Science-R-PH125.1x)
 
+[posit.co Cheatsheets](#poco)
+
 ### [Chapter 2 R basics](docs/Pt02.html)
 
 Function index:
@@ -57,7 +59,7 @@ Function index:
 [`sapply`](docs/Pt03.html#sapply),
 [`search`](docs/Pt03.html#search)
 
-### [Chapter 4 The tidyverse](docs/Pt04.html)
+### [Chapter 4 The **tidyverse**](docs/Pt04.html)
 
 Function index:
 
@@ -101,9 +103,28 @@ Function index:
 [`View`](docs/Pt05.html#view)
 
 
-### [Chapter 6 data.table](docs/Pt06.html)
+### [Chapter 6 **data.table**](docs/Pt06.html)
 
 [`:=`](docs/Pt06.html#col-eq),
 [`.()`](docs/Pt06.html#dot-par),
 [`copy`](docs/Pt06.html#copy),
 [`setDT`](docs/Pt06.html#setdt)
+
+### [Chapter 8 **ggplot2**](docs/Pt06.html)
+
+<span id="poco"></span>
+
+# [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
+
+- [ggplot2](https://posit.co/wp-content/uploads/2022/10/data-visualization-1.pdf)
+- [dplyr](https://posit.co/wp-content/uploads/2022/10/data-transformation-1.pdf)
+- [purrr](https://posit.co/wp-content/uploads/2022/10/purrr.pdf)
+- [tidyr](https://posit.co/wp-content/uploads/2022/10/tidyr.pdf)
+- [readr](https://posit.co/wp-content/uploads/2022/10/data-import.pdf)
+- [RStudio IDE](https://posit.co/wp-content/uploads/2022/10/rstudio-ide-1.pdf)
+- [Shiny](https://posit.co/wp-content/uploads/2022/10/shiny-1.pdf)
+- [rmarkdown](https://posit.co/wp-content/uploads/2022/10/rmarkdown-1.pdf)
+
+
+
+
