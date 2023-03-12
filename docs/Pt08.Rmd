@@ -12,6 +12,14 @@ output:
 R commands in this chapter
 
 |[`ggplot`](#ggplot)|
+[`aes`](#aes)|
+[`geom_label`](#geom_label)|
+[`geom_point`](#geom_point)|
+[`geom_text`](#geom_text)|
+[`scale_x_continuous`](#sx_c)|
+[`scale_x_log10`](#sx_log10)|
+[`scale_y_continuous`](#sy_c)|
+[`scale_y_log10`](#sy_log10)|
 
 <blockquote>“The greatest value of a picture is when it forces us to notice what we never expected to see.”</blockquote>
 
@@ -95,11 +103,11 @@ In **ggplot2** we <span class="blue">create graphs by adding layers</span>. Laye
 DATA |> ggplot() + LAYER 1 + LAYER 2 + … + LAYER N
 </blockquoate
 
-Usually, <span class="blue">the first added layer defines the geometry.</span> We want to make a scatterplot. What geometry do we use? Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is `geom_point`.
+Usually, <span class="blue">the first added layer defines the geometry.</span> We want to make a scatterplot. What geometry do we use? Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is **`geom_point`**.
 
 Geometry function names follow the pattern: `geom_X` where X is the name of the geometry. Some examples include `geom_point`, `geom_bar`, and `geom_histogram`.
 
-For `geom_point` to run properly we need to provide data and a mapping. We have already connected the object `p` with the `murders` data table, and if we add the layer `geom_point` it defaults to using this data. To find out what mappings are expected, we read the **Aesthetics** section of the help file geom_point help file:
+For <span id="geom_point">`geom_point`</span> to run properly we need to provide data and a mapping. We have already connected the object `p` with the `murders` data table, and if we add the layer `geom_point` it defaults to using this data. To find out what mappings are expected, we read the **Aesthetics** section of the help file geom_point help file:
 <blockquote>
 geom_point() understands the following aesthetics (required aesthetics are in bold):
 
@@ -116,6 +124,167 @@ geom_point() understands the following aesthetics (required aesthetics are in bo
 and, as expected, we see that at least two arguments are required `x` and `y`.
 
 # 8.4 Aesthetic mappings
+
+**Aesthetic mappings** describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The <span id="aes">**`aes`**</span> function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the `aes` function is often used as the argument of a geometry function. This example produces a scatterplot of total murders versus population in millions:
+```
+murders |> ggplot() + 
+  geom_point(aes(x = population/10^6, y = total))
+```
+We can drop the `x =` and `y =` if we wanted to since these are the first and second expected arguments, as seen in the help page.
+
+Instead of defining our plot from scratch, we can also add a layer to the p object that was defined above as `p <- ggplot(data = murders)`:
+```{r}
+p + geom_point(aes(population / 10^6, total))
+```
+The scale and labels are defined by default when adding this layer. Like **dplyr** functions, `aes` also uses the variable names from the object component: we can use `population` and `total` without having to call them as `murders$population` and `murders$total`. The behavior of recognizing the variables from the data component is quite specific to `aes`. <span class="blue">With most functions, if you try to access the values of population or total outside of `aes` you receive an error.</span>
+
+# 8.5 Layers
+
+A second layer in the plot we wish to make involves adding a label to each point to identify the state. The <span id="geom_label">`geom_label`</span> and <span id="geom_text">`geom_text`</span> functions permit us to add text to the plot with and without a rectangle behind the text, respectively.
+
+Because each point (each state in this case) has a label, we need an aesthetic mapping to make the connection between points and labels. By reading the help file, we learn that we supply the mapping between point and label through the `label` argument of `aes`. 
+<blockquote>
+Aesthetics
+
+`geom_text()` understands the following aesthetics (required aesthetics are in bold):
+
+- **x**
+- **y**
+- **label**
+- alpha
+- angle
+- colour
+- family
+- fontface
+- group
+- hjust
+- lineheight
+- size
+- vjust
+</blockquote>
+So the code looks like this:
+
+```{r}
+p + 
+  geom_point(aes(population / 10^6, total)) +
+  geom_text(aes(population / 10^6,
+                total,
+                label = abb))
+```
+As an example of the unique behavior of aes mentioned above, note that this call:
+```
+p_test <- p + geom_text(aes(population/10^6, total, label = abb))
+```
+is fine, whereas this call:
+```
+p_test <- p + geom_text(aes(population/10^6, total), label = abb) 
+```
+will give you an error since abb is not found because it is outside of the aes function. The layer geom_text does not know where to find abb since it is a column name and not a global variable.
+
+## 8.5.1 Tinkering with arguments
+
+Each geometry function has many arguments other than `aes` and `data`. They tend to be specific to the function. For example, in the plot we wish to make, the points are larger than the default size. In the help file we see that `size` is an aesthetic and we can change it like this:
+
+```{r}
+p + 
+  geom_point(aes(population / 10^6, 
+                 total),
+             size = 3) +
+  geom_text(aes(population / 10^6,
+                total,
+                label = abb))
+```
+<span class="blue">`size` is not a mapping: whereas mappings use data from specific observations and need to be inside aes(), operations we want to affect all the points the same way do not need to be included inside aes.</span>
+
+Now because the points are larger it is hard to see the labels. If we read the help file for `geom_text`, we see the `nudge_x` argument, which moves the text slightly to the right or to the left:
+
+```{r}
+p + 
+  geom_point(aes(population / 10^6, 
+                 total),
+             size = 3) +
+  geom_text(aes(population / 10^6,
+                total,
+                label = abb),
+            nudge_x = 1.5)
+```
+This is preferred as it makes it easier to read the text. In Section 8.11 we learn a better way of assuring we can see the points and the labels.
+
+# 8.6 Global versus local aesthetic mappings
+
+In the previous line of code, we define the mapping `aes(population/10^6, total)` twice, once in each geometry. We can avoid this by using a global aesthetic mapping. We can do this when we define the blank slate ggplot object. Remember that the function ggplot contains an argument that permits us to define aesthetic mappings:
+```{r}
+args(ggplot)
+```
+If we define a mapping in `ggplot`, all the geometries that are added as layers will default to this mapping. We redefine `p`:
+```{r}
+murders |> 
+  ggplot(aes(population / 10^6, 
+             total, 
+             label = abb)) -> p
+```
+
+and then we can simply write the following code to produce the previous plot:
+```{r}
+p +
+  geom_point(size = 3) +
+  geom_text(nudge_x = 1.5)
+```
+We keep the `size` and `nudge_x` arguments in `geom_point` and `geom_text`, respectively, because we want to only increase the size of points and only nudge the labels. <span class="blue">If we put those arguments in aes then they would apply to both plots. Also note that the geom_point function does not need a label argument and therefore ignores that aesthetic.</span>
+
+If necessary, we can override the global mapping by defining a new mapping within each layer. These **local** definitions override the global. Here is an example:
+
+```{r}
+p +
+  geom_point(size = 3) +
+  geom_text(aes(x = 10,
+                y = 800,
+                label = "Hello there!"))
+```
+Clearly, the second call to `geom_text` does not use `population` and `total`.
+
+# 8.7 Scales
+
+First, our desired scales are in log-scale. This is not the default, so this change needs to be added through a **scales** layer. A quick look at the cheat sheet reveals the <span id="sx_c">`scale_x_continuous`</span> and <span id="sy_c">`scale_y_continuous`</span> function lets us control the behavior of scales. We use them like this:
+```{r}
+p +
+  geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_continuous(trans = "log10") +
+  scale_y_continuous(trans = "log10")
+```
+<span class="blue">Because we are in the log-scale now, the nudge must be made smaller.</span>
+
+This particular transformation is so common that **ggplot2** provides the specialized functions <span id="sx_log10>`scale_x_log10`</span> and <span id="sy_log10`>scale_y_log10`</span>, which we can use to rewrite the code like this:
+
+```{r}
+p +
+  geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10()
+```
+
+# 8.8 Labels and titles
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
