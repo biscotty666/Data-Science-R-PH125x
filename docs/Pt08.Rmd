@@ -11,6 +11,8 @@ output:
 
 R commands in this chapter
 
+|[`ggplot`](#ggplot)|
+
 <blockquote>“The greatest value of a picture is when it forces us to notice what we never expected to see.”</blockquote>
 
 
@@ -32,7 +34,7 @@ One limitation is that <span class="blue>**ggplot2** is designed to work exclusi
 
 # 8.1 The components of a graph
 
-We will construct a graph that summarizes the US murders dataset that looks like this:
+We will construct a graph that summarizes the US `murders` dataset that looks like this:
 
 <img src="http://rafalab.dfci.harvard.edu/dsbook/book_files/figure-html/ggplot-example-plot-1.png" />
 
@@ -40,23 +42,80 @@ We can clearly see how much states vary across population size and the total num
 
 This data visualization shows us pretty much all the information in the data table. The code needed to make this plot is relatively simple. We will learn to create the plot part by part.
 
-The first step in learning ggplot2 is to be able to break a graph apart into components. Let’s break down the plot above and introduce some of the ggplot2 terminology. The main three components to note are:
+The first step in learning **ggplot2** is to be able to break a graph apart into components. Let’s break down the plot above and introduce some of the **ggplot2** terminology. The main three components to note are:
 
-Data: The US murders data table is being summarized. We refer to this as the data component.
-Geometry: The plot above is a scatterplot. This is referred to as the geometry component. Other possible geometries are barplot, histogram, smooth densities, qqplot, and boxplot. We will learn more about these in the Data Visualization part of the book.
-Aesthetic mapping: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we map data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the aesthetic mapping component. How we define the mapping depends on what geometry we are using.
+- **Data**: The US murders data table is being summarized. We refer to this as the **data** component.
+- **Geometry**: The plot above is a scatterplot. This is referred to as the **geometry** component. Other possible geometries are barplot, histogram, smooth densities, qqplot, and boxplot. We will learn more about these in the Data Visualization part of the book.
+- **Aesthetic mapping**: The plot uses several visual cues to represent the information provided by the dataset. The two most important cues in this plot are the point positions on the x-axis and y-axis, which represent population size and the total number of murders, respectively. Each point represents a different observation, and we map data about these observations to visual cues like x- and y-scale. Color is another visual cue that we map to region. We refer to this as the **aesthetic mapping** component. How we define the mapping depends on what **geometry** we are using.
+
 We also note that:
 
-The points are labeled with the state abbreviations.
-The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.
-There are labels, a title, a legend, and we use the style of The Economist magazine.
+- The points are labeled with the state abbreviations.
+- The range of the x-axis and y-axis appears to be defined by the range of the data. They are both on log-scales.
+- There are labels, a title, a legend, and we use the style of The Economist magazine.
 We will now construct the plot piece by piece.
 
 We start by loading the dataset:
 
+```{r}
+library(dslabs)
+data(murders)
+```
 
+# 8.2 `ggplot` objects
 
+The first step in creating a **ggplot2** graph is to define a `ggplot` object. We do this with the function <span id="ggplot">`ggplot()`</span> which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:
 
+```
+ggplot(data = murders)
+```
+or
+```{r}
+murders |> ggplot()
+```
+It renders a plot, in this case a blank slate since no geometry has been defined. The only style choice we see is a grey background.
+
+What has happened above is that the object was created and, because it was not assigned, it was automatically evaluated. But we can assign our plot to an object, for example like this:
+
+```{r}
+p <- ggplot(data = murders)
+class(p)
+```
+To render the plot associated with this object, we simply print the object `p`. The following two lines of code each produce the same plot we see above:
+```
+print(p)
+p
+```
+
+# 8.3 Geometries
+
+In **ggplot2** we <span class="blue">create graphs by adding layers</span>. Layers can define geometries, compute summary statistics, define what scales to use, or even change styles. To add layers, we use the symbol `+`. In general, a line of code will look like this:
+
+<blockquote>
+DATA |> ggplot() + LAYER 1 + LAYER 2 + … + LAYER N
+</blockquoate
+
+Usually, <span class="blue">the first added layer defines the geometry.</span> We want to make a scatterplot. What geometry do we use? Taking a quick look at the cheat sheet, we see that the function used to create plots with this geometry is `geom_point`.
+
+Geometry function names follow the pattern: `geom_X` where X is the name of the geometry. Some examples include `geom_point`, `geom_bar`, and `geom_histogram`.
+
+For `geom_point` to run properly we need to provide data and a mapping. We have already connected the object `p` with the `murders` data table, and if we add the layer `geom_point` it defaults to using this data. To find out what mappings are expected, we read the **Aesthetics** section of the help file geom_point help file:
+<blockquote>
+geom_point() understands the following aesthetics (required aesthetics are in bold):
+
+- **x**
+- **y**
+- alpha
+- colour
+- fill
+- group
+- shape
+- size
+- stroke
+</blockquote>
+and, as expected, we see that at least two arguments are required `x` and `y`.
+
+# 8.4 Aesthetic mappings
 
 
 
