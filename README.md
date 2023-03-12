@@ -110,23 +110,23 @@ Function index:
 [`copy`](docs/Pt06.html#copy),
 [`setDT`](docs/Pt06.html#setdt)
 
-### [Chapter 8 **ggplot2**](docs/Pt06.html)
+### [Chapter 8 **ggplot2**](docs/Pt08.html)
 
-[`ggplot`](#ggplot),
-[`aes`](#aes),
-[`geom_abline`](#geom_abline),
-[`geom_label`](#geom_label),
-[`geom_point`](#geom_point),
-[`geom_text`](#geom_text),
-[`grid.arrange`](#grid.arrange),
-[`gtitle`](#ggtitle),
-[`qplot`](#qplot),
-[`scale_x_continuous`](#sx_c),
-[`scale_x_log10`](#sx_log10),
-[`scale_y_continuous`](#sy_c),
-[`scale_y_log10`](#sy_log10),
-[`xlab`](#xlab),
-[`ylab`](#ylab)
+[`ggplot`](docs/Pt08.html#ggplot),
+[`aes`](docs/Pt08.html#aes),
+[`geom_abline`](docs/Pt08.html#geom_abline),
+[`geom_label`](docs/Pt08.html#geom_label),
+[`geom_point`](docs/Pt08.html#geom_point),
+[`geom_text`](docs/Pt08.html#geom_text),
+[`grid.arrange`](docs/Pt08.html#grid.arrange),
+[`gtitle`](docs/Pt08.html#ggtitle),
+[`qplot`](docs/Pt08.html#qplot),
+[`scale_x_continuous`](docs/Pt08.html#sx_c),
+[`scale_x_log10`](docs/Pt08.html#sx_log10),
+[`scale_y_continuous`](docs/Pt08.html#sy_c),
+[`scale_y_log10`](docs/Pt08.html#sy_log10),
+[`xlab`](docs/Pt08.html#xlab),
+[`ylab`](docs/Pt08.html#ylab)
 
 <span id="poco"></span>
 
