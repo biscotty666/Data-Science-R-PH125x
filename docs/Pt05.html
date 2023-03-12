@@ -1540,7 +1540,11 @@ background-color: #BBFA45;
 }
 .pink {
 background-color: rgb(233, 5, 150,0.2);
-}</style>
+}
+.purple {
+background-color: rgb(176, 38, 255,0.3);
+}
+</style>
 
 
 
@@ -1670,21 +1674,7 @@ functions</a></li>
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <div id="functions-in-this-chapter" class="section level1">
 <h1>Functions in this chapter</h1>
-<p>|<a href="#file-create"><code>file.create</code></a>|
-<a href="#file-copy"><code>file.copy</code></a>|
-<a href="#file-link"><code>file.link</code></a>|
-<a href="#file-path"><code>file.path</code></a>|
-<a href="#file-remove"><code>file.remove</code></a>|
-<a href="#file-rename"><code>file.rename</code></a>|
-<a href="#file-symlink"><code>file.symlink</code></a>|
-<a href="#list-files"><code>list.files</code></a>|
-<a href="#read-csv"><code>read_csv</code></a>|
-<a href="#read.csv"><code>read.csv</code></a>|
-<a href="#read-lines"><code>read_lines</code></a>|
-<a href="#scan"><code>scan</code></a>|
-<a href="#spec"><code>spec</code></a>|
-<a href="#system-file"><code>system.file</code></a>|
-<a href="#view"><code>View</code></a>|</p>
+<p>|<a href="#file-create"><code>file.create</code></a>| <a href="#file-copy"><code>file.copy</code></a>| <a href="#file-link"><code>file.link</code></a>| <a href="#file-path"><code>file.path</code></a>| <a href="#file-remove"><code>file.remove</code></a>| <a href="#file-rename"><code>file.rename</code></a>| <a href="#file-symlink"><code>file.symlink</code></a>| <a href="#list-files"><code>list.files</code></a>| <a href="#read-csv"><code>read_csv</code></a>| <a href="#read.csv"><code>read.csv</code></a>| <a href="#read-lines"><code>read_lines</code></a>| <a href="#scan"><code>scan</code></a>| <a href="#spec"><code>spec</code></a>| <a href="#system-file"><code>system.file</code></a>| <a href="#view"><code>View</code></a>|</p>
 <pre class="r"><code>filename &lt;- &quot;murders.csv&quot;
 dir &lt;- system.file(&quot;extdata&quot;, package = &quot;dslabs&quot;) 
 fullpath &lt;- file.path(dir, filename)

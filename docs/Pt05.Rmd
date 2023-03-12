@@ -11,21 +11,21 @@ output:
 
 # Functions in this chapter
 
-|<a href="#file-create">`file.create`</a>|
-<a href="#file-copy">`file.copy`</a>|
-<a href="#file-link">`file.link`</a>|
-<a href="#file-path">`file.path`</a>|
-<a href="#file-remove">`file.remove`</a>|
-<a href="#file-rename">`file.rename`</a>|
-<a href="#file-symlink">`file.symlink`</a>|
-<a href="#list-files">`list.files`</a>|
-<a href="#read-csv">`read_csv`</a>|
-<a href="#read.csv">`read.csv`</a>|
-<a href="#read-lines">`read_lines`</a>|
-<a href="#scan">`scan`</a>|
-<a href="#spec">`spec`</a>|
-<a href="#system-file">`system.file`</a>|
-<a href="#view">`View`</a>|
+|[`file.create`](#file-create)|
+[`file.copy`](#file-copy)|
+[`file.link`](#file-link)|
+[`file.path`](#file-path)|
+[`file.remove`](#file-remove)|
+[`file.rename`](#file-rename)|
+[`file.symlink`](#file-symlink)|
+[`list.files`](#list-files)|
+[`read_csv`](#read-csv)|
+[`read.csv`](#read.csv)|
+[`read_lines`](#read-lines)|
+[`scan`](#scan)|
+[`spec`](#spec)|
+[`system.file`](#system-file)|
+[`View`](#view)|
 
 
 ```{r}

@@ -79,22 +79,22 @@ Function index:
 ### [Chapter 5 Importing data](docs/Pt05.html)
 
 Function index:
+[`file.create`](docs/Pt05.html#file-create),
+[`file.copy`](docs/Pt05.html#file-copy),
+[`file.link`](docs/Pt05.html#file-link),
+[`file.path`](docs/Pt05.html#file-path),
+[`file.remove`](docs/Pt05.html#file-remove),
+[`file.rename`](docs/Pt05.html#file-rename),
+[`file.symlink`](docs/Pt05.html#file-symlink),
+[`list.files`](docs/Pt05.html#list-files),
+[`read_csv`](docs/Pt05.html#read-csv),
+[`read.csv`](docs/Pt05.html#read.csv),
+[`read_lines`](docs/Pt05.html#read-lines),
+[`scan`](docs/Pt05.html#scan),
+[`spec`](docs/Pt05.html#spec),
+[`system.file`](docs/Pt05.html#system-file),
+[`View`](docs/Pt05.html#view)
 
-<a href="docs/Pt05#file-create">`file.create`</a>,
-<a href="docs/Pt05#file-copy">`file.copy`</a>,
-<a href="docs/Pt05#file-link">`file.link`</a>,
-<a href="docs/Pt05#file-path">`file.path`</a>,
-<a href="docs/Pt05#file-remove">`file.remove`</a>,
-<a href="docs/Pt05#file-rename">`file.rename`</a>,
-<a href="docs/Pt05#file-symlink">`file.symlink`</a>,
-<a href="docs/Pt05#list-files">`list.files`</a>,
-<a href="docs/Pt05#read-csv">`read_csv`</a>,
-<a href="docs/Pt05#read.csv">`read.csv`</a>,
-<a href="docs/Pt05#read-lines">`read_lines`</a>,
-<a href="docs/Pt05#scan">`scan`</a>,
-<a href="docs/Pt05#spec">`spec`</a>,
-<a href="docs/Pt05#system-file">`system.file`</a>,
-<a href="docs/Pt05#view">`View`</a>
 
 ### [Chapter 6 data.table](docs/Pt06.html)
 
