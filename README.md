@@ -112,6 +112,22 @@ Function index:
 
 ### [Chapter 8 **ggplot2**](docs/Pt06.html)
 
+[`ggplot`](#ggplot),
+[`aes`](#aes),
+[`geom_abline`](#geom_abline),
+[`geom_label`](#geom_label),
+[`geom_point`](#geom_point),
+[`geom_text`](#geom_text),
+[`grid.arrange`](#grid.arrange),
+[`gtitle`](#ggtitle),
+[`qplot`](#qplot),
+[`scale_x_continuous`](#sx_c),
+[`scale_x_log10`](#sx_log10),
+[`scale_y_continuous`](#sy_c),
+[`scale_y_log10`](#sy_log10),
+[`xlab`](#xlab),
+[`ylab`](#ylab)
+
 <span id="poco"></span>
 
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)

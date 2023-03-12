@@ -13,13 +13,19 @@ R commands in this chapter
 
 |[`ggplot`](#ggplot)|
 [`aes`](#aes)|
+[`geom_abline`](#geom_abline)|
 [`geom_label`](#geom_label)|
 [`geom_point`](#geom_point)|
 [`geom_text`](#geom_text)|
+[`grid.arrange`](#grid.arrange)|
+[`gtitle`](#ggtitle)|
+[`qplot`](#qplot)|
 [`scale_x_continuous`](#sx_c)|
 [`scale_x_log10`](#sx_log10)|
 [`scale_y_continuous`](#sy_c)|
 [`scale_y_log10`](#sy_log10)|
+[`xlab`](#xlab)|
+[`ylab`](#ylab)|
 
 <blockquote>“The greatest value of a picture is when it forces us to notice what we never expected to see.”</blockquote>
 
@@ -267,26 +273,163 @@ p +
 
 # 8.8 Labels and titles
 
+To change labels and add a title we use <span id="xlab">`xlab`</span>, <span id="ylab">`ylab`</span> and <span id="ggtitle">`ggtitle`</span>.
+```{r}
+p +
+  geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab("Populations in millions (log scale)") +
+  ylab("Total number of murders (log scale") +
+  ggtitle("US Gun Murders in 2010")
+```
 
+# 8.9 Categories as colors
 
+We can change the color of the points using the `col` argument in the `geom_point` function. To facilitate demonstration of new features, we will redefine `p` to be everything except the points layer:
+```{r}
+murders |>
+  ggplot(aes(population/10^6, total, label = abb)) +
+  geom_point(size = 3) +
+  geom_text(nudge_x = 0.05) +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab("Populations in millions (log scale)") +
+  ylab("Total number of murders (log scale") +
+  ggtitle("US Gun Murders in 2010") -> p
+```
+and then test out what happens by adding different calls to `geom_point`. We can make all the points blue by adding the color argument:
+```{r}
+p + geom_point(size = 3, color = "blue")
+```
+This, of course, is not what we want. We want to assign color depending on the geographical region. <span class="blue">A nice default behavior of **ggplot2** is that if we assign a categorical variable to `color` (abbreviated as `col`), it automatically assigns a different color to each category and also adds a legend.</span>
+```{r}
+p + geom_point(aes(col = region), size = 3)
+```
+The `x` and `y` mappings are inherited from those already defined in `p`, so we do not redefine them. We also move `aes` to the first argument since that is where mappings are expected in this function call.
 
+Here we see yet another useful default behavior: **ggplot2** automatically adds a legend that maps color to region. To avoid adding this legend we set the `geom_point` argument `show.legend = FALSE`.
 
+# 8.10 Annotation, shapes and adjustments
 
+We often want to add shapes or annotation to figures that are not derived directly from the aesthetic mapping; examples include labels, boxes, shaded areas, and lines.
 
+Here we want to add a line that represents the average murder rate for the entire country. Once we determine the per million rate to be $r$, this line is defined by the formula: $y=rx$, with $y$ and $x$ our axes: total murders and population in millions, respectively. In the log-scale this line turns into: $log(y)=log(r)+log(x)$. So in our plot it’s a line with slope 1 and intercept $log(r)$. To compute this value, we use our **dplyr** skills:
+```{r}
+murders |>
+  summarise(rate = sum(total) / sum(population) * 10^6) |>
+  pull(rate) -> r
+```
+To add a line we use the <span id="geom_abline">`geom_abline`</span> function. ggplot2 uses ab in the name to remind us we are supplying the intercept (a) and slope (b). <span class="blue">The default line has slope 1 and intercept 0</span> so we only have to define the intercept:
+```{r}
+p +
+  geom_point(aes(col = region),
+             size = 3) +
+  geom_abline(intercept = log10(r))
+```
+Here `geom_abline` does not use any information from the data object.
 
+We can change the line type and color of the lines using arguments. Also, we draw it first so it doesn’t go over our points.
+```{r}
+p <- p + 
+  geom_abline(intercept = log10(r),
+              lty = 2,
+              color = "darkgrey") +
+  geom_point(aes(col=region), size = 3)
+p
+```
+<span class="blue">Note that we have redefined `p` and use this new `p` below and in the next section.</span>
 
+The default plots created by **ggplot2** are already very useful. However, we frequently need to make minor tweaks to the default behavior. Although it is not always obvious how to make these even with the cheat sheet, **ggplot2** is very flexible.
 
+For example, we can make changes to the legend via the scale_color_discrete function. In our plot the word region is capitalized and we can change it like this:
+```{r}
+p <- p + scale_color_discrete(name = "Region")
+p
+```
 
+# 8.11 Add-on packages
 
+The power of **ggplot2** is augmented further due to the availability of add-on packages. The remaining changes needed to put the finishing touches on our plot require the **ggthemes** and **ggrepel** packages.
+```{r}
+# install.packages(c("ggthemes","ggrepel"))
+```
 
+The style of a ggplot2 graph can be changed using the theme functions. Several themes are included as part of the ggplot2 package. In fact, for most of the plots in this book, we use a function in the dslabs package that automatically sets a default theme:
 
+```{r}
+ds_theme_set()
+```
+Many other themes are added by the package **ggthemes**. Among those are the `theme_economist` theme that we used. After installing the package, you can change the style by adding a layer like this:
+```{r}
+library(ggthemes)
+p + theme_economist()
+```
+```{r}
+p + theme_fivethirtyeight()
+```
+The final difference has to do with the position of the labels. In our plot, some of the labels fall on top of each other. The add-on package **ggrepel** includes a geometry that adds labels while ensuring that they don’t fall on top of each other. We simply change `geom_text` with `geom_text_repel`.
 
+# 8.12 Putting it all together
 
+```{r}
+library(ggthemes)
+library(ggrepel)
 
+murders |>
+  summarise(rate = sum(total) / sum(population) * 10^6) |>
+  pull(rate) -> r
 
+murders |> 
+  ggplot(aes(population/10^6, total, label = abb)) +   
+  geom_abline(intercept = log10(r), lty = 2, color = "darkgrey") +
+  geom_point(aes(col=region), size = 3) +
+  geom_text_repel() + 
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab("Populations in millions (log scale)") + 
+  ylab("Total number of murders (log scale)") +
+  ggtitle("US Gun Murders in 2010") + 
+  scale_color_discrete(name = "Region") +
+  theme_economist()
+```
 
+<span id="qplot"></span>
 
+# 8.13 Quick plots with `qplot`
 
+We have learned the powerful approach to generating visualization with ggplot. However, there are instances in which all we want is to make a quick plot of, for example, a histogram of the values in a vector, a scatterplot of the values in two vectors, or a boxplot using categorical and numeric vectors. We demonstrated how to generate these plots with hist, plot, and boxplot. However, if we want to keep consistent with the ggplot style, we can use the function qplot.
+
+If we have values in two vectors, say:
+```{r}
+data(murders)
+x <- log10(murders$population)
+y <- murders$total
+```
+and we want to make a scatterplot with **ggplot**, we would have to type something like:
+```
+data.frame(x = x, y = y) |> 
+  ggplot(aes(x, y)) +
+  geom_point()
+```
+This seems like too much code for such a simple plot. The qplot function sacrifices the flexibility provided by the ggplot approach, but allows us to generate a plot quickly.
+```{r}
+qplot(x, y)
+```
+
+<span class="blue">$NB$: "Warning: `qplot()` was deprecated in ggplot2 3.4.0."</span> 
+
+# 8.14 Grids of plots
+
+There are often reasons to graph plots next to each other. The **gridExtra** package and <span id="grid.arrange">`grid.arrange`</span> permit us to do that:
+```{r}
+# install.packages("gridExtra")
+library(gridExtra)
+p1 <- qplot(x)
+p2 <- qplot(y)
+grid.arrange(p1, p2, ncol=2)
+```
 
 
 
