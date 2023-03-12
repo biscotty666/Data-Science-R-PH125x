@@ -129,8 +129,90 @@ Compare to the dplyr approach:
 murders |> dplyr::filter(rate <= 0.7) |> dplyr::select(state, rate)
 ```
 
-
 # 6.2 Exercises
+
+1. Load the data.table package and the murders dataset and convert it to data.table object:
+
+```{r}
+library(data.table)
+library(dslabs)
+data(murders)
+murders <- setDT(murders)
+```
+
+Remember you can add columns like this:
+```
+murders[, population_in_millions := population / 10^6]
+```
+Add a murders column named rate with the per 100,000 murder rate as in the example code above.
+
+```{r}
+murders[, rate := total / population * 10^5]
+murders
+```
+
+2. Add a column rank containing the rank, from highest to lowest murder rate.
+
+```{r}
+murders[, rank := rank(-rate)]
+murders
+```
+
+3. If we want to only show the states and population sizes, we can use:
+
+```
+murders[, .(state, population)] 
+```
+Show the state names and abbreviations in murders.
+```{r}
+murders[, .(state, abb)]
+```
+
+4. You can show just the New York row like this:
+
+```
+murders[state == "New York"]
+```
+You can use other logical vectors to filter rows.
+
+Show the top 5 states with the highest murder rates. After we add murder rate and rank, do not change the murders dataset, just show the result. Remember that you can filter based on the rank column.
+
+```{r}
+murders[rank <= 5]
+```
+
+5. We can remove rows using the != operator. For example, to remove Florida, we would do this:
+```
+no_florida <- murders[state != "Florida"]
+```
+Create a new data frame called no_south that removes states from the South region. How many states are in this category? You can use the function nrow for this.
+
+```{r}
+no_south <- murders[region != "South"]
+nrow(no_south)
+```
+
+6. We can also use %in% to filter. You can therefore see the data from New York and Texas as follows:
+```
+murders[state %in% c("New York", "Texas")]
+```
+Create a new data frame called murders_nw with only the states from the Northeast and the West. How many states are in this category?
+
+```{r}
+murders_nw <- murders[region %in% c("Northeast", "West")]
+nrow(murders_nw)
+```
+
+7. Suppose you want to live in the Northeast or West and want the murder rate to be less than 1. We want to see the data for the states satisfying these options. Note that you can use logical operators with filter. Here is an example in which we filter to keep only small states in the Northeast region.
+```
+murders[population < 5000000 & region == "Northeast"]
+```
+Make sure murders has been defined with rate and rank and still has all states. Create a table called my_states that contains rows for states satisfying both the conditions: they are in the Northeast or West and the murder rate is less than 1. Show only the state name, the rate, and the rank.
+
+```{r}
+my_state <- murders[region == c("Northeast", "West") & rate < 1, .(state, rate, rank)]
+my_state
+```
 
 
 
