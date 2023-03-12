@@ -9,41 +9,39 @@ output:
 
 [Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
 
-# List of R commands in this chapter
+R commands in this chapter
 
-|<a href="#pc-in-pc">`%in%`</a>|
-<a href="#args">`args`</a>|
-<a href="#as-character">`as.character`</a>|
-<a href="#as-data-frame">`as.data.frame`</a>|
-<a href="#as-numeric">`as.numeric`</a>|
-<a href="#boxplot">`boxplot`</a>|
-<a href="#class">`class`</a>|
-<a href="#data">`data`</a>|
-<a href="#data-frame">`data.frame`</a>|
-<a href="#hist">`hist`</a>|
-<a href="#identical">`identical`</a>|
-<a href="#image">`image`</a>|
-<a href="#is-na">`is.na`</a>|
-<a href="#length">`length`</a>|
-<a href="#levels">`levels`</a>|
-<a href="#ls">`ls`</a>|
-<a href="#match">`match`</a>|
-<a href="#max">`max`</a>|
-<a href="#mean">`mean`</a>|
-<a href="#names">`names`</a>|
-<a href="#order">`order`</a>|
-<a href="#plot">`plot`</a>|
-<a href="#reorder">`reorder`</a>|
-<a href="#rank">`rank`</a>|
-<a href="#seq">`seq`</a>|
-<a href="#sort">`sort`</a>|
-<a href="#str">`str`</a>|
-<a href="#sum">`sum`</a>|
-<a href="#table">`table`</a>|
-<a href="#which">`which`</a>|
-<a href="#which-max">`which.max`</a>|
-
-
+[`%in%`](#pc-in-pc)
+[`args`](#args)
+[`as.character`](#as-character)
+[`as.data.frame`](#as-data-frame)
+[`as.numeric`](#as-numeric)
+[`boxplot`](#boxplot)
+[`class`](#class)
+[`data`](#data)
+[`data.frame`](#data-frame)
+[`hist`](#hist)
+[`identical`](#identical)
+[`image`](#image)
+[`is.na`](#is-na)
+[`length`](#length)
+[`levels`](#levels)
+[`ls`](#ls)
+[`match`](#match)
+[`max`](#max)
+[`mean`](#mean)
+[`names`](#names)
+[`order`](#order)
+[`plot`](#plot)
+[`reorder`](#reorder)
+[`rank`](#rank)
+[`seq`](#seq)
+[`sort`](#sort)
+[`str`](#str)
+[`sum`](#sum)
+[`table`](#table)
+[`which`](#which)
+[`which.max`](#which-max)
 
 # 2.2 The very basics
 

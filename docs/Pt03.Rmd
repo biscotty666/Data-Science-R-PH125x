@@ -11,16 +11,16 @@ output:
 
 # Functions in this chapter
 
-|<a href="#any">`any`</a>|
-<a href="#all">`all`</a>|
-<a href="#else">`else`</a>|
-<a href="#function">`function`</a>|
-<a href="#if">`if`</a>|
-<a href="#ifelse">`ifelse`</a>|
-<a href="#is-na">`is.na`</a>|
-<a href="#map_dbl">`map_dbl`</a>|
-<a href="#sapply">`sapply`</a>|
-<a href="#search">`search`</a>|
+[`any`](#any)
+[`all`](#all)
+[`else`](#else)
+[`function`](#function)
+[`if`](#if)
+[`ifelse`](#ifelse)
+[`is.na`](#is-na)
+[`map_dbl`](#map_dbl)
+[`sapply`](#sapply)
+[`search`](#search)
 
 # 3.1 Conditional expressions
 
