@@ -12,6 +12,7 @@ output:
 # Functions in this chapter
 
 |[`:=`](#col-eq)|
+[`.()`](#dot-par)|
 [`copy`](#copy)|
 [`setDT`](#setdt)|
 
@@ -37,7 +38,7 @@ murders
 
 <span class="purple">Without this initial step, most of the approaches shown below will not work.</span>
 
-# 6.1.1 Selecting
+## 6.1.1 Selecting
 
 Selecting with **data.table** is done in a similar way to subsetting matrices. While with **dplyr** we write:
 ```
@@ -118,7 +119,7 @@ With **data.table**, we again use an approach similar to subsetting matrices, ex
 murders[rate <= 0.7]
 ```
 
-<span class="purple">Notice that we can combine the filter and select into one succint command.</span> Here are the state names and rates for those with rates below 0.7.
+<span class="purple">Notice that we can combine the filter and select into one succinct command.</span> Here are the state names and rates for those with rates below 0.7.
 
 ```{r}
 murders[rate <= 0.7, .(state, rate)]
@@ -214,17 +215,130 @@ my_state <- murders[region == c("Northeast", "West") & rate < 1, .(state, rate, 
 my_state
 ```
 
+# 6.3 Summarizing data
 
+As an example, we will use the heights dataset:
 
+```{r}
+library(dplyr)
+library(dslabs)
+data(heights)
+heights <- setDT(heights)
+head(heights)
+```
 
+In data.table, we can call functions inside <span id="dot-par">`.()`</span> and they will be applied to rows. So the equivalent of **dpylr**'s:
 
+```{r}
+s <- heights |>
+  summarise(average = mean(height), standard_deviation = sd(height))
+head(s)
+```
+in **data.table** is:
+```{r}
+s <- heights[, .(average = mean(height), standard_deviation = sd(height))]
+head(s)
+```
+Note that this permits a compact way of subsetting and then summarizing. Instead of:
+```{r}
+s <- heights |>
+  filter(sex == "Female") |>
+  summarize(average = mean(height),
+            standard_deviation = sd(height))
+head(s)
+```
+we can write:
+```{r}
+s <- heights[sex == "Female", 
+             .(
+               average = mean(height), 
+               standard_deviation = sd(height)
+               )]
+head(s)
+```
 
+## 6.3.1 Multiple summaries
 
+From chapter 4:
+```{r}
+median_min_max <- function(x) {
+  qs <- quantile(x, c(0.5, 0, 1))
+  data.frame(median = qs[1], 
+             minimum = qs[2],
+             maximum = qs[3])
+}
+```
+Similar to dplyr, we can call this function within .() to obtain the three number summary:
+```{r}
+heights[, .(median_min_max(height))]
+```
 
+## 6.3.2 Group then summarize
 
+The `group_by` followed by `summarize` in **dplyr** is performed in one line in **data.table**. We simply add the `by` argument to split the data into groups based on the values in categorical variable:
+```{r}
+heights[, .(average = mean(height), standard_deviation = sd(height)), by = sex]
+```
+# 6.4 Sorting data frames
 
+We can order rows using the same approach we use for filter. Here are the states ordered by murder rate:
+```{r}
+murders[order(population)] |> head()
+```
 
+## 6.4.1 Nested sorting
 
+```{r}
+murders[order(region, rate)]
+```
+
+# 6.5 Exercises
+
+For these exercises, we will be using the NHANES data.
+```{r}
+library(NHANES)
+data(NHANES)
+NHANES <- setDT(NHANES)
+head(NHANES)
+```
+1. We will provide some basic facts about blood pressure. First let’s select a group to set the standard. We will use 20-to-29-year-old females. AgeDecade is a categorical variable with these ages. Note that the category is coded like ” 20-29”, with a space in front! Use the data.table package to compute the average and standard deviation of systolic blood pressure as saved in the BPSysAve variable. Save it to a variable called ref.
+
+```{r}
+ref <- NHANES[AgeDecade == " 20-29" & Gender == "female",
+              .(average = mean(BPSysAve, na.rm = TRUE), 
+                standard_deviation = sd(BPSysAve, na.rm = TRUE))]
+ref
+```
+
+2. Report the min and max values for the same group.
+```{r}
+NHANES[AgeDecade == " 20-29" & Gender == "female",
+       .(minimum = min(BPSysAve, na.rm = TRUE), 
+         maximum = max(BPSysAve, na.rm = TRUE))]
+```
+
+3. Compute the average and standard deviation for females, but for each age group separately rather than a selected decade as in question 1. Note that the age groups are defined by AgeDecade.
+```{r}
+NHANES[Gender == "female",
+       .(average = mean(BPSysAve, na.rm = TRUE), 
+         standard_deviation = sd(BPSysAve, na.rm = TRUE)),
+       by = AgeDecade]
+```
+
+4. Repeat exercise 3 for males.
+```{r}
+NHANES[Gender == "male",
+       .(average = mean(BPSysAve, na.rm = TRUE), 
+         standard_deviation = sd(BPSysAve, na.rm = TRUE)),
+       by = AgeDecade]
+```
+5. For males between the ages of 40-49, compare systolic blood pressure across race as reported in the Race1 variable. Order the resulting table from lowest to highest average systolic blood pressure.
+
+```{r}
+NHANES[Gender == "male" & AgeDecade == " 40-49",
+       .(average = mean(BPSysAve, na.rm = TRUE)),
+       by = "Race1"]
+```
 
 
 

@@ -97,3 +97,8 @@ Function index:
 <a href="docs/Pt05#view">`View`</a>
 
 ### [Chapter 6 data.table](docs/Pt06.html)
+
+|[`:=`](docs/Pt06.html#col-eq)|
+[`.()`](docs/Pt06.html#dot-par)|
+[`copy`](docs/Pt06.html#copy)|
+[`setDT`](docs/Pt06.html#setdt)|

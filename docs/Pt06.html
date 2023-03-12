@@ -1648,9 +1648,9 @@ display: none;
 <div id="TOC">
 <ul>
 <li><a href="#functions-in-this-chapter" id="toc-functions-in-this-chapter">Functions in this chapter</a></li>
-<li><a href="#manipulating-data-tables" id="toc-manipulating-data-tables">6.1 Manipulating data tables</a></li>
-<li><a href="#selecting" id="toc-selecting">6.1.1 Selecting</a>
+<li><a href="#manipulating-data-tables" id="toc-manipulating-data-tables">6.1 Manipulating data tables</a>
 <ul>
+<li><a href="#selecting" id="toc-selecting">6.1.1 Selecting</a></li>
 <li><a href="#adding-a-column-or-changing-columns" id="toc-adding-a-column-or-changing-columns">6.1.2 Adding a column or
 changing columns</a></li>
 <li><a href="#technical-detail-reference-versus-copy" id="toc-technical-detail-reference-versus-copy">6.1.3 Technical detail:
@@ -1658,13 +1658,28 @@ reference versus copy</a></li>
 <li><a href="#subsetting" id="toc-subsetting">6.1.4 Subsetting</a></li>
 </ul></li>
 <li><a href="#exercises" id="toc-exercises">6.2 Exercises</a></li>
+<li><a href="#summarizing-data" id="toc-summarizing-data">6.3
+Summarizing data</a>
+<ul>
+<li><a href="#multiple-summaries" id="toc-multiple-summaries">6.3.1
+Multiple summaries</a></li>
+<li><a href="#group-then-summarize" id="toc-group-then-summarize">6.3.2
+Group then summarize</a></li>
+</ul></li>
+<li><a href="#sorting-data-frames" id="toc-sorting-data-frames">6.4
+Sorting data frames</a>
+<ul>
+<li><a href="#nested-sorting" id="toc-nested-sorting">6.4.1 Nested
+sorting</a></li>
+</ul></li>
+<li><a href="#exercises-1" id="toc-exercises-1">6.5 Exercises</a></li>
 </ul>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <div id="functions-in-this-chapter" class="section level1">
 <h1>Functions in this chapter</h1>
-<p>|<a href="#col-eq"><code>:=</code></a>| <a href="#copy"><code>copy</code></a>| <a href="#setdt"><code>setDT</code></a>|</p>
+<p>|<a href="#col-eq"><code>:=</code></a>| <a href="#dot-par"><code>.()</code></a>| <a href="#copy"><code>copy</code></a>| <a href="#setdt"><code>setDT</code></a>|</p>
 <p>In this book, we use tidyverse packages to illustrate because
 beginners find the code readable and this permits us to focus on data
 analysis and statistical concepts. However, there are other approaches
@@ -1696,9 +1711,8 @@ murders</code></pre>
 </div>
 <p><span class="purple">Without this initial step, most of the
 approaches shown below will not work.</span></p>
-</div>
-<div id="selecting" class="section level1">
-<h1>6.1.1 Selecting</h1>
+<div id="selecting" class="section level2">
+<h2>6.1.1 Selecting</h2>
 <p>Selecting with <strong>data.table</strong> is done in a similar way
 to subsetting matrices. While with <strong>dplyr</strong> we write:</p>
 <pre><code>select(murders, state, region)</code></pre>
@@ -1709,6 +1723,7 @@ used with matrices:</p>
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["region"],"name":[2],"type":["fct"],"align":["left"]}],"data":[{"1":"Alabama","2":"South"},{"1":"Alaska","2":"West"},{"1":"Arizona","2":"West"},{"1":"Arkansas","2":"South"},{"1":"California","2":"West"},{"1":"Colorado","2":"West"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
+</div>
 </div>
 <div id="adding-a-column-or-changing-columns" class="section level2">
 <h2>6.1.2 Adding a column or changing columns</h2>
@@ -1786,7 +1801,7 @@ environment:</p>
   </script>
 </div>
 <p><span class="purple">Notice that we can combine the filter and select
-into one succint command.</span> Here are the state names and rates for
+into one succinct command.</span> Here are the state names and rates for
 those with rates below 0.7.</p>
 <pre class="r"><code>murders[rate &lt;= 0.7, .(state, rate)]</code></pre>
 <div data-pagedtable="false">
@@ -1904,6 +1919,206 @@ and the rank.</p>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
 {"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["rate"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Hawaii","2":"0.5145920","3":"49"},{"1":"Oregon","2":"0.9396843","3":"42"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="summarizing-data" class="section level1">
+<h1>6.3 Summarizing data</h1>
+<p>As an example, we will use the heights dataset:</p>
+<pre class="r"><code>library(dplyr)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;</code></pre>
+<pre><code>## The following objects are masked from &#39;package:data.table&#39;:
+## 
+##     between, first, last</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag</code></pre>
+<pre><code>## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>library(dslabs)
+data(heights)
+heights &lt;- setDT(heights)
+head(heights)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sex"],"name":[1],"type":["fct"],"align":["left"]},{"label":["height"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Male","2":"75"},{"1":"Male","2":"70"},{"1":"Male","2":"68"},{"1":"Male","2":"74"},{"1":"Male","2":"61"},{"1":"Female","2":"65"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>In data.table, we can call functions inside <span id="dot-par"><code>.()</code></span> and they will be applied to rows.
+So the equivalent of <strong>dpylr</strong>’s:</p>
+<pre class="r"><code>s &lt;- heights |&gt;
+  summarise(average = mean(height), standard_deviation = sd(height))
+head(s)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["average"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"68.32301","2":"4.078617","_rn_":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>in <strong>data.table</strong> is:</p>
+<pre class="r"><code>s &lt;- heights[, .(average = mean(height), standard_deviation = sd(height))]
+head(s)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["average"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"68.32301","2":"4.078617"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Note that this permits a compact way of subsetting and then
+summarizing. Instead of:</p>
+<pre class="r"><code>s &lt;- heights |&gt;
+  filter(sex == &quot;Female&quot;) |&gt;
+  summarize(average = mean(height),
+            standard_deviation = sd(height))
+head(s)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["average"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"64.93942","2":"3.760656","_rn_":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>we can write:</p>
+<pre class="r"><code>s &lt;- heights[sex == &quot;Female&quot;, 
+             .(
+               average = mean(height), 
+               standard_deviation = sd(height)
+               )]
+head(s)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["average"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"64.93942","2":"3.760656"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="multiple-summaries" class="section level2">
+<h2>6.3.1 Multiple summaries</h2>
+<p>From chapter 4:</p>
+<pre class="r"><code>median_min_max &lt;- function(x) {
+  qs &lt;- quantile(x, c(0.5, 0, 1))
+  data.frame(median = qs[1], 
+             minimum = qs[2],
+             maximum = qs[3])
+}</code></pre>
+<p>Similar to dplyr, we can call this function within .() to obtain the
+three number summary:</p>
+<pre class="r"><code>heights[, .(median_min_max(height))]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["median"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["minimum"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["maximum"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"68.5","2":"50","3":"82.67717"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div id="group-then-summarize" class="section level2">
+<h2>6.3.2 Group then summarize</h2>
+<p>The <code>group_by</code> followed by <code>summarize</code> in
+<strong>dplyr</strong> is performed in one line in
+<strong>data.table</strong>. We simply add the <code>by</code> argument
+to split the data into groups based on the values in categorical
+variable:</p>
+<pre class="r"><code>heights[, .(average = mean(height), standard_deviation = sd(height)), by = sex]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["sex"],"name":[1],"type":["fct"],"align":["left"]},{"label":["average"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Male","2":"69.31475","3":"3.611024"},{"1":"Female","2":"64.93942","3":"3.760656"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="sorting-data-frames" class="section level1">
+<h1>6.4 Sorting data frames</h1>
+<p>We can order rows using the same approach we use for filter. Here are
+the states ordered by murder rate:</p>
+<pre class="r"><code>murders[order(population)] |&gt; head()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Wyoming","2":"WY","3":"West","4":"563626","5":"5","6":"0.8871131","7":"43"},{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.4527532","7":"1"},{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"48"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.6751860","7":"27"},{"1":"South Dakota","2":"SD","3":"North Central","4":"814180","5":"8","6":"0.9825837","7":"41"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="nested-sorting" class="section level2">
+<h2>6.4.1 Nested sorting</h2>
+<pre class="r"><code>murders[order(region, rate)]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["state"],"name":[1],"type":["chr"],"align":["left"]},{"label":["abb"],"name":[2],"type":["chr"],"align":["left"]},{"label":["region"],"name":[3],"type":["fct"],"align":["left"]},{"label":["population"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["total"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["rate"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["rank"],"name":[7],"type":["dbl"],"align":["right"]}],"data":[{"1":"Vermont","2":"VT","3":"Northeast","4":"625741","5":"2","6":"0.3196211","7":"51"},{"1":"New Hampshire","2":"NH","3":"Northeast","4":"1316470","5":"5","6":"0.3798036","7":"50"},{"1":"Maine","2":"ME","3":"Northeast","4":"1328361","5":"11","6":"0.8280881","7":"44"},{"1":"Rhode Island","2":"RI","3":"Northeast","4":"1052567","5":"16","6":"1.5200933","7":"35"},{"1":"Massachusetts","2":"MA","3":"Northeast","4":"6547629","5":"118","6":"1.8021791","7":"32"},{"1":"New York","2":"NY","3":"Northeast","4":"19378102","5":"517","6":"2.6679599","7":"29"},{"1":"Connecticut","2":"CT","3":"Northeast","4":"3574097","5":"97","6":"2.7139722","7":"25"},{"1":"New Jersey","2":"NJ","3":"Northeast","4":"8791894","5":"246","6":"2.7980319","7":"24"},{"1":"Pennsylvania","2":"PA","3":"Northeast","4":"12702379","5":"457","6":"3.5977513","7":"11"},{"1":"West Virginia","2":"WV","3":"South","4":"1852994","5":"27","6":"1.4571013","7":"36"},{"1":"Kentucky","2":"KY","3":"South","4":"4339367","5":"116","6":"2.6732010","7":"28"},{"1":"Alabama","2":"AL","3":"South","4":"4779736","5":"135","6":"2.8244238","7":"23"},{"1":"Oklahoma","2":"OK","3":"South","4":"3751351","5":"111","6":"2.9589340","7":"21"},{"1":"North Carolina","2":"NC","3":"South","4":"9535483","5":"286","6":"2.9993237","7":"20"},{"1":"Virginia","2":"VA","3":"South","4":"8001024","5":"250","6":"3.1246001","7":"18"},{"1":"Arkansas","2":"AR","3":"South","4":"2915918","5":"93","6":"3.1893901","7":"17"},{"1":"Texas","2":"TX","3":"South","4":"25145561","5":"805","6":"3.2013603","7":"16"},{"1":"Florida","2":"FL","3":"South","4":"19687653","5":"669","6":"3.3980688","7":"13"},{"1":"Tennessee","2":"TN","3":"South","4":"6346105","5":"219","6":"3.4509357","7":"12"},{"1":"Georgia","2":"GA","3":"South","4":"9920000","5":"376","6":"3.7903226","7":"9"},{"1":"Mississippi","2":"MS","3":"South","4":"2967297","5":"120","6":"4.0440846","7":"8"},{"1":"Delaware","2":"DE","3":"South","4":"897934","5":"38","6":"4.2319369","7":"6"},{"1":"South Carolina","2":"SC","3":"South","4":"4625364","5":"207","6":"4.4753235","7":"5"},{"1":"Maryland","2":"MD","3":"South","4":"5773552","5":"293","6":"5.0748655","7":"4"},{"1":"Louisiana","2":"LA","3":"South","4":"4533372","5":"351","6":"7.7425810","7":"2"},{"1":"District of Columbia","2":"DC","3":"South","4":"601723","5":"99","6":"16.4527532","7":"1"},{"1":"North Dakota","2":"ND","3":"North Central","4":"672591","5":"4","6":"0.5947151","7":"48"},{"1":"Iowa","2":"IA","3":"North Central","4":"3046355","5":"21","6":"0.6893484","7":"47"},{"1":"South Dakota","2":"SD","3":"North Central","4":"814180","5":"8","6":"0.9825837","7":"41"},{"1":"Minnesota","2":"MN","3":"North Central","4":"5303925","5":"53","6":"0.9992600","7":"40"},{"1":"Wisconsin","2":"WI","3":"North Central","4":"5686986","5":"97","6":"1.7056487","7":"34"},{"1":"Nebraska","2":"NE","3":"North Central","4":"1826341","5":"32","6":"1.7521372","7":"33"},{"1":"Indiana","2":"IN","3":"North Central","4":"6483802","5":"142","6":"2.1900730","7":"31"},{"1":"Kansas","2":"KS","3":"North Central","4":"2853118","5":"63","6":"2.2081106","7":"30"},{"1":"Ohio","2":"OH","3":"North Central","4":"11536504","5":"310","6":"2.6871225","7":"26"},{"1":"Illinois","2":"IL","3":"North Central","4":"12830632","5":"364","6":"2.8369608","7":"22"},{"1":"Michigan","2":"MI","3":"North Central","4":"9883640","5":"413","6":"4.1786225","7":"7"},{"1":"Missouri","2":"MO","3":"North Central","4":"5988927","5":"321","6":"5.3598917","7":"3"},{"1":"Hawaii","2":"HI","3":"West","4":"1360301","5":"7","6":"0.5145920","7":"49"},{"1":"Idaho","2":"ID","3":"West","4":"1567582","5":"12","6":"0.7655102","7":"46"},{"1":"Utah","2":"UT","3":"West","4":"2763885","5":"22","6":"0.7959810","7":"45"},{"1":"Wyoming","2":"WY","3":"West","4":"563626","5":"5","6":"0.8871131","7":"43"},{"1":"Oregon","2":"OR","3":"West","4":"3831074","5":"36","6":"0.9396843","7":"42"},{"1":"Montana","2":"MT","3":"West","4":"989415","5":"12","6":"1.2128379","7":"39"},{"1":"Colorado","2":"CO","3":"West","4":"5029196","5":"65","6":"1.2924531","7":"38"},{"1":"Washington","2":"WA","3":"West","4":"6724540","5":"93","6":"1.3829942","7":"37"},{"1":"Alaska","2":"AK","3":"West","4":"710231","5":"19","6":"2.6751860","7":"27"},{"1":"Nevada","2":"NV","3":"West","4":"2700551","5":"84","6":"3.1104763","7":"19"},{"1":"New Mexico","2":"NM","3":"West","4":"2059179","5":"67","6":"3.2537239","7":"15"},{"1":"California","2":"CA","3":"West","4":"37253956","5":"1257","6":"3.3741383","7":"14"},{"1":"Arizona","2":"AZ","3":"West","4":"6392017","5":"232","6":"3.6295273","7":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="exercises-1" class="section level1">
+<h1>6.5 Exercises</h1>
+<p>For these exercises, we will be using the NHANES data.</p>
+<pre class="r"><code>library(NHANES)
+data(NHANES)
+NHANES &lt;- setDT(NHANES)
+head(NHANES)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["ID"],"name":[1],"type":["int"],"align":["right"]},{"label":["SurveyYr"],"name":[2],"type":["fct"],"align":["left"]},{"label":["Gender"],"name":[3],"type":["fct"],"align":["left"]},{"label":["Age"],"name":[4],"type":["int"],"align":["right"]},{"label":["AgeDecade"],"name":[5],"type":["fct"],"align":["left"]},{"label":["AgeMonths"],"name":[6],"type":["int"],"align":["right"]},{"label":["Race1"],"name":[7],"type":["fct"],"align":["left"]},{"label":["Race3"],"name":[8],"type":["fct"],"align":["left"]},{"label":["Education"],"name":[9],"type":["fct"],"align":["left"]},{"label":["MaritalStatus"],"name":[10],"type":["fct"],"align":["left"]},{"label":["HHIncome"],"name":[11],"type":["fct"],"align":["left"]},{"label":["HHIncomeMid"],"name":[12],"type":["int"],"align":["right"]},{"label":["Poverty"],"name":[13],"type":["dbl"],"align":["right"]},{"label":["HomeRooms"],"name":[14],"type":["int"],"align":["right"]},{"label":["HomeOwn"],"name":[15],"type":["fct"],"align":["left"]},{"label":["Work"],"name":[16],"type":["fct"],"align":["left"]},{"label":["Weight"],"name":[17],"type":["dbl"],"align":["right"]},{"label":["Length"],"name":[18],"type":["dbl"],"align":["right"]},{"label":["HeadCirc"],"name":[19],"type":["dbl"],"align":["right"]},{"label":["Height"],"name":[20],"type":["dbl"],"align":["right"]},{"label":["BMI"],"name":[21],"type":["dbl"],"align":["right"]},{"label":["BMICatUnder20yrs"],"name":[22],"type":["fct"],"align":["left"]},{"label":["BMI_WHO"],"name":[23],"type":["fct"],"align":["left"]},{"label":["Pulse"],"name":[24],"type":["int"],"align":["right"]},{"label":["BPSysAve"],"name":[25],"type":["int"],"align":["right"]},{"label":["BPDiaAve"],"name":[26],"type":["int"],"align":["right"]},{"label":["BPSys1"],"name":[27],"type":["int"],"align":["right"]},{"label":["BPDia1"],"name":[28],"type":["int"],"align":["right"]},{"label":["BPSys2"],"name":[29],"type":["int"],"align":["right"]},{"label":["BPDia2"],"name":[30],"type":["int"],"align":["right"]},{"label":["BPSys3"],"name":[31],"type":["int"],"align":["right"]},{"label":["BPDia3"],"name":[32],"type":["int"],"align":["right"]},{"label":["Testosterone"],"name":[33],"type":["dbl"],"align":["right"]},{"label":["DirectChol"],"name":[34],"type":["dbl"],"align":["right"]},{"label":["TotChol"],"name":[35],"type":["dbl"],"align":["right"]},{"label":["UrineVol1"],"name":[36],"type":["int"],"align":["right"]},{"label":["UrineFlow1"],"name":[37],"type":["dbl"],"align":["right"]},{"label":["UrineVol2"],"name":[38],"type":["int"],"align":["right"]},{"label":["UrineFlow2"],"name":[39],"type":["dbl"],"align":["right"]},{"label":["Diabetes"],"name":[40],"type":["fct"],"align":["left"]},{"label":["DiabetesAge"],"name":[41],"type":["int"],"align":["right"]},{"label":["HealthGen"],"name":[42],"type":["fct"],"align":["left"]},{"label":["DaysPhysHlthBad"],"name":[43],"type":["int"],"align":["right"]},{"label":["DaysMentHlthBad"],"name":[44],"type":["int"],"align":["right"]},{"label":["LittleInterest"],"name":[45],"type":["fct"],"align":["left"]},{"label":["Depressed"],"name":[46],"type":["fct"],"align":["left"]},{"label":["nPregnancies"],"name":[47],"type":["int"],"align":["right"]},{"label":["nBabies"],"name":[48],"type":["int"],"align":["right"]},{"label":["Age1stBaby"],"name":[49],"type":["int"],"align":["right"]},{"label":["SleepHrsNight"],"name":[50],"type":["int"],"align":["right"]},{"label":["SleepTrouble"],"name":[51],"type":["fct"],"align":["left"]},{"label":["PhysActive"],"name":[52],"type":["fct"],"align":["left"]},{"label":["PhysActiveDays"],"name":[53],"type":["int"],"align":["right"]},{"label":["TVHrsDay"],"name":[54],"type":["fct"],"align":["left"]},{"label":["CompHrsDay"],"name":[55],"type":["fct"],"align":["left"]},{"label":["TVHrsDayChild"],"name":[56],"type":["int"],"align":["right"]},{"label":["CompHrsDayChild"],"name":[57],"type":["int"],"align":["right"]},{"label":["Alcohol12PlusYr"],"name":[58],"type":["fct"],"align":["left"]},{"label":["AlcoholDay"],"name":[59],"type":["int"],"align":["right"]},{"label":["AlcoholYear"],"name":[60],"type":["int"],"align":["right"]},{"label":["SmokeNow"],"name":[61],"type":["fct"],"align":["left"]},{"label":["Smoke100"],"name":[62],"type":["fct"],"align":["left"]},{"label":["Smoke100n"],"name":[63],"type":["fct"],"align":["left"]},{"label":["SmokeAge"],"name":[64],"type":["int"],"align":["right"]},{"label":["Marijuana"],"name":[65],"type":["fct"],"align":["left"]},{"label":["AgeFirstMarij"],"name":[66],"type":["int"],"align":["right"]},{"label":["RegularMarij"],"name":[67],"type":["fct"],"align":["left"]},{"label":["AgeRegMarij"],"name":[68],"type":["int"],"align":["right"]},{"label":["HardDrugs"],"name":[69],"type":["fct"],"align":["left"]},{"label":["SexEver"],"name":[70],"type":["fct"],"align":["left"]},{"label":["SexAge"],"name":[71],"type":["int"],"align":["right"]},{"label":["SexNumPartnLife"],"name":[72],"type":["int"],"align":["right"]},{"label":["SexNumPartYear"],"name":[73],"type":["int"],"align":["right"]},{"label":["SameSex"],"name":[74],"type":["fct"],"align":["left"]},{"label":["SexOrientation"],"name":[75],"type":["fct"],"align":["left"]},{"label":["PregnantNow"],"name":[76],"type":["fct"],"align":["left"]}],"data":[{"1":"51624","2":"2009_10","3":"male","4":"34","5":"30-39","6":"409","7":"White","8":"NA","9":"High School","10":"Married","11":"25000-34999","12":"30000","13":"1.36","14":"6","15":"Own","16":"NotWorking","17":"87.4","18":"NA","19":"NA","20":"164.7","21":"32.22","22":"NA","23":"30.0_plus","24":"70","25":"113","26":"85","27":"114","28":"88","29":"114","30":"88","31":"112","32":"82","33":"NA","34":"1.29","35":"3.49","36":"352","37":"NA","38":"NA","39":"NA","40":"No","41":"NA","42":"Good","43":"0","44":"15","45":"Most","46":"Several","47":"NA","48":"NA","49":"NA","50":"4","51":"Yes","52":"No","53":"NA","54":"NA","55":"NA","56":"NA","57":"NA","58":"Yes","59":"NA","60":"0","61":"No","62":"Yes","63":"Smoker","64":"18","65":"Yes","66":"17","67":"No","68":"NA","69":"Yes","70":"Yes","71":"16","72":"8","73":"1","74":"No","75":"Heterosexual","76":"NA"},{"1":"51624","2":"2009_10","3":"male","4":"34","5":"30-39","6":"409","7":"White","8":"NA","9":"High School","10":"Married","11":"25000-34999","12":"30000","13":"1.36","14":"6","15":"Own","16":"NotWorking","17":"87.4","18":"NA","19":"NA","20":"164.7","21":"32.22","22":"NA","23":"30.0_plus","24":"70","25":"113","26":"85","27":"114","28":"88","29":"114","30":"88","31":"112","32":"82","33":"NA","34":"1.29","35":"3.49","36":"352","37":"NA","38":"NA","39":"NA","40":"No","41":"NA","42":"Good","43":"0","44":"15","45":"Most","46":"Several","47":"NA","48":"NA","49":"NA","50":"4","51":"Yes","52":"No","53":"NA","54":"NA","55":"NA","56":"NA","57":"NA","58":"Yes","59":"NA","60":"0","61":"No","62":"Yes","63":"Smoker","64":"18","65":"Yes","66":"17","67":"No","68":"NA","69":"Yes","70":"Yes","71":"16","72":"8","73":"1","74":"No","75":"Heterosexual","76":"NA"},{"1":"51624","2":"2009_10","3":"male","4":"34","5":"30-39","6":"409","7":"White","8":"NA","9":"High School","10":"Married","11":"25000-34999","12":"30000","13":"1.36","14":"6","15":"Own","16":"NotWorking","17":"87.4","18":"NA","19":"NA","20":"164.7","21":"32.22","22":"NA","23":"30.0_plus","24":"70","25":"113","26":"85","27":"114","28":"88","29":"114","30":"88","31":"112","32":"82","33":"NA","34":"1.29","35":"3.49","36":"352","37":"NA","38":"NA","39":"NA","40":"No","41":"NA","42":"Good","43":"0","44":"15","45":"Most","46":"Several","47":"NA","48":"NA","49":"NA","50":"4","51":"Yes","52":"No","53":"NA","54":"NA","55":"NA","56":"NA","57":"NA","58":"Yes","59":"NA","60":"0","61":"No","62":"Yes","63":"Smoker","64":"18","65":"Yes","66":"17","67":"No","68":"NA","69":"Yes","70":"Yes","71":"16","72":"8","73":"1","74":"No","75":"Heterosexual","76":"NA"},{"1":"51625","2":"2009_10","3":"male","4":"4","5":"0-9","6":"49","7":"Other","8":"NA","9":"NA","10":"NA","11":"20000-24999","12":"22500","13":"1.07","14":"9","15":"Own","16":"NA","17":"17.0","18":"NA","19":"NA","20":"105.4","21":"15.30","22":"NA","23":"12.0_18.5","24":"NA","25":"NA","26":"NA","27":"NA","28":"NA","29":"NA","30":"NA","31":"NA","32":"NA","33":"NA","34":"NA","35":"NA","36":"NA","37":"NA","38":"NA","39":"NA","40":"No","41":"NA","42":"NA","43":"NA","44":"NA","45":"NA","46":"NA","47":"NA","48":"NA","49":"NA","50":"NA","51":"NA","52":"NA","53":"NA","54":"NA","55":"NA","56":"4","57":"1","58":"NA","59":"NA","60":"NA","61":"NA","62":"NA","63":"NA","64":"NA","65":"NA","66":"NA","67":"NA","68":"NA","69":"NA","70":"NA","71":"NA","72":"NA","73":"NA","74":"NA","75":"NA","76":"NA"},{"1":"51630","2":"2009_10","3":"female","4":"49","5":"40-49","6":"596","7":"White","8":"NA","9":"Some College","10":"LivePartner","11":"35000-44999","12":"40000","13":"1.91","14":"5","15":"Rent","16":"NotWorking","17":"86.7","18":"NA","19":"NA","20":"168.4","21":"30.57","22":"NA","23":"30.0_plus","24":"86","25":"112","26":"75","27":"118","28":"82","29":"108","30":"74","31":"116","32":"76","33":"NA","34":"1.16","35":"6.70","36":"77","37":"0.094","38":"NA","39":"NA","40":"No","41":"NA","42":"Good","43":"0","44":"10","45":"Several","46":"Several","47":"2","48":"2","49":"27","50":"8","51":"Yes","52":"No","53":"NA","54":"NA","55":"NA","56":"NA","57":"NA","58":"Yes","59":"2","60":"20","61":"Yes","62":"Yes","63":"Smoker","64":"38","65":"Yes","66":"18","67":"No","68":"NA","69":"Yes","70":"Yes","71":"12","72":"10","73":"1","74":"Yes","75":"Heterosexual","76":"NA"},{"1":"51638","2":"2009_10","3":"male","4":"9","5":"0-9","6":"115","7":"White","8":"NA","9":"NA","10":"NA","11":"75000-99999","12":"87500","13":"1.84","14":"6","15":"Rent","16":"NA","17":"29.8","18":"NA","19":"NA","20":"133.1","21":"16.82","22":"NA","23":"12.0_18.5","24":"82","25":"86","26":"47","27":"84","28":"50","29":"84","30":"50","31":"88","32":"44","33":"NA","34":"1.34","35":"4.86","36":"123","37":"1.538","38":"NA","39":"NA","40":"No","41":"NA","42":"NA","43":"NA","44":"NA","45":"NA","46":"NA","47":"NA","48":"NA","49":"NA","50":"NA","51":"NA","52":"NA","53":"NA","54":"NA","55":"NA","56":"5","57":"0","58":"NA","59":"NA","60":"NA","61":"NA","62":"NA","63":"NA","64":"NA","65":"NA","66":"NA","67":"NA","68":"NA","69":"NA","70":"NA","71":"NA","72":"NA","73":"NA","74":"NA","75":"NA","76":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol style="list-style-type: decimal">
+<li>We will provide some basic facts about blood pressure. First let’s
+select a group to set the standard. We will use 20-to-29-year-old
+females. AgeDecade is a categorical variable with these ages. Note that
+the category is coded like ” 20-29”, with a space in front! Use the
+data.table package to compute the average and standard deviation of
+systolic blood pressure as saved in the BPSysAve variable. Save it to a
+variable called ref.</li>
+</ol>
+<pre class="r"><code>ref &lt;- NHANES[AgeDecade == &quot; 20-29&quot; &amp; Gender == &quot;female&quot;,
+              .(average = mean(BPSysAve, na.rm = TRUE), 
+                standard_deviation = sd(BPSysAve, na.rm = TRUE))]
+ref</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["average"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"108.4224","2":"10.14668"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>Report the min and max values for the same group.</li>
+</ol>
+<pre class="r"><code>NHANES[AgeDecade == &quot; 20-29&quot; &amp; Gender == &quot;female&quot;,
+       .(minimum = min(BPSysAve, na.rm = TRUE), 
+         maximum = max(BPSysAve, na.rm = TRUE))]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["minimum"],"name":[1],"type":["int"],"align":["right"]},{"label":["maximum"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"84","2":"179"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>Compute the average and standard deviation for females, but for each
+age group separately rather than a selected decade as in question 1.
+Note that the age groups are defined by AgeDecade.</li>
+</ol>
+<pre class="r"><code>NHANES[Gender == &quot;female&quot;,
+       .(average = mean(BPSysAve, na.rm = TRUE), 
+         standard_deviation = sd(BPSysAve, na.rm = TRUE)),
+       by = AgeDecade]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["AgeDecade"],"name":[1],"type":["fct"],"align":["left"]},{"label":["average"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"40-49","2":"115.49385","3":"14.530054"},{"1":"10-19","2":"104.27466","3":"9.461431"},{"1":"50-59","2":"121.84245","3":"16.179333"},{"1":"0-9","2":"99.95041","3":"9.071798"},{"1":"60-69","2":"127.17787","3":"17.125713"},{"1":"20-29","2":"108.42243","3":"10.146681"},{"1":"30-39","2":"111.25512","3":"12.314790"},{"1":"70+","2":"133.51652","3":"19.841781"},{"1":"NA","2":"141.54839","3":"22.908521"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol start="4" style="list-style-type: decimal">
+<li>Repeat exercise 3 for males.</li>
+</ol>
+<pre class="r"><code>NHANES[Gender == &quot;male&quot;,
+       .(average = mean(BPSysAve, na.rm = TRUE), 
+         standard_deviation = sd(BPSysAve, na.rm = TRUE)),
+       by = AgeDecade]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["AgeDecade"],"name":[1],"type":["fct"],"align":["left"]},{"label":["average"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["standard_deviation"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"30-39","2":"119.40063","3":"12.306656"},{"1":"0-9","2":"97.41912","3":"8.317367"},{"1":"60-69","2":"126.88578","3":"17.478117"},{"1":"50-59","2":"125.75000","3":"17.760536"},{"1":"10-19","2":"109.59789","3":"11.227769"},{"1":"40-49","2":"120.78390","3":"13.968338"},{"1":"20-29","2":"117.85084","3":"11.274795"},{"1":"NA","2":"136.40000","3":"23.534731"},{"1":"70+","2":"130.20172","3":"18.657475"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<ol start="5" style="list-style-type: decimal">
+<li>For males between the ages of 40-49, compare systolic blood pressure
+across race as reported in the Race1 variable. Order the resulting table
+from lowest to highest average systolic blood pressure.</li>
+</ol>
+<pre class="r"><code>NHANES[Gender == &quot;male&quot; &amp; AgeDecade == &quot; 40-49&quot;,
+       .(average = mean(BPSysAve, na.rm = TRUE)),
+       by = &quot;Race1&quot;]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Race1"],"name":[1],"type":["fct"],"align":["left"]},{"label":["average"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"White","2":"119.9188"},{"1":"Mexican","2":"121.8500"},{"1":"Hispanic","2":"121.6098"},{"1":"Other","2":"120.4000"},{"1":"Black","2":"125.8387"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
