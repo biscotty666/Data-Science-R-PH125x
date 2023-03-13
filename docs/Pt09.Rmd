@@ -590,7 +590,7 @@ qplot(x,
       color = I("black"),
       xlab = "Population")
 ```
-NB. from the docs for <span id="I">**`I()`**</span>, the 'as is` function
+NB. from the docs for <span id="I">**`I()`**</span>, the `as is` function
 <blockquote>
 Protecting an object by enclosing it in `I()` in a call to **data.frame** inhibits the conversion of character vectors to factors and the dropping of names, and ensures that matrices are inserted as single columns.
 </blockquote>
