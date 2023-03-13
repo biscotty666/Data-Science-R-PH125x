@@ -11,6 +11,16 @@ output:
 
 R commands in this chapter
 
+|[`geom_bar`](#geom_bar)|
+[`geom_boxplot`](#geom_boxplot)|
+[`geom_density`](#geom_density)|
+[`geom_histogram`](#geom_histogram)|
+[`geom_raster`](#geom_raster)|
+[`geom_tile`](#geom_tile)|
+[`I`](#I)|
+[`qplot`](#qplot)|
+[`scale_fill_gradient`](#scale_fill_gradient)|
+
 You may have noticed that numerical data is often summarized with the average value. For example, the quality of a high school is sometimes summarized with one number: the average score on a standardized test. Occasionally, a second number is reported: the standard deviation. For example, you might read a report stating that scores were 680 plus or minus 50 (the standard deviation). The report has summarized an entire vector of scores with just two numbers. Is this appropriate? Is there any important piece of information that we are missing by only looking at this summary rather than the entire list?
 
 Our first data visualization building block is learning to summarize lists of factors or numeric vectors. More often than not, the best way to share or explore this summary is through data visualization. The most basic statistical summary of a list of objects or numbers is its distribution. Once a data has been summarized as a distribution, there are several data visualization techniques to effectively relay this information. For this reason, it is important to have a deep understand the concept of a distribution.
@@ -181,7 +191,7 @@ Because these are reported heights, a possibility is that the student meant to e
 
 ## 9.8.1 Barplots
 
-To generate a barplot we can use the geom_bar geometry. The default is to count the number of each category and draw a bar. Here is the plot for the regions of the US.
+To generate a barplot we can use the <span id="geom_bar">**`geom_bar`**</span> geometry. The default is to count the number of each category and draw a bar. Here is the plot for the regions of the US.
 
 ```{r}
 murders |>
@@ -205,7 +215,7 @@ tab |>
 
 ## 9.8.2 Histograms
 
-To generate histograms we use `geom_histogram`. By looking at the help file for this function, we learn that the only required argument is `x`, the variable for which we will construct a histogram. We dropped the `x` because we know it is the first argument. The code looks like this:
+To generate histograms we use <span id="geom_histogram">**`geom_histogram`**</span>. By looking at the help file for this function, we learn that the only required argument is `x`, the variable for which we will construct a histogram. We dropped the `x` because we know it is the first argument. The code looks like this:
 ```{r}
 heights |>
   filter(sex == "Female") |>
@@ -231,14 +241,14 @@ heights |>
 
 ## 9.8.3 Density plots
 
-To create a smooth density, we use the geom_density. To make a smooth density plot with the data previously shown as a histogram we can use this code:
+To create a smooth density, we use the <span id="geom_density">**`geom_density`**</span>. To make a smooth density plot with the data previously shown as a histogram we can use this code:
 ```{r}
 heights |>
   filter(sex == "Female") |>
   ggplot(aes(height)) +
   geom_density(fill = "blue")
 ```
-To change the smoothness of the density, we use the adjust argument to multiply the default value by that adjust. For example, if we want the bandwidth to be twice as big we use:
+To change the smoothness of the density, we use the **adjust** argument to multiply the default value by that adjust. For example, if we want the bandwidth to be twice as big we use:
 ```{r}
 heights |>
   filter(sex == "Female") |>
@@ -246,6 +256,95 @@ heights |>
   geom_density(fill = "blue",
                adjust = 2)
 ```
+
+## 9.8.4 Boxplots
+
+The geometry for boxplot is <span id="geom_boxplot">**`geom_boxplot`**</span>. As discussed, boxplots are useful for comparing distributions. For example, below are the previously shown heights for women, but compared to men. For this geometry, we need arguments x as the categories, and y as the values.
+
+<img src="http://rafalab.dfci.harvard.edu/dsbook/book_files/figure-html/female-male-boxplots-geom-1.png" />
+
+```{r}
+heights |> 
+  group_by(sex) |>
+  ggplot(aes(sex,height)) +
+  geom_boxplot()
+```
+
+## 9.8.5 Images
+
+Images were not needed for the concepts described in this chapter, but we will use images in Section 11.14, so we introduce the two geometries used to create images: <span id="geom_tile">**`geom_tile`**</span> and <span id="geom_raster">**`geom_raster`**</span>. They behave similarly; to see how they differ, please consult the help file. To create an image in **ggplot2** we need a data frame with the x and y coordinates as well as the values associated with each of these. Here is a data frame.
+```{r}
+x <- expand.grid(x = 1:12, y = 1:10) |>
+  mutate(z = 1:120)
+x
+```
+<span class="yellow">Note that this is the tidy version of a matrix, matrix(1:120, 12, 10).</span> To plot the image we use the following code:
+```{r}
+x |>
+  ggplot(aes(x, y, fill = z)) +
+  geom_raster()
+```
+With these images you will often want to change the color scale. This can be done through the <span id="scale_fill_gradient">**`scale_fill_gradient`**</span> layer.
+```{r}
+x |> 
+  ggplot(aes(x, y, fill = z)) + 
+  geom_raster() + 
+  scale_fill_gradientn(colors =  terrain.colors(10))
+x
+```
+NB from the docs
+<blockquote>
+`geom_rect` and `geom_til`e do the same thing, but are parameterised differently: `geom_rect` uses the locations of the four corners (`xmin`, `xmax`, `ymin` and `ymax`), while `geom_tile` uses the center of the tile and its size (`x`, `y`, `width`, `height`). `geom_raster` is a high performance special case for when all the tiles are the same size.
+</blockquote>
+
+## 9.8.6 Quick plots
+
+In Section 8.13 we introduced <span id="qplot">**`qplot`**</span> as a useful function when we need to make a quick scatterplot. We can also use `qplot` to make histograms, density plots, boxplot, qqplots and more. Although it does not provide the level of control of ggplot, `qplot` is definitely useful as it permits us to make a plot with a short snippet of code.
+
+Suppose we have the female heights in an object `x`:
+```{r}
+heights |>
+  filter(sex == "Male") |>
+  pull(height) -> x
+qplot(x)
+```
+<span class="yellow">The function guesses that we want to make a histogram because we only supplied one variable.</span> In Section 8.13 we saw that if we supply `qplot` two variables, it automatically makes a scatterplot.
+
+To make a quick `qqplot` you have to use the sample argument. Note that we can add layers just as we do with ggplot.
+```{r}
+qplot(sample = scale(x)) +
+  geom_abline()
+```
+If we supply a factor and a numeric vector, we obtain a plot like the one below. Note that in the code below we are using the data argument. <span class="yellow">Because the data frame is not the first argument in qplot, we have to use the dot operator.</span>
+```{r}
+height <- heights |> pull(height)
+sex <- heights |> pull(sex)
+qplot(sex, height)
+```
+NB. <span class="yellow">The code above is different from the code in the book, which is `heights |> qplot(sex, height, data = .)`. This failed with "Object "." not found. I can't be certain that the plot above is the intended one, but it seems to be.</span>
+
+We can also select a specific geometry by using the `geom` argument. So to convert the plot above to a boxplot, we use the following code:
+```{r}
+sex <- heights |> pull(sex)
+qplot(sex, height, geom = "boxplot")
+```
+We can also use the `geom` argument to generate a density plot instead of a histogram:
+```{r}
+qplot(x, geom = "density")
+```
+Although not as much as with ggplot, we do have some flexibility to improve the results of qplot. Looking at the help file we see several ways in which we can improve the look of the histogram above. Here is an example:
+```{r}
+qplot(x, 
+      bins = 15,
+      color = I("black"),
+      xlab = "Population")
+```
+NB. from the docs for <span id="I">**`I()`**</span>, the 'as is` function
+<blockquote>
+Protecting an object by enclosing it in `I()` in a call to **data.frame** inhibits the conversion of character vectors to factors and the dropping of names, and ensures that matrices are inserted as single columns.
+</blockquote>
+
+
 
 
 
