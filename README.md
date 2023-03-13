@@ -128,7 +128,31 @@ Function index:
 [`xlab`](docs/Pt08.html#xlab),
 [`ylab`](docs/Pt08.html#ylab)
 
-### [Chapter 8 Visualizing data distributions](docs/Pt09.html)
+### [Chapter 9 Visualizing data distributions](docs/Pt09.html)
+
+[`cur_column`](docs/Pt09.html#n),
+[`cur_group`](docs/Pt09.html#n),
+[`cur_group_id`](docs/Pt09.html#n),
+[`cur_group_rows`](docs/Pt09.html#n),
+[`dnorm`](docs/Pt09.html#norm),
+[`geom_bar`](docs/Pt09.html#geom_bar),
+[`geom_boxplot`](docs/Pt09.html#geom_boxplot),
+[`geom_density`](docs/Pt09.html#geom_density),
+[`geom_histogram`](docs/Pt09.html#geom_histogram),
+[`geom_qq`](docs/Pt09.html#geom_qq),
+[`geom_raster`](docs/Pt09.html#geom_raster),
+[`geom_tile`](docs/Pt09.html#geom_tile),
+[`I`](docs/Pt09.html#I),
+[`n`](docs/Pt09.html#n),
+[`pnorm`](docs/Pt09.html#norm),
+[`prop.table`](docs/Pt09.html#prop.table),
+[`qnorm`](docs/Pt09.html#norm),
+[`qplot`](docs/Pt09.html#qplot),
+[`r`norm`](docs/Pt09.html#norm),
+[`scale_fill_gradient`](docs/Pt09.html#scale_fill_gradient),
+[`stat_ecdf`](docs/Pt09.html#stat_ecdf)
+
+
 
 <span id="poco"></span>
 
