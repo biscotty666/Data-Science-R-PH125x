@@ -128,6 +128,8 @@ Function index:
 [`xlab`](docs/Pt08.html#xlab),
 [`ylab`](docs/Pt08.html#ylab)
 
+### [Chapter 8 Visualizing data distributions](docs/Pt09.html)
+
 <span id="poco"></span>
 
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
