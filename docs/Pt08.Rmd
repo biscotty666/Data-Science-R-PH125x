@@ -49,8 +49,34 @@ One limitation is that <span class="blue>**ggplot2** is designed to work exclusi
 # 8.1 The components of a graph
 
 We will construct a graph that summarizes the US `murders` dataset that looks like this:
+```{r}
+library(dslabs)
+data(murders)
+library(ggthemes)
+library(ggrepel)
 
-<img src="http://rafalab.dfci.harvard.edu/dsbook/book_files/figure-html/ggplot-example-plot-1.png" />
+r <- murders |> 
+  summarize(pop=sum(population), tot=sum(total)) |> 
+  mutate(rate = tot/pop*10^6) |> pull(rate)
+
+murders |>
+  ggplot(aes(x = population / 10^6,
+             y = total,
+             label = abb)) +
+  geom_abline(intercept = log10(r),
+              lty = 2,
+              col = "darkgrey") +
+  geom_point(aes(color = region),
+             size = 3) +
+  geom_text_repel(max.overlaps = 11) +
+  scale_x_log10() +
+  scale_y_log10() +
+  xlab("Populations in millions (log scale)") +
+  ylab("Total number of murders (log scale)") +
+  ggtitle("US Gun Murders in 2010") +
+  scale_color_discrete(name = "Region") +
+  theme_economist()
+```
 
 We can clearly see how much states vary across population size and the total number of murders. Not surprisingly, we also see a clear relationship between murder totals and population size. A state falling on the dashed grey line has the same murder rate as the US average. The four geographic regions are denoted with color, which depicts how most southern states have murder rates above the average.
 

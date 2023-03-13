@@ -148,7 +148,7 @@ Function index:
 [`prop.table`](docs/Pt09.html#prop.table),
 [`qnorm`](docs/Pt09.html#norm),
 [`qplot`](docs/Pt09.html#qplot),
-[`r`norm`](docs/Pt09.html#norm),
+[`rnorm`](docs/Pt09.html#norm),
 [`scale_fill_gradient`](docs/Pt09.html#scale_fill_gradient),
 [`stat_ecdf`](docs/Pt09.html#stat_ecdf)
 
