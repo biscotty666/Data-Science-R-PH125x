@@ -11,6 +11,92 @@ output:
 
 R commands in this chapter
 
+# 10.1 Case study: new insights on poverty
+
+Hans Rosling^[https://en.wikipedia.org/wiki/Hans_Rosling] was the co-founder of the Gapminder Foundation^[http://www.gapminder.org/], an organization dedicated to educating the public by using data to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict the narratives that emanate from sensationalist media coverage of catastrophes, tragedies, and other unfortunate events. As stated in the Gapminder Foundation's website:
+
+>>> Journalists and lobbyists tell dramatic stories. That’s their job. They tell stories about extraordinary events and unusual people. The piles of dramatic stories pile up in peoples' minds into an over-dramatic worldview and strong negative stress feelings: "The world is getting worse!", "It’s we vs. them!”, “Other people are strange!", "The population just keeps growing!" and "Nobody cares!"
+
+Hans Rosling conveyed actual data-based trends in a dramatic way of his own, using effective data visualization. This section is based on two talks that exemplify this approach to education: [New Insights on Poverty]^[https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en] and The Best Stats You've Ever Seen^[https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen]. Specifically, in this section, we use data to attempt to answer the following two questions:
+
+1. Is it a fair characterization of today's world to say it is divided into western rich nations and the developing world in Africa, Asia, and Latin America? 
+2. Has income inequality across countries worsened during the last 40 years? 
+
+To answer these questions, we will be using the `gapminder` dataset provided in __dslabs__. This dataset was created using a number of spreadsheets available from the Gapminder Foundation. You can access the table like this:
+
+```{r}
+library(tidyverse)
+library(dslabs)
+data(gapminder)
+gapminder |> 
+  as_tibble() |>
+  head()
+```
+
+## 10.1.1 Hans Rosling's quiz
+
+As done in the *New Insights on Poverty* video, we start by testing our knowledge regarding differences in child mortality across different countries. For each of the six pairs of countries below, which country do you think had the highest child mortality rates in 2015? Which pairs do you think are most similar?
+
+1. Sri Lanka or Turkey
+2. Poland or South Korea
+3. Malaysia or Russia
+4. Pakistan or Vietnam
+5. Thailand or South Africa
+
+When answering these questions without data, the non-European countries are typically picked as having higher child mortality rates: Sri Lanka over Turkey, South Korea over Poland, and Malaysia over Russia. It is also common to assume that countries considered to be part of the developing world: Pakistan, Vietnam, Thailand, and South Africa, have similarly high mortality rates.
+
+To answer these questions with data, we can use **dplyr**. For example, for the first comparison we see that:
+```{r}
+gapminder |>
+  filter(year == 2015 & country %in% c("Sri Lanka", "Turkey")) |>
+  select(country, infant_mortality)
+```
+```{r}
+comp_table <-
+  tibble(comparison = rep(1:5, each = 2),
+         country = c("Sri Lanka", "Turkey", "Poland", "South Korea", "Malaysia", "Russia", "Pakistan","Vietnam","Thailand","South Africa"))
+
+tmp <- 
+  gapminder |>
+  filter(year == 2015) |>
+  select(country, infant_mortality) |>
+  mutate(country = as.character(country))
+
+tab <- 
+  inner_join(comp_table, tmp, by = "country") |>
+  select(-comparison)
+
+tmp <- 
+  bind_cols(slice(tab, seq(1, 9, 2)),
+            slice(tab, seq(2, 10, 2)))
+names(tmp) <- c("country", "infant mortality", "country", "infant mortality")
+
+if(knitr::is_html_output()){
+  knitr::kable(tmp, "html") |>
+    kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+} else{
+  knitr::kable(tmp, "latex", booktabs = TRUE) |>
+    kableExtra::kable_styling(font_size = 8)
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

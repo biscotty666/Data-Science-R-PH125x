@@ -1497,6 +1497,230 @@ window.onload = function() {
   PagedTableDoc.initAll();
 };
 </script>
+<script>$(document).ready(function(){
+    if (typeof $('[data-toggle="tooltip"]').tooltip === 'function') {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
+    if ($('[data-toggle="popover"]').popover === 'function') {
+        $('[data-toggle="popover"]').popover();
+    }
+});
+</script>
+<style type="text/css">
+.lightable-minimal {
+border-collapse: separate;
+border-spacing: 16px 1px;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-minimal td {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal th {
+margin-left: 5px;
+margin-right: 5px;
+}
+.lightable-minimal thead tr:last-child th {
+border-bottom: 2px solid #00000050;
+empty-cells: hide;
+}
+.lightable-minimal tbody tr:first-child td {
+padding-top: 0.5em;
+}
+.lightable-minimal.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-minimal.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic {
+border-top: 0.16em solid #111111;
+border-bottom: 0.16em solid #111111;
+width: 100%;
+margin-bottom: 10px;
+margin: 10px 5px;
+}
+.lightable-classic tfoot tr td {
+border: 0;
+}
+.lightable-classic tfoot tr:first-child td {
+border-top: 0.14em solid #111111;
+}
+.lightable-classic caption {
+color: #222222;
+}
+.lightable-classic td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic thead tr:last-child th {
+border-bottom: 0.10em solid #111111;
+}
+.lightable-classic.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-classic-2 {
+border-top: 3px double #111111;
+border-bottom: 3px double #111111;
+width: 100%;
+margin-bottom: 10px;
+}
+.lightable-classic-2 tfoot tr td {
+border: 0;
+}
+.lightable-classic-2 tfoot tr:first-child td {
+border-top: 3px double #111111;
+}
+.lightable-classic-2 caption {
+color: #222222;
+}
+.lightable-classic-2 td {
+padding-left: 5px;
+padding-right: 5px;
+color: #222222;
+}
+.lightable-classic-2 th {
+padding-left: 5px;
+padding-right: 5px;
+font-weight: normal;
+color: #222222;
+}
+.lightable-classic-2 tbody tr:last-child td {
+border-bottom: 3px double #111111;
+}
+.lightable-classic-2 thead tr:last-child th {
+border-bottom: 1px solid #111111;
+}
+.lightable-classic-2.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-classic-2.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #EEE;
+border-collapse: collapse;
+margin-bottom: 10px;
+}
+.lightable-material tfoot tr td {
+border: 0;
+}
+.lightable-material tfoot tr:first-child td {
+border-top: 1px solid #EEE;
+}
+.lightable-material th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+}
+.lightable-material td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+border-top: 1px solid #eeeeee;
+}
+.lightable-material.lightable-hover tbody tr:hover {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody tr:nth-child(even) {
+background-color: #f5f5f5;
+}
+.lightable-material.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #ddd;
+}
+.lightable-material-dark {
+min-width: 100%;
+white-space: nowrap;
+table-layout: fixed;
+font-family: Roboto, sans-serif;
+border: 1px solid #FFFFFF12;
+border-collapse: collapse;
+margin-bottom: 10px;
+background-color: #363640;
+}
+.lightable-material-dark tfoot tr td {
+border: 0;
+}
+.lightable-material-dark tfoot tr:first-child td {
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark th {
+height: 56px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF60;
+}
+.lightable-material-dark td {
+height: 52px;
+padding-left: 16px;
+padding-right: 16px;
+color: #FFFFFF;
+border-top: 1px solid #FFFFFF12;
+}
+.lightable-material-dark.lightable-hover tbody tr:hover {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody tr:nth-child(even) {
+background-color: #FFFFFF12;
+}
+.lightable-material-dark.lightable-striped tbody td {
+border: 0;
+}
+.lightable-material-dark.lightable-striped thead tr:last-child th {
+border-bottom: 1px solid #FFFFFF12;
+}
+.lightable-paper {
+width: 100%;
+margin-bottom: 10px;
+color: #444;
+}
+.lightable-paper tfoot tr td {
+border: 0;
+}
+.lightable-paper tfoot tr:first-child td {
+border-top: 1px solid #00000020;
+}
+.lightable-paper thead tr:last-child th {
+color: #666;
+vertical-align: bottom;
+border-bottom: 1px solid #00000020;
+line-height: 1.15em;
+padding: 10px 5px;
+}
+.lightable-paper td {
+vertical-align: middle;
+border-bottom: 1px solid #00000010;
+line-height: 1.15em;
+padding: 7px 5px;
+}
+.lightable-paper.lightable-hover tbody tr:hover {
+background-color: #F9EEC1;
+}
+.lightable-paper.lightable-striped tbody tr:nth-child(even) {
+background-color: #00000008;
+}
+.lightable-paper.lightable-striped tbody td {
+border: 0;
+}
+</style>
 
 <style type="text/css">
 code{white-space: pre-wrap;}
@@ -1650,9 +1874,241 @@ display: none;
 
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#case-study-new-insights-on-poverty" id="toc-case-study-new-insights-on-poverty">10.1 Case study: new
+insights on poverty</a>
+<ul>
+<li><a href="#hans-roslings-quiz" id="toc-hans-roslings-quiz">10.1.1
+Hans Rosling’s quiz</a></li>
+</ul></li>
+</ul>
+</div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <p>R commands in this chapter</p>
+<div id="case-study-new-insights-on-poverty" class="section level1">
+<h1>10.1 Case study: new insights on poverty</h1>
+<p>Hans Rosling<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> was the co-founder of the Gapminder
+Foundation<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>, an organization dedicated to educating the
+public by using data to dispel common myths about the so-called
+developing world. The organization uses data to show how actual trends
+in health and economics contradict the narratives that emanate from
+sensationalist media coverage of catastrophes, tragedies, and other
+unfortunate events. As stated in the Gapminder Foundation’s website:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>Journalists and lobbyists tell dramatic stories. That’s their job.
+They tell stories about extraordinary events and unusual people. The
+piles of dramatic stories pile up in peoples’ minds into an
+over-dramatic worldview and strong negative stress feelings: “The world
+is getting worse!”, “It’s we vs. them!”, “Other people are strange!”,
+“The population just keeps growing!” and “Nobody cares!”</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>Hans Rosling conveyed actual data-based trends in a dramatic way of
+his own, using effective data visualization. This section is based on
+two talks that exemplify this approach to education: [New Insights on
+Poverty]<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>
+and The Best Stats You’ve Ever Seen<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. Specifically, in this section, we use data
+to attempt to answer the following two questions:</p>
+<ol style="list-style-type: decimal">
+<li>Is it a fair characterization of today’s world to say it is divided
+into western rich nations and the developing world in Africa, Asia, and
+Latin America?</li>
+<li>Has income inequality across countries worsened during the last 40
+years?</li>
+</ol>
+<p>To answer these questions, we will be using the
+<code>gapminder</code> dataset provided in <strong>dslabs</strong>. This
+dataset was created using a number of spreadsheets available from the
+Gapminder Foundation. You can access the table like this:</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.0     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.4.1
+## ✔ ggplot2   3.4.1     ✔ tibble    3.1.8
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
+<pre class="r"><code>library(dslabs)
+data(gapminder)
+gapminder |&gt; 
+  as_tibble() |&gt;
+  head()</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["country"],"name":[1],"type":["fct"],"align":["left"]},{"label":["year"],"name":[2],"type":["int"],"align":["right"]},{"label":["infant_mortality"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["life_expectancy"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["fertility"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["population"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["gdp"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["continent"],"name":[8],"type":["fct"],"align":["left"]},{"label":["region"],"name":[9],"type":["fct"],"align":["left"]}],"data":[{"1":"Albania","2":"1960","3":"115.40","4":"62.87","5":"6.19","6":"1636054","7":"NA","8":"Europe","9":"Southern Europe"},{"1":"Algeria","2":"1960","3":"148.20","4":"47.50","5":"7.65","6":"11124892","7":"13828152297","8":"Africa","9":"Northern Africa"},{"1":"Angola","2":"1960","3":"208.00","4":"35.98","5":"7.32","6":"5270844","7":"NA","8":"Africa","9":"Middle Africa"},{"1":"Antigua and Barbuda","2":"1960","3":"NA","4":"62.97","5":"4.43","6":"54681","7":"NA","8":"Americas","9":"Caribbean"},{"1":"Argentina","2":"1960","3":"59.87","4":"65.39","5":"3.11","6":"20619075","7":"108322326649","8":"Americas","9":"South America"},{"1":"Armenia","2":"1960","3":"NA","4":"66.86","5":"4.55","6":"1867396","7":"NA","8":"Asia","9":"Western Asia"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="hans-roslings-quiz" class="section level2">
+<h2>10.1.1 Hans Rosling’s quiz</h2>
+<p>As done in the <em>New Insights on Poverty</em> video, we start by
+testing our knowledge regarding differences in child mortality across
+different countries. For each of the six pairs of countries below, which
+country do you think had the highest child mortality rates in 2015?
+Which pairs do you think are most similar?</p>
+<ol style="list-style-type: decimal">
+<li>Sri Lanka or Turkey</li>
+<li>Poland or South Korea</li>
+<li>Malaysia or Russia</li>
+<li>Pakistan or Vietnam</li>
+<li>Thailand or South Africa</li>
+</ol>
+<p>When answering these questions without data, the non-European
+countries are typically picked as having higher child mortality rates:
+Sri Lanka over Turkey, South Korea over Poland, and Malaysia over
+Russia. It is also common to assume that countries considered to be part
+of the developing world: Pakistan, Vietnam, Thailand, and South Africa,
+have similarly high mortality rates.</p>
+<p>To answer these questions with data, we can use
+<strong>dplyr</strong>. For example, for the first comparison we see
+that:</p>
+<pre class="r"><code>gapminder |&gt;
+  filter(year == 2015 &amp; country %in% c(&quot;Sri Lanka&quot;, &quot;Turkey&quot;)) |&gt;
+  select(country, infant_mortality)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["country"],"name":[1],"type":["fct"],"align":["left"]},{"label":["infant_mortality"],"name":[2],"type":["dbl"],"align":["right"]}],"data":[{"1":"Sri Lanka","2":"8.4"},{"1":"Turkey","2":"11.6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>comp_table &lt;-
+  tibble(comparison = rep(1:5, each = 2),
+         country = c(&quot;Sri Lanka&quot;, &quot;Turkey&quot;, &quot;Poland&quot;, &quot;South Korea&quot;, &quot;Malaysia&quot;, &quot;Russia&quot;, &quot;Pakistan&quot;,&quot;Vietnam&quot;,&quot;Thailand&quot;,&quot;South Africa&quot;))
+
+tmp &lt;- 
+  gapminder |&gt;
+  filter(year == 2015) |&gt;
+  select(country, infant_mortality) |&gt;
+  mutate(country = as.character(country))
+
+tab &lt;- 
+  inner_join(comp_table, tmp, by = &quot;country&quot;) |&gt;
+  select(-comparison)
+
+tmp &lt;- 
+  bind_cols(slice(tab, seq(1, 9, 2)),
+            slice(tab, seq(2, 10, 2)))</code></pre>
+<pre><code>## New names:
+## • `country` -&gt; `country...1`
+## • `infant_mortality` -&gt; `infant_mortality...2`
+## • `country` -&gt; `country...3`
+## • `infant_mortality` -&gt; `infant_mortality...4`</code></pre>
+<pre class="r"><code>names(tmp) &lt;- c(&quot;country&quot;, &quot;infant mortality&quot;, &quot;country&quot;, &quot;infant mortality&quot;)
+
+if(knitr::is_html_output()){
+  knitr::kable(tmp, &quot;html&quot;) |&gt;
+    kableExtra::kable_styling(bootstrap_options = &quot;striped&quot;, full_width = FALSE)
+} else{
+  knitr::kable(tmp, &quot;latex&quot;, booktabs = TRUE) |&gt;
+    kableExtra::kable_styling(font_size = 8)
+}</code></pre>
+<table class="table table-striped" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+infant mortality
+</th>
+<th style="text-align:left;">
+country
+</th>
+<th style="text-align:right;">
+infant mortality
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Sri Lanka
+</td>
+<td style="text-align:right;">
+8.4
+</td>
+<td style="text-align:left;">
+Turkey
+</td>
+<td style="text-align:right;">
+11.6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Poland
+</td>
+<td style="text-align:right;">
+4.5
+</td>
+<td style="text-align:left;">
+South Korea
+</td>
+<td style="text-align:right;">
+2.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Malaysia
+</td>
+<td style="text-align:right;">
+6.0
+</td>
+<td style="text-align:left;">
+Russia
+</td>
+<td style="text-align:right;">
+8.2
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Pakistan
+</td>
+<td style="text-align:right;">
+65.8
+</td>
+<td style="text-align:left;">
+Vietnam
+</td>
+<td style="text-align:right;">
+17.3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Thailand
+</td>
+<td style="text-align:right;">
+10.5
+</td>
+<td style="text-align:left;">
+South Africa
+</td>
+<td style="text-align:right;">
+33.6
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://en.wikipedia.org/wiki/Hans_Rosling" class="uri">https://en.wikipedia.org/wiki/Hans_Rosling</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p><a href="http://www.gapminder.org/" class="uri">http://www.gapminder.org/</a><a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p><a href="https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en" class="uri">https://www.ted.com/talks/hans_rosling_reveals_new_insights_on_poverty?language=en</a><a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+<li id="fn4"><p><a href="https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen" class="uri">https://www.ted.com/talks/hans_rosling_shows_the_best_stats_you_ve_ever_seen</a><a href="#fnref4" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
 
 
 

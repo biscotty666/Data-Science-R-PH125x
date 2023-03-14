@@ -73,6 +73,23 @@ a <- c(0, 1, 2, -4, 5)
 result <- ifelse(a > 0, 1/a, NA)
 result
 ```
+This table helps us see what happened:
+```{r, echo=FALSE}
+tmp <-
+  data.frame(a = a, 
+             is_a_positive = a > 0,
+             answer1 = 1/a,
+             answer2 = NA,
+             result = result)
+if(knitr::is_html_output()) {
+  knitr::kable(tmp, "html") |>
+    kableExtra::kable_styling(bootstrap_options = "striped",
+                              full_width = FALSE)
+} else {
+  knitr::kable(tmp, "latex", booktabs = TRUE) |>
+    kableExtra::kable_styling(font_size = 8)
+}
+```
 
 <span class="hl3">Here is an example of how this function can be readily used to replace all the missing values in a vector with zeros:</span>
 <span id="is-na">`is.na()`</span>

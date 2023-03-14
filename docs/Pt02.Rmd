@@ -595,10 +595,24 @@ murders$state[i_max]
 
 <span id="rank">`rank()`</span>
 
+Although not as frequently used as `order` and `sort`, the function `rank` is also related to order and can be useful.
+For any given vector it returns a vector with the rank of the first entry, second entry, etc., of the input vector. Here is a simple example:
 ```{r}
 x <- c(31, 4, 15, 92, 65)
 rank(x)
 ```
+To summarize, let's look at the results of the three functions we have introduced:
+```{r}
+tmp <- data.frame(original=x, sort=sort(x), order=order(x), rank=rank(x))
+if(knitr::is_html_output()){
+  knitr::kable(tmp, "html") |>
+    kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+} else{
+  knitr::kable(tmp, "latex", booktabs = TRUE) |>
+    kableExtra::kable_styling(font_size = 8)
+}
+```
+
 
 ## 2.9.5 Beware of recycling
 
