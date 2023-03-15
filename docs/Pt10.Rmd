@@ -11,6 +11,10 @@ output:
 
 R commands in this chapter
 
+|[`facet_grid`](#facet_grid)|
+[`facet_wrap`](#facet_wrap)|
+
+
 # 10.1 Case study: new insights on poverty
 
 Hans Rosling^[https://en.wikipedia.org/wiki/Hans_Rosling] was the co-founder of the Gapminder Foundation^[http://www.gapminder.org/], an organization dedicated to educating the public by using data to dispel common myths about the so-called developing world. The organization uses data to show how actual trends in health and economics contradict the narratives that emanate from sensationalist media coverage of catastrophes, tragedies, and other unfortunate events. As stated in the Gapminder Foundation's website:
@@ -25,6 +29,8 @@ Hans Rosling conveyed actual data-based trends in a dramatic way of his own, usi
 To answer these questions, we will be using the `gapminder` dataset provided in __dslabs__. This dataset was created using a number of spreadsheets available from the Gapminder Foundation. You can access the table like this:
 
 ```{r}
+# install.packages("tidyverse")
+# install.packages("dslabs")
 library(tidyverse)
 library(dslabs)
 data(gapminder)
@@ -35,7 +41,7 @@ gapminder |>
 
 ## 10.1.1 Hans Rosling's quiz
 
-As done in the *New Insights on Poverty* video, we start by testing our knowledge regarding differences in child mortality across different countries. For each of the six pairs of countries below, which country do you think had the highest child mortality rates in 2015? Which pairs do you think are most similar?
+As done in the *New Insights on Poverty* video, we start by testing our knowledge regarding differences in child mortality across different countries. For each of the six pairs of countries below, <span class="yellow">which country do you think had the highest child mortality rates in 2015?</span> Which pairs do you think are most similar?
 
 1. Sri Lanka or Turkey
 2. Poland or South Korea
@@ -80,21 +86,93 @@ if(knitr::is_html_output()){
 }
 ```
 
+We see that the European countries on this list have higher child mortality rates: Poland has a higher rate than South Korea, and Russia has a higher rate than Malaysia. We also see that Pakistan has a much higher rate than Vietnam, and South Africa has a much higher rate than Thailand. It turns out that when Hans Rosling gave this quiz to educated groups of people, the average score was less than 2.5 out of 5, worse than what they would have obtained had they guessed randomly. This implies that more than ignorant, we are misinformed. In this chapter we see how data visualization helps inform us.
 
+# 10.2 Scatterplots
 
+The reason for this stems from the preconceived notion that the world is divided into two groups: the western world (Western Europe and North America), characterized by long life spans and small families, versus the developing world (Africa, Asia, and Latin America) characterized by short life spans and large families. <span class="yellow">But do the data support this dichotomous view?</span>
 
+In order to analyze this world view, our first plot is a scatterplot of life expectancy versus fertility rates (average number of children per woman). We start by looking at data from about 50 years ago, when perhaps this view was first cemented in our minds.
 
+```{r}
+filter(gapminder, year == 1962) |>
+  ggplot(aes(fertility, life_expectancy)) +
+  geom_point()
+```
 
+Most points fall into two distinct categories:
 
+1. Life expectancy around 70 years and 3 or fewer children per family.
+2. Life expectancy lower than 65 years and more than 5 children per family.
 
+To confirm that indeed these countries are from the regions we expect, we can use color to represent continent.
 
+```{r}
+filter(gapminder, year == 1962) |>
+  ggplot(aes(fertility, life_expectancy, color = continent)) +
+  geom_point()
+```
 
+<span class="yellow">In 1962, “the West versus developing world” view was grounded in some reality. Is this still the case 50 years later?</span>
 
+# 10.3 Faceting
 
+We could easily plot the 2012 data in the same way we did for 1962. To make comparisons, however, side by side plots are preferable. In **ggplot2**, we can achieve this by faceting variables: we stratify the data by some variable and make the same plot for each strata.
 
+To achieve faceting, we add a layer with the function <span id="facet_grid">**`facet_grid`**</span>, which automatically separates the plots. This function lets you facet by up to two variables using columns to represent one variable and rows to represent the other. The function expects the row and column variables to be separated by a ~. Here is an example of a scatterplot with facet_grid added as the last layer:
 
+```{r}
+gapminder |>
+  filter(year %in% c(1962, 2012)) |>
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_grid(year ~ continent)
+```
 
+We see a plot for each continent/year pair. However, this is just an example and more than what we want, which is simply to compare 1962 and 2012. <span class="yellow">In this case, there is just one variable and we use . to let facet know that we are not using one of the variables:</span>
 
+```{r}
+gapminder |>
+  filter(year %in% c(1962, 2012)) |>
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_grid(. ~ year)
+```
+
+This plot clearly shows that the majority of countries have moved from the developing world cluster to the western world one. In 2012, the western versus developing world view no longer makes sense. This is particularly clear when comparing Europe to Asia, the latter of which includes several countries that have made great improvements.
+
+<span id="facet_wrap"></span>
+
+## 10.3.1 `facet_wrap`
+
+To explore how this transformation happened through the years, we can make the plot for several years. For example, we can add 1970, 1980, 1990, and 2000. If we do this, we will not want all the plots on the same row, the default behavior of `facet_grid`, since they will become too thin to show the data. Instead, we will want to use multiple rows and columns. <span class="yellow">The function facet_wrap permits us to do this by automatically wrapping the series of plots so that each display has viewable dimensions</span>:
+```{r}
+years <- c(1962, 1980, 1990, 2000, 2012)
+continents <- c("Europe", "Asia")
+gapminder |>
+  filter(year %in% years & continent %in% continents) |>
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_wrap(~year)
+```
+
+This plot clearly shows how most Asian countries have improved at a much faster rate than European ones.
+
+## 10.3.2 Fixed scales for better comparisons
+
+The default choice of the range of the axes is important. When not using facet, this range is determined by the data shown in the plot. <span class="yellow">When using facet, this range is determined by the data shown in all plots and therefore kept fixed across plots.</span> This makes comparisons across plots much easier. For example, in the above plot, we can see that life expectancy has increased and the fertility has decreased across most countries. We see this because the cloud of points moves. This is not the case if we adjust the scales:
+
+```{r}
+gapminder |>
+  filter(year %in% c(1962, 2012)) |>
+  ggplot(aes(fertility, life_expectancy, col = continent)) +
+  geom_point() +
+  facet_wrap(. ~ year, scales = "free")
+```
+
+<span class="yellow">In the plot above, we have to pay special attention to the range to notice that the plot on the right has a larger life expectancy.</span>
+
+# 10.4 Time series plots
 
 
 
