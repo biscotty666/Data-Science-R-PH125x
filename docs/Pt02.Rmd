@@ -41,11 +41,11 @@ R commands in this chapter
 [`sum`](#sum)
 [`table`](#table)
 [`which`](#which)
-[`which.max`](#which-max)
+[`which.max`](#max)
 
-# 2.2 The very basics
+# 2.2 The very basics {#ls}
 
-Show all variables in the environment: <span id="ls">`ls()`</span>
+Show all variables in the environment:
 
 ```{r}
 ls()
@@ -81,9 +81,9 @@ c <- -1
 (-b - sqrt(b^2 - 4*a*c)) / (2*a)
 ```
 
-# 2.4 Data types
+# 2.4 Data types {#class}
 
-Print class of object <span id="class">`class(object)`</span>
+Print class of object
 
 ```{r}
 a <- 2
@@ -104,9 +104,7 @@ data(murders)
 class(murders)
 ```
 
-## 2.4.2 Examining an object
-
-<span id="str">`str()`</span> Object structure
+## 2.4.2 Examining an object {#str}
 
 ```{r}
 str(murders)
@@ -157,27 +155,22 @@ z
 class(z)
 ```
 
-Mathematically, the values in pop are integers and there is an integer class in R. However, by default, numbers are assigned class numeric even when they are round integers. For example, class(1) returns numeric. <span class="hl2">You can turn them into class integer with the **`as.integer()`** function or by adding an L like this: 1L. Note the class by typing: class(1L)</span>
+Mathematically, the values in pop are integers and there is an integer class in R. However, by default, numbers are assigned class numeric even when they are round integers. For example, class(1) returns numeric. <span class="green">You can turn them into class integer with the **`as.integer()`** function or by adding an L like this: 1L. Note the class by typing: class(1L)</span>
 
-2.4.5 Factors
+2.4.5 Factors {#levels}
 
 ```{r}
 class(murders$region)
 ```
-
-<span id="levels">`levels()`</span>
-
 ```{r}
 levels(murders$region)
 ```
 
 In the background, R stores these levels as integers and keeps a map to keep track of the labels. This is more memory efficient than storing all the characters.
 
-<span id="reorder">`reorder()`</span> change the order of levels
+For example, in the murders dataset regions are ordered from east to west. The function <span id="reorder">**`reorder`**</span> lets us change the order of the levels of a factor variable based on a summary computed on a numeric vector. We will demonstrate this with a simple example, and will see more advanced ones in the Data Visualization part of the book.
 
-For example, in the murders dataset regions are ordered from east to west. The function reorder lets us change the order of the levels of a factor variable based on a summary computed on a numeric vector. We will demonstrate this with a simple example, and will see more advanced ones in the Data Visualization part of the book.
-
-<span class="hl2">Suppose we want the levels of the region by the total number of murders rather than alphabetical order.</span> If there are values associated with each level, we can use the reorder and specify a data summary to determine the order. The following code takes the sum of the total murders in each region, and reorders the factor following these sums
+<span class="green">Suppose we want the levels of the region by the total number of murders rather than alphabetical order.</span> If there are values associated with each level, we can use the reorder and specify a data summary to determine the order. The following code takes the sum of the total murders in each region, and reorders the factor following these sums
 
 ```{r}
 region <- murders$region
@@ -219,9 +212,9 @@ record2[[1]]
 
 ## 2.4.7 Matrices
 
-Matrices are another type of object that are common in R. Matrices are similar to data frames in that they are two-dimensional: they have rows and columns. However, like numeric, character and logical vectors, <span class="hl2">entries in matrices have to be all the same type</span>. For this reason data frames are much more useful for storing data, since we can have characters, factors, and numbers in them.
+Matrices are another type of object that are common in R. Matrices are similar to data frames in that they are two-dimensional: they have rows and columns. However, like numeric, character and logical vectors, <span class="green">entries in matrices have to be all the same type</span>. For this reason data frames are much more useful for storing data, since we can have characters, factors, and numbers in them.
 
-<span class="hl2">Yet matrices have a major advantage over data frames: we can perform matrix algebra operations,</span> a powerful type of mathematical technique. We do not describe these operations in this book, but much of what happens in the background when you perform a data analysis involves matrices. We only cover matrices briefly here since some of the functions we will learn return matrices. However, if you plan to perform more advanced work, we highly recommend learning more as they are widely used in data analysis.
+<span class="green">Yet matrices have a major advantage over data frames: we can perform matrix algebra operations,</span> a powerful type of mathematical technique. We do not describe these operations in this book, but much of what happens in the background when you perform a data analysis involves matrices. We only cover matrices briefly here since some of the functions we will learn return matrices. However, if you plan to perform more advanced work, we highly recommend learning more as they are widely used in data analysis.
 
 `matrix(data, num_rows, num_cols)` define a matrix with
 
@@ -370,7 +363,7 @@ class(codes)
 names(codes)
 ```
 
-<span class="hl2">Assign names with `names()`</span>
+<span class="green">Assign names with `names()`</span>
 
 ```{r}
 country <- c("italy", "canada", "egypt")
@@ -379,9 +372,7 @@ names(codes) <- country
 codes
 ```
 
-## 2.6.3 Sequences
-
-<span id="seq">`seq(start, end, skip)`</span> to generate vectors
+## 2.6.3 Sequences {#seq}
 
 ```{r}
 seq(1, 10, 2)
@@ -543,7 +534,7 @@ as.numeric(x)
 
 Now that we have mastered some basic R knowledge, let’s try to gain some insights into the safety of different states in the context of gun murders.
 
-## 2.9.1 <span id="sort">`sort()`</span>
+## 2.9.1 `sort()` {#sort}
 
 Say we want to rank the states from least to most gun murders. The function sort sorts a vector in increasing order. We can therefore see the largest number of gun murders by typing:
 
@@ -553,7 +544,7 @@ data(murders)
 sort(murders$total)
 ```
 
-## 2.9.2 <span id="order">`order()`</span>
+## 2.9.2 `order()` {#order}
 
 Takes a vector as input and returns the vector of indexes that sorts the input vector. 
 
@@ -577,23 +568,18 @@ ind <- order(murders$total)
 murders$abb[ind]
 ```
 
-## 2.9.3 `max` and `which.max`
+## 2.9.3 `max` and `which.max` {#max}
 
-<span id="max">`max()`</span>
 ```{r}
 max(murders$total)
 ```
-
-<span id="which-max">`which.max()`</span> returns the index of the largest value
 
 ```{r}
 i_max <- which.max(murders$total)
 murders$state[i_max]
 ```
 
-## 2.9.4 `rank()`
-
-<span id="rank">`rank()`</span>
+## 2.9.4 `rank()` {#rank}
 
 Although not as frequently used as `order` and `sort`, the function `rank` is also related to order and can be useful.
 For any given vector it returns a vector with the rank of the first entry, second entry, etc., of the input vector. Here is a simple example:
@@ -624,7 +610,7 @@ y <- c(10, 20, 30, 40, 50, 60, 70)
 x + y
 ```
 
-We do get a warning, but no error. For the output, <span class="hl2">R has recycled the numbers in `x`</span>. Notice the last digit of numbers in the output.
+We do get a warning, but no error. For the output, <span class="green">R has recycled the numbers in `x`</span>. Notice the last digit of numbers in the output.
 
 # 2.10 Exercises
 
@@ -786,7 +772,7 @@ mean(murder_rate)
 
 ## 2.13.1 Subsetting with logicals
 
-Imagine you are moving from Italy where, according to an ABC news report, the murder rate is only 0.71 per 100,000. You would prefer to move to a state with a similar murder rate. Another powerful feature of R is that we can use logicals to index vectors. <span class="hl2">If we compare a vector to a single number, it actually performs the test for each entry.</span> The following is an example related to the question above:
+Imagine you are moving from Italy where, according to an ABC news report, the murder rate is only 0.71 per 100,000. You would prefer to move to a state with a similar murder rate. Another powerful feature of R is that we can use logicals to index vectors. <span class="green">If we compare a vector to a single number, it actually performs the test for each entry.</span> The following is an example related to the question above:
 
 ```{r}
 ind <- murder_rate <= 0.71
@@ -912,7 +898,7 @@ abb_exists_not
 
 # 2.15 Basic plots
 
-## 2.15.1 <span id="plot">`plot()`</span>
+## 2.15.1 `plot()` {#plot}
 
 ```{r}
 x <- murders$population / 10^6
@@ -920,13 +906,13 @@ y <- murders$total
 plot(x, y)
 ```
 
-<span class="hl2">For a quick plot that avoids accessing variables twice, we can use the <span id="with">`with()`</span> function:</span>
+<span class="green">For a quick plot that avoids accessing variables twice, we can use the <span id="with">`with()`</span> function:</span>
 
 ```{r}
 with(murders, plot(population, total))
 ```
 
-## 2.15.2 <span id="hist">`hist()`</span>
+## 2.15.2 `hist()` {#hist}
 
 ```{r}
 x <- with(murders, total / population * 10^5)
@@ -939,14 +925,14 @@ We can see that there is a wide range of values with most of them between 2 and 
 murders$state[which.max(x)]
 ```
 
-## 2.15.3 <span id="boxplot">`boxplot()`</span>
+## 2.15.3 `boxplot()` {#boxplot}
 
 ```{r}
 murders$rate <- with(murders, total / population * 10^5)
 boxplot(rate~region, data = murders)
 ```
 
-## 2.15.4 <span class="image">`image()`</span>
+## 2.15.4 `image()` {#image}
 
 ```{r}
 x <- matrix(1:120, 12, 10)

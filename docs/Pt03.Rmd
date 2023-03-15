@@ -91,7 +91,7 @@ if(knitr::is_html_output()) {
 }
 ```
 
-<span class="hl3">Here is an example of how this function can be readily used to replace all the missing values in a vector with zeros:</span>
+<span class="green">Here is an example of how this function can be readily used to replace all the missing values in a vector with zeros:</span>
 <span id="is-na">`is.na()`</span>
 
 ```{r}
@@ -108,9 +108,7 @@ any(z)
 all(z)
 ```
 
-# 3.2 Defining functions
-
-<span id="function">`function()`</span>
+# 3.2 Defining functions {#function}
 
 ```{r}
 avg <- function(x) {
@@ -124,7 +122,7 @@ x <- 1:100
 identical(mean(x), avg(x))
 ```
 
-Notice that <span class="hl3">variables defined inside a function are not saved in the workspace.</span> So while we use `s` and `n` when we call `avg`, the values are created and changed only during the call.
+Notice that <span class="green">variables defined inside a function are not saved in the workspace.</span> So while we use `s` and `n` when we call `avg`, the values are created and changed only during the call.
 
  The general form of a function definition looks like this:
  
@@ -191,7 +189,7 @@ plot(n, s_n)
 
 # 3.5 Vectorization and functionals
 
-Although for-loops are an important concept to understand, in R we rarely use them. As you learn more R, you will realize that <span class="hl3">vectorization is preferred over for-loops</span> since it results in shorter and clearer code. We already saw examples in the Vector Arithmetic section. <span class="hl3>A vectorized function is a function that will apply the same operation on each of the vectors.</span>
+Although for-loops are an important concept to understand, in R we rarely use them. As you learn more R, you will realize that <span class="green">vectorization is preferred over for-loops</span> since it results in shorter and clearer code. We already saw examples in the Vector Arithmetic section. <span class="green>A vectorized function is a function that will apply the same operation on each of the vectors.</span>
 
 ```{r}
 x <- 1:10

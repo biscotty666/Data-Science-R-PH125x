@@ -70,7 +70,7 @@ Function index:
 [`filter`](docs/Pt04.html#filter),
 [`group_by`](docs/Pt04.html#group_by),
 [`mutate`](docs/Pt04.html#mutate),
-[The pipe ](docs/Pt04.html#the-pipe),
+[`%>%` or `|>`](#the-pipe),
 [`pull`](docs/Pt04.html#pull),
 [`quantile`](docs/Pt04.html#quantile),
 [`rank`](docs/Pt04.html#rank),
@@ -153,10 +153,7 @@ Function index:
 [`stat_ecdf`](docs/Pt09.html#stat_ecdf)
 
 
-
-<span id="poco"></span>
-
-# [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
+# [Posit Cheasheets](https://posit.co/resources/cheatsheets/) {#poco}
 
 - [ggplot2](https://posit.co/wp-content/uploads/2022/10/data-visualization-1.pdf)
 - [dplyr](https://posit.co/wp-content/uploads/2022/10/data-transformation-1.pdf)

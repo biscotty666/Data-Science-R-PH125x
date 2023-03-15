@@ -102,9 +102,9 @@ library(dslabs)
 data(murders)
 ```
 
-# 8.2 `ggplot` objects
+# 8.2 `ggplot` objects {#ggplot}
 
-The first step in creating a **ggplot2** graph is to define a `ggplot` object. We do this with the function <span id="ggplot">`ggplot()`</span> which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:
+The first step in creating a **ggplot2** graph is to define a `ggplot` object. We do this with the function **`ggplot()`** which initializes the graph. If we read the help file for this function, we see that the first argument is used to specify what data is associated with this object:
 
 ```
 ggplot(data = murders)
@@ -155,9 +155,9 @@ geom_point() understands the following aesthetics (required aesthetics are in bo
 </blockquote>
 and, as expected, we see that at least two arguments are required `x` and `y`.
 
-# 8.4 Aesthetic mappings
+# 8.4 Aesthetic mappings {#aes}
 
-**Aesthetic mappings** describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The <span id="aes">**`aes`**</span> function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the `aes` function is often used as the argument of a geometry function. This example produces a scatterplot of total murders versus population in millions:
+**Aesthetic mappings** describe how properties of the data connect with features of the graph, such as distance along an axis, size, or color. The **`aes`** function connects data with what we see on the graph by defining aesthetic mappings and will be one of the functions you use most often when plotting. The outcome of the `aes` function is often used as the argument of a geometry function. This example produces a scatterplot of total murders versus population in millions:
 ```
 murders |> ggplot() + 
   geom_point(aes(x = population/10^6, y = total))
@@ -421,9 +421,7 @@ murders |>
   theme_economist()
 ```
 
-<span id="qplot"></span>
-
-# 8.13 Quick plots with `qplot`
+# 8.13 Quick plots with `qplot` {#qplot}
 
 We have learned the powerful approach to generating visualization with ggplot. However, there are instances in which all we want is to make a quick plot of, for example, a histogram of the values in a vector, a scatterplot of the values in two vectors, or a boxplot using categorical and numeric vectors. We demonstrated how to generate these plots with hist, plot, and boxplot. However, if we want to keep consistent with the ggplot style, we can use the function qplot.
 
@@ -446,9 +444,9 @@ qplot(x, y)
 
 <span class="blue">$NB$: "Warning: `qplot()` was deprecated in ggplot2 3.4.0."</span> 
 
-# 8.14 Grids of plots
+# 8.14 Grids of plots {#grid.arrange}
 
-There are often reasons to graph plots next to each other. The **gridExtra** package and <span id="grid.arrange">`grid.arrange`</span> permit us to do that:
+There are often reasons to graph plots next to each other. The **gridExtra** package and `grid.arrange` permit us to do that:
 ```{r}
 # install.packages("gridExtra")
 library(gridExtra)

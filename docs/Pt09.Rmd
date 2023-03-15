@@ -29,7 +29,7 @@ R commands in this chapter
 [`prop.table`](#prop.table)|
 [`qnorm`](#norm)|
 [`qplot`](#qplot)|
-[`r`norm`](#norm)|
+[`rnorm`](#norm)|
 [`scale_fill_gradient`](#scale_fill_gradient)|
 [`stat_ecdf`](#stat_ecdf)|
 
@@ -88,9 +88,7 @@ murders |>
   xlab("")
 ```
 
-<span id="n"></span>
-
-**Information about the "current" group or variable**
+**Information about the "current" group or variable** {#n}
 
 <blockquote>
 These functions return information about the "current" group or "current" variable, so only work inside specific contexts like `summarise()` and `mutate()`.
@@ -121,10 +119,9 @@ heights |>
   ylab("Proportion of heights less than or equal to a") +
   xlab("a")
 ```
-**Compute empircal cumulative distribution**
+**Compute empircal cumulative distribution** 
 
-<span id="stat_ecdf">**`stat_ecdf`**</span>
-<blockquote>
+<blockquote id="stat_ecdf">
 The empirical cumulative distribution function (ECDF) provides an alternative visualisation of distribution. Compared to other visualisations that rely on density (like geom_histogram()), the ECDF doesn't require any tuning parameters and handles both continuous and categorical variables. The downside is that it requires more training to accurately interpret, and the underlying visual tasks are somewhat more challenging.
 </blockquote>
 
@@ -188,8 +185,7 @@ norm_dist |>
 ```
 **Generate a normal distribution**
 
-<span id="norm"></span>
-<blockquote>
+<blockquote id="norm">
 - Probability density function: **`dnorm(x)`** where `x` is a vector of quantiles
 - Cumulateive density function: **`pnorm(q)`** where `q` is a vector of quantiles
 - Quantile function: **`qnorm(p)`** where `p` is a vector of probabilities
@@ -433,9 +429,9 @@ tab |>
   geom_bar(stat = "identity")
 ```
 
-## 9.8.2 Histograms
+## 9.8.2 Histograms {#geom_histogram}
 
-To generate histograms we use <span id="geom_histogram">**`geom_histogram`**</span>. By looking at the help file for this function, we learn that the only required argument is `x`, the variable for which we will construct a histogram. We dropped the `x` because we know it is the first argument. The code looks like this:
+To generate histograms we use **`geom_histogram`**. By looking at the help file for this function, we learn that the only required argument is `x`, the variable for which we will construct a histogram. We dropped the `x` because we know it is the first argument. The code looks like this:
 ```{r}
 heights |>
   filter(sex == "Female") |>
@@ -459,9 +455,9 @@ heights |>
   ggtitle("Histogram")
 ```
 
-## 9.8.3 Density plots
+## 9.8.3 Density plots {#geom_density}
 
-To create a smooth density, we use the <span id="geom_density">**`geom_density`**</span>. To make a smooth density plot with the data previously shown as a histogram we can use this code:
+To create a smooth density, we use the **`geom_density`**. To make a smooth density plot with the data previously shown as a histogram we can use this code:
 ```{r}
 heights |>
   filter(sex == "Female") |>
@@ -477,9 +473,9 @@ heights |>
                adjust = 2)
 ```
 
-## 9.8.4 Boxplots
+## 9.8.4 Boxplots {#geom_boxplot}
 
-The geometry for boxplot is <span id="geom_boxplot">**`geom_boxplot`**</span>. As discussed, boxplots are useful for comparing distributions. For example, below are the previously shown heights for women, but compared to men. For this geometry, we need arguments x as the categories, and y as the values.
+The geometry for boxplot is **`geom_boxplot`**. As discussed, boxplots are useful for comparing distributions. For example, below are the previously shown heights for women, but compared to men. For this geometry, we need arguments x as the categories, and y as the values.
 
 ```{r}
 heights |> 
@@ -487,9 +483,9 @@ heights |>
   geom_boxplot()
 ```
 
-## QQ-plots
+## QQ-plots {#geom_qq}
 
-For qq-plots we use the <span id="geom_qq">**`geom_qq`**</span> geometry. From the help file, we learn that we need to specify the `sample` (we will learn about samples in a later chapter). Here is the qqplot for men heights.
+For qq-plots we use the **`geom_qq`** geometry. From the help file, we learn that we need to specify the `sample` (we will learn about samples in a later chapter). Here is the `qqplot` for men heights.
 
 
 ```{r}
