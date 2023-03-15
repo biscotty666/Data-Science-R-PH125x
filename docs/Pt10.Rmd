@@ -13,6 +13,7 @@ R commands in this chapter
 
 |[`facet_grid`](#facet_grid)|
 [`facet_wrap`](#facet_wrap)|
+[`geomtextpath`](#geomtextpath)|
 
 
 # 10.1 Case study: new insights on poverty
@@ -173,6 +174,192 @@ gapminder |>
 <span class="yellow">In the plot above, we have to pay special attention to the range to notice that the plot on the right has a larger life expectancy.</span>
 
 # 10.4 Time series plots
+
+The visualizations above effectively illustrate that data no longer supports the western versus developing world view. Once we see these plots, new questions emerge. For example, <span class="yellow">which countries are improving more and which ones less? Was the improvement constant during the last 50 years or was it more accelerated during certain periods?</span> For a closer look that may help answer these questions, we introduce time series plots.
+
+Time series plots have time in the x-axis and an outcome or measurement of interest on the y-axis. For example, here is a trend plot of United States fertility rates:
+```{r}
+gapminder |>
+  filter(country == "United States") |>
+  ggplot(aes(year, fertility)) +
+  geom_point()
+```
+
+We see that the trend is not linear at all. Instead there is sharp drop during the 1960s and 1970s to below 2. Then the trend comes back to 2 and stabilizes during the 1990s.
+
+When the points are regularly and densely spaced, as they are here, we create curves by joining the points with lines, to convey that these data are from a single series, here a country. To do this, we use the `geom_line` function instead of `geom_point`.
+
+```{r}
+gapminder |>
+  filter(country == "United States") |>
+  ggplot(aes(year, fertility)) +
+  geom_line()
+```
+
+This is particularly helpful when we look at two countries. <span class="yellow">If we subset the data</span> to include two countries, one from Europe and one from Asia, then adapt the code above:
+
+```{r}
+countries <- c("South Korea", "Germany")
+
+gapminder |>
+  filter(country %in% countries) |>
+  ggplot(aes(year, fertility)) +
+  geom_line()
+```
+
+Unfortunately, this is **not** the plot that we want. Rather than a line for each country, <span class="yellow">the points for both countries are joined</span>. This is actually expected since we have not told ggplot anything about wanting two separate lines. To let ggplot know that there are two curves that need to be made separately, we <span class="yellow">assign each point to a group,</span> one for each country:
+
+```{r}
+countries <- c("South Korea", "Germany")
+
+gapminder |>
+  filter(country %in% countries & !is.na(fertility)) |>
+  ggplot(aes(year, fertility, group = country)) +
+  geom_line()
+```
+```{r}
+countries <- c("South Korea", "Germany")
+
+gapminder |>
+  filter(country %in% countries & !is.na(fertility)) |>
+  ggplot(aes(year, fertility, col = country)) +
+  geom_line()
+```
+
+The plot clearly shows how South Korea’s fertility rate dropped drastically during the 1960s and 1970s, and by 1990 had a similar rate to that of Germany.
+
+## 10.4.1 Labels instead of legends
+
+For trend plots we recommend labeling the lines rather than using legends since the viewer can quickly see which line is which country. This suggestion actually applies to most plots: <span class="yellow">labeling is usually preferred over legends.</span>
+
+We demonstrate how we can do this using <span id="geomtextpath">**`geomtextpath`**</span> from the **geomtextpath** package. We define a data table with the label locations and then use a second mapping just for these labels:
+
+```{r}
+# install.packages("geomtextpath")
+library(geomtextpath)
+
+countries <- c("South Korea", "Germany")
+
+gapminder |>
+  filter(country %in% countries & !is.na(fertility)) |>
+  ggplot(aes(year, 
+             life_expectancy, 
+             col = country,
+             label = country)) +
+  geom_textpath() +
+  theme(legend.position = "none")
+```
+
+The plot clearly shows how an improvement in life expectancy followed the drops in fertility rates. In 1960, Germans lived 15 years longer than South Koreans, although by 2010 the gap is completely closed. It exemplifies the improvement that many non-western countries have achieved in the last 40 years.
+
+# 10.5 Data transformations
+
+We now shift our attention to the second question related to the commonly held notion that wealth distribution across the world has become worse during the last decades. When general audiences are asked if poor countries have become poorer and rich countries become richer, the majority answers yes. By using stratification, histograms, smooth densities, and boxplots, we will be able to understand if this is in fact the case. First we learn how transformations can sometimes help provide more informative summaries and plots.
+
+The `gapminder` data table includes a column with the countries’ gross domestic product (GDP). GDP measures the market value of goods and services produced by a country in a year. The GDP per person is often used as a rough summary of a country’s wealth. Here we divide this quantity by 365 to obtain the more interpretable measure dollars per day. Using current US dollars as a unit, a person surviving on an income of less than $2 a day is defined to be living in absolute poverty. We add this variable to the data table:
+```{r}
+gapminder <- 
+  gapminder |>
+  mutate(dollars_per_day = gdp / population / 362)
+head(gapminder)
+```
+
+The GDP values are adjusted for inflation and represent current US dollars, so these values are meant to be comparable across the years. Of course, these are country averages and within each country there is much variability. <span class="yellow">All the graphs and insights described below relate to country averages and not to individuals.</span>
+
+## 10.5.1 Log transformations
+
+Here is a histogram of per day incomes from 1970:
+
+```{r}
+past_year <- 1970
+gapminder |>
+  filter(year == past_year & !is.na(gdp)) |>
+  ggplot(aes(dollars_per_day)) +
+  geom_histogram(binwidth = 1, color = "black")
+```
+
+In this plot, we see that for the majority of countries, averages are below $10 a day. However, the majority of the x-axis is dedicated to the 35 countries with averages above $10. So the plot is not very informative about countries with values below $10 a day.
+
+<span class="yellow">It might be more informative to quickly be able to see how many countries have average daily incomes of about $1 (extremely poor), $2 (very poor), $4 (poor), $8 (middle), $16 (well off), $32 (rich), $64 (very rich) per day. These changes are multiplicative and log transformations convert multiplicative changes into additive ones: when using base 2, a doubling of a value turns into an increase by 1.</span>
+
+Here is the distribution if we apply a log base 2 transform:
+
+```{r}
+past_year <- 1970
+gapminder |>
+  filter(year == past_year & !is.na(gdp)) |>
+  ggplot(aes(log2(dollars_per_day))) +
+  geom_histogram(binwidth = 1, color = "black")
+```
+
+In a way this provides a *close-up* of the mid to lower income countries.
+
+## 10.5.2 Which base?
+
+In the case above, we used base 2 in the log transformations. Other common choices are base $e$ and base 10.
+
+<span class="yellow">In general, we do not recommend using the natural log for data exploration and visualization.</span> This is because while $2^2,2^3,2^4,\dots$ or $10^2,10^3,\dots$ are easy to compute in our heads, the same is not true for $e^2,e^3,\dots$, so the scale is not intuitive or easy to interpret.
+
+In the dollars per day example, we used base 2 instead of base 10 because the resulting range is easier to interpret. The range of the values being plotted is 0.327, 48.885.
+
+In base 10, this turns into a range that includes very few integers: just 0 and 1. With base two, our range includes -2, -1, 0, 1, 2, 3, 4, and 5. It is easier to compute $2^x$ and $10^x$ when $x$ is an integer and between -10 and 10, so we prefer to have smaller integers in the scale. Another consequence of a limited range is that choosing the binwidth is more challenging. <span class="yellow">With log base 2, we know that a binwidth of 1 will translate to a bin with range $x$ to $2^x$.</span>
+
+For an example in which base 10 makes more sense, consider population sizes. A log base 10 is preferable since the range for these is:
+
+```{r}
+gapminder |>
+  filter(year == past_year) |>
+  summarise(min = min(population), max = max(population))
+```
+```{r}
+gapminder |> 
+  filter(year == past_year) |>
+  ggplot(aes(log10(population))) +
+  geom_histogram(binwidth = 0.5, color = "black")
+```
+
+In the above, we quickly see that country populations range between ten thousand and ten billion.
+
+## 10.5.3 Transform the values of the scale?
+
+There are two ways we can use log transformations in plots. <span class="yellow">We can log the values before plotting them or use log scales in the axes. Both approaches are useful and have different strengths.</span> If we log the data, we can more easily interpret intermediate values in the scale. For example, if we see:
+```
+----1----x----2--------3----
+```
+for log transformed data, we know that the value of $x$ is about 1.5. If the scales are logged:
+```
+----10---x---100------1000---
+```
+then, to determine `x`, we need to compute $10^{1.5}$, which is not easy to do in our heads. The advantage of using logged scales is that we see the original values on the axes. However, the advantage of showing logged scales is that the original values are displayed in the plot, which are easier to interpret. For example, we would see “32 dollars a day” instead of “5 log base 2 dollars a day”.
+
+<span class="yellow">As we learned earlier, if we want to scale the axis with logs, we can use the `scale_x_continuous` function. Instead of logging the values first, we apply this layer:</span>
+
+```{r}
+gapminder |>
+  filter(year == past_year & !is.na(gdp)) |>
+  ggplot(aes(dollars_per_day)) +
+  geom_histogram(binwidth = 1, color = "black") +
+  scale_x_continuous(trans = "log2")
+```
+
+Note that the log base 10 transformation has its own function: scale_x_log10(), but currently base 2 does not, although we could easily define our own.
+
+There are other transformations available through the trans argument. As we learn later on, the square root (`sqrt`) transformation is useful when considering counts. The logistic transformation (`logit`) is useful when plotting proportions between 0 and 1. The `reverse` transformation is useful when we want smaller values to be on the right or on top.
+
+# 10.6 Visualizing multimodal distributions
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
