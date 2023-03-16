@@ -733,12 +733,81 @@ gapminder |>
 
 This particular figure shows very clearly how the income distribution gap is closing with most of the poor remaining in Sub-Saharan Africa.
 
+## 10.8 The ecological fallacy and importance of showing the data
 
+Throughout this section, we have been comparing regions of the world. We have seen that, on average, some regions do better than others. In this section, we focus on describing the importance of variability within the groups when examining the relationship between a country’s infant mortality rates and average income.
 
+We define a few more regions and compare the averages across regions:
 
+```{r ecological-fallacy-averages, echo=FALSE}
+library(ggrepel)
+gapminder <- gapminder |> 
+  mutate(group = case_when(
+    region %in% c("Western Europe", "Northern Europe",
+                  "Southern Europe", "Northern America", 
+                  "Australia and New Zealand") ~ "West",
+    region %in% "Northern Africa" ~ "Northern Africa",
+    region %in% c("Eastern Asia", "South-Eastern Asia") ~ "East Asia",
+    region == "Southern Asia"~ "Southern Asia",
+    region %in% c("Central America", "South America", 
+                  "Caribbean") ~ "Latin America",
+    continent == "Africa" & 
+      region != "Northern Africa" ~ "Sub-Saharan",
+    region %in% c("Melanesia", "Micronesia", 
+                  "Polynesia") ~ "Pacific Islands"))
+surv_income <- gapminder |> 
+  filter(year %in% present_year & !is.na(gdp) & 
+           !is.na(infant_mortality) & !is.na(group)) |>
+  group_by(group) |>
+  summarize(income = sum(gdp)/sum(population)/365,
+            infant_survival_rate = 
+              1 - sum(infant_mortality/1000*population)/sum(population)) 
+#surv_income |> arrange(income) |> print(n=nrow(surv_income))
+surv_income |> ggplot(aes(income, infant_survival_rate, label = group, color = group)) +
+  scale_x_continuous(trans = "log2", limits = c(0.25, 150)) +
+  scale_y_continuous(trans = "logit", limit = c(0.875, .9981), 
+                     breaks = c(.85,.90,.95,.99,.995,.998)) +
+  geom_label_repel(size = 3, show.legend = FALSE)
+```
 
+The relationship between these two variables is almost perfectly linear and the graph shows a dramatic difference. While in the West less than 0.5% of infants die, in Sub-Saharan Africa the rate is higher than 6%!
 
+Note that the plot uses a new transformation, the logistic transformation.
 
+## 10.8.1 Logistic transformation
+
+The logistic or logit transformation for a proportion or rate $p$ is defined as: 
+
+$$f(p) = \log \left( \frac{p}{1-p} \right)$$
+
+When $p$ is a proportion or probability, the quantity that is being logged, $p/(1-p)$, is called the _odds_. In this case $p$ is the proportion of infants that survived. The odds tell us how many more infants are expected to survive than to die. The log transformation makes this symmetric. If the rates are the same, then the log odds is 0. Fold increases or decreases turn into positive and negative increments, respectively.
+
+<span class="yellow">This scale is useful when we want to highlight differences near 0 or 1.</span> For survival rates this is important because a survival rate of 90% is unacceptable, while a survival of 99% is relatively good. We would much prefer a survival rate closer to 99.9%. We want our scale to highlight these difference and the logit does this. <span class="yellow">Note that 99.9/0.1 is about 10 times bigger than 99/1 which is about 10 times larger than 90/10. By using the log, these fold changes turn into constant increases.</span>
+
+### 10.8.2 Show the data 
+
+Now, back to our plot. Based on the plot above, do we conclude that a country with a low income is destined to have low survival rate? Do we conclude that survival rates in Sub-Saharan Africa are all lower than in Southern Asia, which in turn are lower than in the Pacific Islands, and so on?
+
+Jumping to this conclusion based on a plot showing averages is referred to as the _ecological fallacy_. The almost perfect relationship between survival rates and income is only observed for the averages at the region level. Once we show all the data, we see a somewhat more complicated story:
+
+```{r ecological-fallacy-all-data, echo=FALSE}
+library(ggrepel)
+highlight <- c("Sierra Leone", "Mauritius",  "Sudan", "Botswana", "Tunisia",
+               "Cambodia","Singapore","Chile", "Haiti", "Bolivia",
+               "United States","Sweden", "Angola", "Serbia")
+gapminder |> filter(year %in% present_year & !is.na(gdp) & !is.na(infant_mortality) & !is.na(group) ) |>
+  mutate(country_name = ifelse(country %in% highlight, as.character(country), "")) |>
+  ggplot(aes(dollars_per_day, 1 - infant_mortality/1000, col = group, label = country_name)) +
+  scale_x_continuous(trans = "log2", limits=c(0.25, 150)) +
+  scale_y_continuous(trans = "logit",limit=c(0.875, .9981),
+                     breaks=c(.85,.90,.95,.99,.995,.998)) + 
+  geom_point(alpha = 0.5, size = 3) +
+  geom_text_repel(size = 4, 
+                  show.legend = FALSE, 
+                  max.overlaps = 12)
+```
+
+Specifically, we see that there is a large amount of variability. We see that countries from the same regions can be quite different and that countries with the same income can have different survival rates. For example, while on average Sub-Saharan Africa had the worse health and economic outcomes, there is wide variability within that group. Mauritius and Botswana are doing better than Angola and Sierra Leone, with Mauritius comparable to Western countries.
 
 
 

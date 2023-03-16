@@ -152,6 +152,19 @@ Function index:
 [`scale_fill_gradient`](docs/Pt09.html#scale_fill_gradient),
 [`stat_ecdf`](docs/Pt09.html#stat_ecdf)
 
+### [Chapter 10 Data visualization in practice](docs/Pt10.html)
+
+[`facet_grid`](docs/Pt10.html#facet_grid),
+[`facet_wrap`](docs/Pt10.html#facet_wrap),
+[`geomtextpath`](docs/Pt10.html#geomtextpath),
+[`intersection`](docs/Pt10.html#set),
+[`is.element`](docs/Pt10.html#is.element),
+[`sample`](docs/Pt10.html#sample),
+[`setdiff`](docs/Pt10.html#set),
+[`setequal`](docs/Pt10.html#set),
+[`symdiff`](docs/Pt10.html#set),
+[`union`](docs/Pt10.html#set),
+[`union_all`](docs/Pt10.html#set)
 
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/) {#poco}
 
