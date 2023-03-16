@@ -13,6 +13,7 @@ R commands in this chapter
 
 |[`annotate`](#annotate)|
 [`coord_polar`](#coord_polar)|
+[`reorder`](#reorder)|
 [`rep`](#rep)|
 [`spread`](#spread)|
 
@@ -156,8 +157,7 @@ browsers |>
         axis.ticks = element_blank(), 
         panel.grid  = element_blank()) +
   annotate(geom = "text", 
-              x = 1.62, 
-              y =  at, 
+              x = 1.62, y =  at, 
               label = label, size=4)
 ```
 
@@ -167,20 +167,170 @@ browsers |>
 This function adds geoms to a plot, but unlike a typical geom function, the properties of the geoms are not mapped from variables of a data frame, but are instead passed in as vectors. This is useful for adding small annotations (such as text labels) or if you have your data in vectors, and for some reason don't want to put them in a data frame.
 
 annotate(
-  geom,
-  x = NULL,
-  y = NULL,
-  xmin = NULL,
-  xmax = NULL,
-  ymin = NULL,
-  ymax = NULL,
-  xend = NULL,
-  yend = NULL,
-  ...,
-  na.rm = FALSE
-)
+  geom, x = NULL, y = NULL, xmin = NULL, xmax = NULL, ymin = NULL, ymax = NULL, xend = NULL, yend = NULL, ..., na.rm = FALSE)
 </blockquote>
 
+In general, <span class="orange">when displaying quantities, position and length are preferred over angles and/or area. Brightness and color are even harder to quantify than angles. But, as we will see later, they are sometimes useful when more than two dimensions must be displayed at once.
+
+# 11.2 Know when to include 0
+
+When using barplots, it is misinformative not to start the bars at 0. This is because, by using a barplot, we are implying the length is proportional to the quantities being displayed. By avoiding 0, relatively small differences can be made to look much bigger than they actually are. This approach is often used by politicians or media organizations trying to exaggerate a difference. Below is an illustrative example used by Peter Aldhous in this lecture: http://paldhous.github.io/ucb/2016/dataviz/week2.html.
+
+<img src="http://paldhous.github.io/ucb/2016/dataviz/img/class2_8.jpg" />
+
+(Source: Fox News, via Media Matters^[http://mediamatters.org/blog/2013/04/05/fox-news-newest-dishonest-chart-immigration-enf/193507].)
+
+
+From the plot above, it appears that apprehensions have almost tripled when, in fact, they have only increased by about 16%. Starting the graph at 0 illustrates this clearly:
+
+```{r}
+data.frame(Year = as.character(c(2011, 2012, 2013)),
+           Southwest_Border_Apprehensions = c(165244,170223,192298)) |>
+  ggplot(aes(Year, Southwest_Border_Apprehensions )) +
+  geom_bar(stat = "identity", fill = "yellow", col = "black", width = 0.65)
+```
+
+Here is another example, described in detail in a Flowing Data blog post:
+
+<img src="http://i2.wp.com/flowingdata.com/wp-content/uploads/2012/08/Bush-cuts.png" />
+
+(Source: Fox News, via Flowing Data^[http://flowingdata.com/2012/08/06/fox-news-continues-charting-excellence/].)
+
+This plot makes a 13% increase look like a five fold change. Here is the appropriate plot:
+
+```{r}
+data.frame(date = c("Now", "Jan 1, 2013"), tax_rate = c(35, 39.6)) |>
+  mutate(date = reorder(date, tax_rate)) |>
+  ggplot(aes(date, tax_rate)) + 
+  ylab("") + xlab("") +
+  geom_bar(stat = "identity", 
+           fill = "yellow", 
+           col = "black", width = 0.5) + 
+  ggtitle("Top Tax Rate If Bush Tax Cut Expires")
+```
+
+Finally, here is an extreme example that makes a very small difference of under 2% look like a 10-100 fold change:
+
+<img src="http://i2.wp.com/flowingdata.com/wp-content/uploads/2012/08/Bush-cuts.png" />
+
+(Source: 
+Venezolana de Televisión via Pakistan Today^[https://www.pakistantoday.com.pk/2018/05/18/whats-at-stake-in-venezuelan-presidential-vote] and Diego Mariano.)
+
+
+```{r}
+data.frame(Candidate = factor(c("Maduro", "Capriles"),
+                              levels = c("Maduro", "Capriles")),
+           Percent = c(50.66, 49.07)) |>
+  ggplot(aes(Candidate, Percent, fill = Candidate)) +
+  geom_bar(stat = "identity", width = 0.65, show.legend = FALSE)
+```
+
+<span class="orange">When using position rather than length, it is then not necessary to include 0.</span> This is particularly the case when we want to compare differences between groups relative to the within-group variability. Here is an illustrative example showing country average life expectancy stratified across continents in 2012:
+
+```{r}
+gapminder |>
+  filter(year == 2012) |>
+  ggplot(aes(continent, life_expectancy)) +
+  geom_point() -> p1
+p2 <- p1 + scale_y_continuous(limits = c(0, 84))
+grid.arrange(p2, p1, ncol = 2)
+```
+
+Note that in the plot on the left, which includes 0, the space between 0 and 43 adds no information and makes it harder to compare the between and within group variability.
+
+# 11.3 Do not distort quantities
+
+During President Barack Obama’s 2011 State of the Union Address, the following chart was used to compare the US GDP to the GDP of four competing nations:
+
+<img src="http://paldhous.github.io/ucb/2016/dataviz/img/class2_30.jpg" />
+
+(Source: The 2011 State of the Union Address^[https://www.youtube.com/watch?v=kl2g40GoRxg])
+
+Judging by the area of the circles, the US appears to have an economy over five times larger than China’s and over 30 times larger than France’s. However, if we look at the actual numbers, we see that this is not the case. The actual ratios are 2.6 and 5.8 times bigger than China and France, respectively. <span class="yellow">The reason for this distortion is that the radius, rather than the area, was made to be proportional to the quantity, which implies that the proportion between the areas is squared</span>: 2.6 turns into 6.5 and 5.8 turns into 34.1. Here is a comparison of the circles we get if we make the value proportional to the radius and to the area:
+
+```{r}
+gdp <- c(14.6, 5.7, 5.3, 3.3, 2.5)
+gdp_data <- data.frame(Country = rep(c("United States", "China",
+                                       "Japan", "Germany",
+                                       "France"),
+                                     2),
+           y = factor(rep(c("Radius","Area"),each=5), 
+                      levels = c("Radius", "Area")),
+           GDP= c(gdp^2/min(gdp^2), gdp/min(gdp))) |> 
+   mutate(Country = reorder(Country, GDP))
+gdp_data |> 
+  ggplot(aes(Country, y, size = GDP)) + 
+  geom_point(show.legend = FALSE, color = "blue") + 
+  scale_size(range = c(2,25)) +
+  coord_flip() + ylab("") + xlab("")
+
+```
+
+Not surprisingly, ggplot2 defaults to using area rather than radius. <span class="orange">Of course, in this case, we really should not be using area at all since we can use position and length</span>:
+
+```{r}
+gdp_data |>
+  filter(y == "Area") |>
+  ggplot(aes(Country, GDP)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  ylab("GDP in trillions")
+```
+
+# 11.4 Order categories by a meaningful value {#reorder}
+
+When one of the axes is used to show categories, as is done in barplots, the default **ggplot2** behavior is to order the categories alphabetically when they are defined by character strings. If they are defined by factors, they are ordered by the factor levels. We rarely want to use alphabetical order. Instead, we should order by a meaningful quantity. In all the cases above, the barplots were ordered by the values being displayed. The exception was the graph showing barplots comparing browsers. In this case, we kept the order the same across the barplots to ease the comparison. Specifically, instead of ordering the browsers separately in the two years, we ordered both years by the average value of 2000 and 2015.
+
+We previously learned how to use the `reorder` function, which helps us achieve this goal. To appreciate how the right order can help convey a message, suppose we want to create a plot to compare the murder rate across states. We are particularly interested in the most dangerous and safest states. Note the difference when we order alphabetically (the default) versus when we order by the actual rate:
+
+```{r}
+data(murders)
+murders |>
+  mutate(murder_rate = total / population * 10^5) |>
+  ggplot(aes(state, murder_rate)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 8)) +
+  xlab("") -> p1
+murders |>
+  mutate(murder_rate = total / population * 10^5) |>
+  mutate(reorder(state, murder_rate)) |>
+  ggplot(aes(state, murder_rate)) +
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  theme(axis.text.y = element_text(size = 8)) +
+  xlab("") -> p2
+
+grid.arrange(p1, p2, ncol = 2)  
+```
+
+The `reorder` function lets us reorder groups as well. Earlier we saw an example related to income distributions across regions. Here are the two versions plotted against each other:
+
+```{r}
+past_year <- 1970
+gapminder |>
+  mutate(dollars_per_day = gdp / population / 365) |>
+  filter(year == past_year & !is.na(gdp)) |>
+  ggplot(aes(region, dollars_per_day)) +
+  geom_boxplot() +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  xlab("") -> p1
+gapminder |>
+  mutate(dollars_per_day = gdp / population / 365) |>
+  filter(year == past_year & !is.na(gdp)) |>
+  mutate(region = reorder(region, dollars_per_day, FUN = median)) |>
+  ggplot(aes(region, dollars_per_day)) +
+  geom_boxplot() +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  xlab("") -> p2
+
+grid.arrange(p1, p2, nrow = 1)
+```
+
+The first orders the regions alphabetically, while the second orders them by the group’s median.
+
+# 11.5 Show the data
 
 
 
