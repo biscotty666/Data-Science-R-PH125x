@@ -14,6 +14,14 @@ R commands in this chapter
 |[`facet_grid`](#facet_grid)|
 [`facet_wrap`](#facet_wrap)|
 [`geomtextpath`](#geomtextpath)|
+[`intersection`](#set)|
+[`is.element`](#is.element)|
+[`sample`](#sample)|
+[`setdiff`](#set)|
+[`setequal`](#set)|
+[`symdiff`](#set)|
+[`union`](#set)|
+[`union_all`](#set)|
 
 
 # 10.1 Case study: new insights on poverty
@@ -406,6 +414,334 @@ gapminder |>
 p
 ```
 <span class="yellow">Boxplots have the limitation that by summarizing the data into five numbers, we might miss important characteristics of the data. One way to avoid this is by showing the data.</span>
+```{r}
+p + geom_point(alpha = 0.5)
+```
+
+## 10.7.2 Ridge plots
+
+Showing each individual point does not always reveal important characteristics of the distribution. Although not the case here, when the number of data points is so large that there is over-plotting, showing the data can be counterproductive. Boxplots help with this by providing a five-number summary, but this has limitations too. For example, boxplots will not permit us to discover bimodal distributions. To see this, note that the two plots below are summarizing the same dataset:
+
+```{r warning=FALSE, out.width="100%", message = FALSE, echo=FALSE, fig.height=3}
+set.seed(1987)
+z <- sample(c(0,1), 1000, replace = TRUE, prob = c(0.25, 0.75))
+x <- rnorm(100)*z + rnorm(100, 5)*(1 - z)
+p1 <- qplot(x, geom = "density", fill = 1, show.legend=FALSE, alpha = 0.2) +
+  scale_x_continuous(limits=c(-4,8.5))
+p2 <- qplot("", x, geom="boxplot")
+gridExtra::grid.arrange(p1, p2, nrow = 1)
+```
+
+<blockquote id="sample">
+**`sample`**
+
+`sample` takes a sample of the specified size from the elements of x using either with or without replacement.
+sample(x, size, replace = FALSE, prob = NULL)
+The optional prob argument can be used to give a vector of weights for obtaining the elements of the vector being sampled. They need not sum to one, but they should be non-negative and not all zero. If replace is true, Walker's alias method (Ripley, 1987) is used when there are more than 200 reasonably probable values: this gives results incompatible with those from $R < 2.2.0$.
+
+If replace is false, these probabilities are applied sequentially, that is the probability of choosing the next item is proportional to the weights amongst the remaining items. The number of nonzero weights must be at least size in this case.
+</blockquote>
+
+In cases in which we are concerned that the boxplot summary is too simplistic, <span class="yellow">we can show stacked smooth densities or histograms. We refer to these as **ridge plots**</span>. Because we are used to visualizing densities with values in the x-axis, we stack them vertically. Also, because more space is needed in this approach, it is convenient to overlay them. The package **ggridges** provides a convenient function for doing this. Here is the income data shown above with boxplots but with a ridge plot.
+
+```{r}
+# install.packages("ggridges")
+library(ggridges)
+gapminder |>
+  filter(year == past_year & !is.na(dollars_per_day)) |>
+  ggplot(aes(dollars_per_day, group)) +
+  scale_x_continuous(trans = "log2") -> p
+p + geom_density_ridges()
+```
+
+<span class="yellow">Note that we have to invert the `x` and `y` used for the boxplot. A useful geom_density_ridges parameter is scale, which lets you determine the amount of overlap, with scale = 1 meaning no overlap and larger values resulting in more overlap.</span>
+
+If the number of data points is small enough, we can add them to the ridge plot using the following code:
+```{r}
+p + geom_density_ridges(jittered_points = TRUE)
+```
+
+By default, the height of the points is jittered and should not be interpreted in any way. To show data points, but without using jitter we can use the following code to add what is referred to as a **rug representation** of the data.
+```{r}
+p + geom_density_ridges(jittered_points = TRUE,
+                        position = position_points_jitter(height = 0),
+                        point_shape = '|', point_size = 3,
+                        point_alpha = 1, alpha = 0.7)
+```
+
+## 10.7.3 Example: 1970 versus 2010 income distributions
+
+Data exploration clearly shows that <span class="yellow">in 1970 there was a “west versus the rest” dichotomy. But does this dichotomy persist?</span> Let’s use `facet_grid` see how the distributions have changed. To start, we will focus on two groups: the west and the rest. We make four histograms.
+```{r}
+past_year <- 1970
+present_year <- 2010
+years <- c(past_year, present_year)
+gapminder |>
+  filter(year %in% years  & !is.na(gdp)) |>
+  mutate(west = ifelse(group == "West",
+                       "West",
+                       "Developing")) |>
+  ggplot(aes(dollars_per_day)) +
+  geom_histogram(binwidth = 1, color = "black") +
+  scale_x_continuous(trans = "log2") +
+  facet_grid(year ~ west)
+```
+
+<span class="yellow">Before we interpret the findings of this plot, we notice that there are more countries represented in the 2010 histograms than in 1970: the total counts are larger.</span> One reason for this is that several countries were founded after 1970. For example, the Soviet Union divided into several countries during the 1990s. Another reason is that data was available for more countries in 2010.
+
+We remake the plots using only countries with data available for both years. In the data wrangling part of this book, we will learn tidyverse tools that permit us to write efficient code for this, but here we can use simple code using the <span id="intersect">**`intersect`**</span> function:
+
+### Set operations {#set}
+
+<blockquote>
+- `intersect(x, y)` finds all rows in both `x` and `y`.
+- `union(x, y)` finds all rows in either `x` or `y`, excluding duplicates.
+- `setdiff(x, y)` finds all rows in `x` that aren't in `y`.
+- `setequal(x, y)` returns `TRUE` if `x` and `y` contain the same rows (ignoring order).
+- `dplyr::union_all(x, y)` finds all rows in either `x` or `y`, including duplicates.
+- `dplyr::symdiff(x, y)` computes the symmetric difference, i.e. all rows in `x` that aren't in `y` and all rows in `y` that aren't in `x`.
+
+- `is.element(el, set)`
+</blockquote>
+
+```{r}
+gapminder |>
+  filter(year == past_year & !is.na(dollars_per_day)) |>
+  pull(country) -> country_list_1
+
+gapminder |>
+  filter(year == present_year & !is.na(dollars_per_day)) |>
+  pull(country) -> country_list_2
+
+country_list <- intersect(country_list_1, country_list_2)
+
+length(country_list)
+
+gapminder |>
+  summarise(pop = sum(population, na.rm = TRUE)) |>
+  pull(pop) -> world_pop
+gapminder |>
+  filter(country %in% country_list) |>
+  summarise(pop = sum(population, na.rm = TRUE)) |>
+  pull(pop) -> sample_pop
+
+sample_pop / world_pop
+```
+
+These 108 account for 86% of the world population, so this subset should be representative.
+
+Let’s remake the plot, but only for this subset by simply adding `country %in% country_list` to the `filter` function:
+
+```{r}
+gapminder |>
+  filter(year %in% years  & !is.na(gdp) & country %in% country_list) |>
+  mutate(west = ifelse(group == "West",
+                       "West",
+                       "Developing")) |>
+  ggplot(aes(dollars_per_day)) +
+  geom_histogram(binwidth = 1, color = "black") +
+  scale_x_continuous(trans = "log2") +
+  facet_grid(year ~ west)
+```
+
+We now see that the rich countries have become a bit richer, but percentage-wise, the poor countries appear to have improved more. In particular, we see that the proportion of developing countries earning more than $16 a day increased substantially.
+
+To see which specific regions improved the most, we can remake the boxplots we made above, but now adding the year 2010 and then using facet to compare the two years.
+
+```{r}
+gapminder |>
+  filter(year %in% years & country %in% country_list) |>
+  ggplot(aes(group, dollars_per_day)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1)) +
+  scale_y_continuous(trans = "log2") +
+  xlab("") +
+  facet_grid(. ~ year)
+```
+
+Here, we pause to introduce another powerful **ggplot2** feature. Because we want to compare each region before and after, it would be convenient to have the 1970 boxplot next to the 2010 boxplot for each region. In general, comparisons are easier when data are plotted next to each other.
+
+So instead of faceting, we keep the data from each year together and ask to color (or fill) them depending on the year. Note that groups are automatically separated by year and each pair of boxplots drawn next to each other. Because year is a number, we turn it into a factor since **ggplot2** automatically assigns a color to each category of a factor. <span class="yellow">Note that we have to convert the year columns from numeric to factor.</span>
+
+```{r}
+gapminder |>
+  filter(year %in% years & country %in% country_list) |>
+  mutate(year = factor(year)) |>
+  ggplot(aes(group, dollars_per_day, fill = year)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90,
+                                   hjust = 1)) +
+  scale_y_continuous(trans = "log2") +
+  xlab("")
+```
+
+Finally, we point out that if what we are most interested in is comparing before and after values, <span class="yellow">it might make more sense to plot the percentage increases</span>. We are still not ready to learn to code this, but here is what the plot would look like:
+```{r}
+gapminder |>
+  filter(year %in% years & country %in% country_list) |>
+  mutate(year = ifelse(year == past_year,
+                       "past",
+                       "present")) |>
+  select(country, group, year, dollars_per_day) |>
+  spread(year, dollars_per_day) |>
+  mutate(percent_increase = (present - past) / past * 100) |>
+  mutate(group = reorder(group, percent_increase, FUN = median)) |>
+  ggplot(aes(group, percent_increase)) +
+  geom_boxplot() +
+  geom_point(show.legend = FALSE) +
+  theme(axis.text = element_text(angle = 90, hjust = 1))+
+  xlab("") +
+  ylab(paste("Percent increase:", past_year, "to", present_year))
+```
+
+The previous data exploration suggested that the income gap between rich and poor countries has narrowed considerably during the last 40 years. We used a series of histograms and boxplots to see this. We suggest a succinct way to convey this message with just one plot.
+
+Let’s start by noting that density plots for income distribution in 1970 and 2010 deliver the message that the gap is closing:
+
+```{r}
+gapminder |>
+  filter(year %in% years & country %in% country_list) |>
+  ggplot(aes(dollars_per_day)) +
+  geom_density(fill = "burlywood") +
+  scale_x_continuous(trans = "log2") +
+  facet_grid(. ~ year)
+```
+
+In the 1970 plot, we see two clear modes: poor and rich countries. In 2010, it appears that some of the poor countries have shifted towards the right, closing the gap.
+
+The next message we need to convey is that <span class="yellow">the reason for this change in distribution is that several poor countries became richer, rather than some rich countries becoming poorer.</span> To do this, we can assign a color to the groups we identified during data exploration.
+
+However, we first need to learn how to make these smooth densities in a way that preserves information on the number of countries in each group. To understand why we need this, note the discrepancy in the size of each group:
+```{r}
+tmp <- gapminder |> 
+  filter(year == past_year & country %in% country_list) |>
+  mutate(group = ifelse(group == "West", "West", "Developing")) |> 
+  group_by(group) |> 
+  summarize(n=n()) |>
+  spread(group, n)
+if(knitr::is_html_output()){
+  knitr::kable(tmp, "html") |>
+    kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
+} else{
+  knitr::kable(tmp, "latex", booktabs = TRUE) |>
+    kableExtra::kable_styling(font_size = 8)
+}
+```
+
+But when we overlay two densities, the default is to have the area represented by each distribution add up to 1, regardless of the size of each group:
+
+```{r}
+gapminder |>
+  filter(year %in% years & country %in% country_list) |>
+  mutate(group = ifelse(group == "West", "West", "Developing")) |>
+  ggplot(aes(dollars_per_day, fill = group)) +
+  scale_x_continuous(trans = "log2") +
+  geom_density(alpha = 0.2) +
+  facet_grid(year ~ .)
+```
+
+This makes it appear as if there are the same number of countries in each group. To change this, we will need to learn to access computed variables with `geom_density` function.
+
+## 10.7.4 Accessing computed variables
+
+### Computed variables
+
+<blockquote>
+- density: density estimate.
+- count: density * number of points - useful for stacked density plots.
+- scaled: density estimate, scaled to maximum of 1.
+- n: number of points.
+- ndensity: alias for scaled
+</blockquote>
+
+To have the areas of these densities be proportional to the size of the groups, we can simply multiply the `y`-axis values by the size of the group. From the geom_density help file, we see that the functions compute a variable called `count` that does exactly this. We want this variable to be on the `y`-axis rather than the density.
+
+In **ggplot2**, we access these variables by surrounding the name with two dots. We will therefore use the following mapping:
+```
+aes(x = dollars_per_day, y = ..count..)
+```
+We can now create the desired plot by simply changing the mapping in the previous code chunk. We will also expand the limits of the x-axis.
+
+```{r}
+gapminder |>
+  filter(year %in% years & country %in% country_list) |>
+  mutate(group = ifelse(group == "West", "West", "Developing")) |>
+  ggplot(aes(dollars_per_day,
+             y = ..count..,
+             fill = group)) +
+  scale_x_continuous(trans = "log2", limit = c(0.125, 300)) -> p
+
+p + geom_density(alpha = 0.2) +
+  facet_grid(year ~ .)
+```
+
+If we want the densities to be smoother, we use the `bw` argument so that the same bandwidth is used in each density. We selected 0.75 after trying out several values.
+```{r}
+p + 
+  geom_density(alpha = 0.2, bw = 0.75) + 
+  facet_grid(year ~ .)
+```
+
+This plot now shows what is happening very clearly. The developing world distribution is changing. A third mode appears consisting of the countries that most narrowed the gap.
+
+To visualize if any of the groups defined above are driving this we can quickly make a ridge plot:
+```{r}
+gapminder |> 
+  filter(year %in% years & !is.na(dollars_per_day)) |>
+  ggplot(aes(dollars_per_day, group)) + 
+  scale_x_continuous(trans = "log2") + 
+  geom_density_ridges(bandwidth = 1.5) +
+  facet_grid(. ~ year)
+```
+
+Another way to achieve this is by stacking the densities on top of each other:
+```{r}
+gapminder |> 
+  filter(year %in% years & country %in% country_list) |>
+  group_by(year) |>
+  mutate(weight = population/sum(population)*2) |>
+  ungroup() |>
+  ggplot(aes(dollars_per_day, fill = group)) +
+  scale_x_continuous(trans = "log2", limit = c(0.125, 300)) + 
+  geom_density(alpha = 0.2, bw = 0.75, position = "stack") + 
+  facet_grid(year ~ .) 
+```
+
+Here we can clearly see how the distributions for East Asia, Latin America, and others shift markedly to the right. While Sub-Saharan Africa remains stagnant.
+
+Notice that we order the levels of the group so that the West’s density is plotted first, then Sub-Saharan Africa. <span class="yellow">Having the two extremes plotted first allows us to see the remaining bimodality better.</span>
+
+## 10.7.5 Weighted densities
+
+As a final point, we note that these distributions weigh every country the same. So if most of the population is improving, but living in a very large country, such as China, we might not appreciate this. We can actually weight the smooth densities using the weight mapping argument. The plot then looks like this:
+
+```{r}
+gapminder |> 
+  filter(year %in% years & country %in% country_list) |>
+  group_by(year) |>
+  mutate(weight = population/sum(population)*2) |>
+  ungroup() |>
+  ggplot(aes(dollars_per_day, 
+             fill = group,
+             weight = weight)) +
+  scale_x_continuous(trans = "log2", limit = c(0.125, 300)) + 
+  geom_density(alpha = 0.2, bw = 0.75, position = "stack") + 
+  facet_grid(year ~ .) 
+
+```
+
+This particular figure shows very clearly how the income distribution gap is closing with most of the poor remaining in Sub-Saharan Africa.
+
+
+
+
+
+
+
+
+
+
 
 
 
