@@ -1,0 +1,209 @@
+---
+title: "11 Data visualization principles"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+R commands in this chapter
+
+|[`annotate`](#annotate)|
+[`coord_polar`](#coord_polar)|
+[`rep`](#rep)|
+[`spread`](#spread)|
+
+We have already provided some rules to follow as we created plots for our examples. Here, we aim to provide some general principles we can use as a guide for effective data visualization. Much of this section is based on a talk by Karl Broman^[http://kbroman.org/] titled "Creating Effective Figures and Tables"^[https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf] and includes some of the figures which were made with code that Karl makes available on his GitHub repository^[https://github.com/kbroman/Talk_Graphs], as well as class notes from Peter Aldhous' Introduction to Data Visualization course^[http://paldhous.github.io/ucb/2016/dataviz/index.html]. Following Karl's approach, we show some examples of plot styles we should avoid, explain how to improve them, and use these as motivation for a list of principles. We compare and contrast plots that follow these principles to those that don't.
+
+The principles are mostly based on research related to how humans detect patterns and make visual comparisons. The preferred approaches are those that best fit the way our brains process visual information. When deciding on a visualization approach, it is also important to keep our goal in mind. We may be comparing a viewable number of quantities, describing distributions for categories or numeric values, comparing the data from two groups, or describing the relationship between two variables. As a final note, we want to emphasize that for a data scientist it is important to adapt and optimize graphs to the audience. For example, an exploratory plot made for ourselves will be different than a chart intended to communicate a finding to a general audience.
+
+We will be using these libraries:
+
+```{r}
+library(tidyverse)
+library(dslabs)
+library(gridExtra)
+```
+
+# 11.1 Encoding data using visual cues
+
+We start by describing some principles for encoding data. There are several approaches at our disposal including <span class="orange">position, aligned lengths, angles, area, brightness, and color hue</span>.
+
+To illustrate how some of these strategies compare, let’s suppose we want to report the results from two hypothetical polls regarding browser preference taken in 2000 and then 2015. For each year, we are simply comparing five quantities – the five percentages. A widely used graphical representation of percentages, popularized by Microsoft Excel, is the pie chart:
+```{r}
+browsers <- data.frame(Browser = rep(c("Opera", "Safari","Firefox",
+                                       "IE", "Chrome"),
+                                     2),
+                       Year = rep(c(2000, 2015), each = 5),
+                       Percentage = c(3,21,23,28,26,2,22,21,27,29)) |>
+  mutate(Browser = reorder(Browser, Percentage))
+head(browsers)
+```
+```{r}
+library(ggthemes)
+browsers |>
+  ggplot(aes(x = "", y= Percentage, fill = Browser)) +
+  geom_bar(width = 1, stat = "identity", col = "black") +
+  coord_polar(theta = "y") +
+  xlab("") + ylab("") +
+  theme(axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank()) +
+  facet_grid(. ~ Year) -> p1
+p1
+```
+
+<blockquote id="rep">
+**`rep`**
+
+- **`times`**:  an integer-valued vector giving the (non-negative) number of times to repeat each element if of length `length(x)`, or to repeat the whole vector if of length 1. Negative or NA values are an error. A double vector is accepted, other inputs being coerced to an integer or double vector.
+- **`length.out`**:  non-negative integer. The desired length of the output vector. Other inputs will be coerced to a double vector and the first element taken. Ignored if NA or invalid.
+- **`each`**:  non-negative integer. Each element of x is repeated each times. Other inputs will be coerced to an integer or double vector and the first element taken. Treated as 1 if NA or invalid.
+</blockquote>
+
+<blockquote id="coord_polar">
+**`coord_polar`**
+
+The polar coordinate system is most commonly used for pie charts, which are a stacked bar chart in polar coordinates.
+
+`coord_polar(theta = "x", start = 0, direction = 1, clip = "on")`
+
+- **`theta`**: variable to map angle to (x or y)
+- **`start`**: Offset of starting point from 12 o'clock in radians. Offset is applied clockwise or anticlockwise depending on value of direction.
+- **`direction`**: 1, clockwise; -1, anticlockwise
+- **`clip`**: Should drawing be clipped to the extent of the plot panel? A setting of "on" (the default) means yes, and a setting of "off" means no.
+</blockquote>
+
+Here we are representing quantities with both areas and angles, since both the angle and area of each pie slice are proportional to the quantity the slice represents. <span class="orange">This turns out to be a sub-optimal choice since, as demonstrated by perception studies, humans are not good at precisely quantifying angles and are even worse when area is the only available visual cue.</span> The donut chart is an example of a plot that uses only area:
+
+```{r}
+browsers |> ggplot(aes(x = 2, y = Percentage, fill = Browser)) +
+  geom_bar(width = 1, stat = "identity", col = "black")  + 
+  scale_x_continuous(limits=c(0.5,2.5)) + 
+  coord_polar(theta = "y") +
+  xlab("") + ylab("") +
+  theme(axis.text=element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.grid  = element_blank()) +
+  facet_grid(.~Year)
+```
+
+To see how hard it is to quantify angles and area, note that the rankings and all the percentages in the plots above changed from 2000 to 2015. Can you determine the actual percentages and rank the browsers’ popularity? Can you see how the percentages changed from 2000 to 2015? It is not easy to tell from the plot. In fact, the pie R function help file states that:
+<div class="orange">
+<blockquote>
+Pie charts are a very bad way of displaying information. The eye is good at judging linear measures and bad at judging relative areas. A bar chart or dot chart is a preferable way of displaying this type of data.
+</blockquote>
+</div>
+In this case, simply showing the numbers is not only clearer, but would also save on printing costs if printing a paper copy:
+
+```{r}
+browsers |>
+  spread(Year, Percentage)
+```
+
+<blockquote id="spread">
+**`spread`**
+
+Spread a key-value pair across multiple columns
+
+spread(data, 
+       key, value, 
+       fill = NA, convert = FALSE, drop = TRUE, sep = NULL)
+
+
+- `key`, `value`: `<tidy-select>` columns to use for key and value.
+- `fill`: If set, missing values will be replaced with this value. Note that there are two types of missingness in the input: explicit missing values (i.e. NA), and implicit missings, rows that simply aren't present. Both types of missing value will be replaced by fill.
+- `convert`: If `TRUE`, `type.convert()` with `asis = TRUE` will be run on each of the new columns. <span class="orange">This is useful if the value column was a mix of variables that was coerced to a string.</span> If the class of the value column was factor or date, note that will not be true of the new columns that are produced, which are coerced to character before type conversion.
+- `drop`: If `FALSE`, will keep factor levels that don't appear in the data, filling in missing combinations with fill.
+- `sep`: If `NULL`, the column names will be taken from the values of key variable. If non-`NULL`, the column names will be given by "`<key_name><sep><key_value>`".
+</blockquote>
+
+<span class="orange">The preferred way to plot these quantities is to use length and position as visual cues, since humans are much better at judging linear measures.</span> The barplot uses this approach by using bars of length proportional to the quantities of interest. By adding horizontal lines at strategically chosen values, in this case at every multiple of 10, we ease the visual burden of quantifying through the position of the top of the bars. Compare and contrast the information we can extract from the two figures.
+
+```{r}
+browsers |>
+  ggplot(aes(Browser, Percentage)) +
+  geom_bar(stat = "identity", width = 0.5) +
+  ylab("Percent using the Browser") +
+  facet_grid(. ~ Year) -> p2
+grid.arrange(p1, p2, nrow = 2)
+```
+
+Notice how much easier it is to see the differences in the barplot. In fact, we can now determine the actual percentages by following a horizontal line to the x-axis.
+
+<span class="orange">If for some reason you need to make a pie chart, label each pie slice with its respective percentage so viewers do not have to infer them from the angles or area</span>:
+
+```{r}
+library(scales)
+browsers <- filter(browsers, Year == 2015)
+at <- with(browsers,
+           100 - 
+             cumsum(c(0,
+                      Percentage[-length(Percentage)])) - 
+                        0.5 * Percentage)
+label <- percent(browsers$Percentage / 100)
+at
+label
+browsers |> 
+  ggplot(aes(x = "", y = Percentage, fill = Browser)) +
+  geom_bar(width = 1, stat = "identity", col = "black") +
+  coord_polar(theta = "y") +
+  xlab("") + ylab("") + ggtitle("2015") +
+  theme(axis.text=element_blank(), 
+        axis.ticks = element_blank(), 
+        panel.grid  = element_blank()) +
+  annotate(geom = "text", 
+              x = 1.62, 
+              y =  at, 
+              label = label, size=4)
+```
+
+<blockquote id="annotate">
+**`annotate`**
+
+This function adds geoms to a plot, but unlike a typical geom function, the properties of the geoms are not mapped from variables of a data frame, but are instead passed in as vectors. This is useful for adding small annotations (such as text labels) or if you have your data in vectors, and for some reason don't want to put them in a data frame.
+
+annotate(
+  geom,
+  x = NULL,
+  y = NULL,
+  xmin = NULL,
+  xmax = NULL,
+  ymin = NULL,
+  ymax = NULL,
+  xend = NULL,
+  yend = NULL,
+  ...,
+  na.rm = FALSE
+)
+</blockquote>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

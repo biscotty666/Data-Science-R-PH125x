@@ -21,3 +21,7 @@ body {
 .yellow {
   background-color: rgb(251, 247, 25, 0.5);
 }
+
+.orange {
+  background-color: rgb(255, 90, 40, 0.4);
+}

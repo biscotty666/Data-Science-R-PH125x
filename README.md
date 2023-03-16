@@ -166,7 +166,10 @@ Function index:
 [`union`](docs/Pt10.html#set),
 [`union_all`](docs/Pt10.html#set)
 
-# [Posit Cheasheets](https://posit.co/resources/cheatsheets/) {#poco}
+### [Chapter 11 Data visualization principles](docs/Pt11.html)
+
+<div id="poco"></div>
+# [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
 
 - [ggplot2](https://posit.co/wp-content/uploads/2022/10/data-visualization-1.pdf)
 - [dplyr](https://posit.co/wp-content/uploads/2022/10/data-transformation-1.pdf)
