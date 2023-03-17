@@ -13,9 +13,18 @@ R commands in this chapter
 
 |[`annotate`](#annotate)|
 [`coord_polar`](#coord_polar)|
+[`gather`](#gather)|
+[`grep`](#grep)|
+[`grepl`](#grep)|
+[`gsub`](#grep)|
+[`grexpr`](#grep)|
+[`gregexec`](#grep)|
+[`regexpr`](#grep)|
+[`regexec`](#grep)|
 [`reorder`](#reorder)|
 [`rep`](#rep)|
 [`spread`](#spread)|
+[`sub`](#grep)|
 
 We have already provided some rules to follow as we created plots for our examples. Here, we aim to provide some general principles we can use as a guide for effective data visualization. Much of this section is based on a talk by Karl Broman^[http://kbroman.org/] titled "Creating Effective Figures and Tables"^[https://www.biostat.wisc.edu/~kbroman/presentations/graphs2017.pdf] and includes some of the figures which were made with code that Karl makes available on his GitHub repository^[https://github.com/kbroman/Talk_Graphs], as well as class notes from Peter Aldhous' Introduction to Data Visualization course^[http://paldhous.github.io/ucb/2016/dataviz/index.html]. Following Karl's approach, we show some examples of plot styles we should avoid, explain how to improve them, and use these as motivation for a list of principles. We compare and contrast plots that follow these principles to those that don't.
 
@@ -677,24 +686,142 @@ Here, by simply looking at the y-axis, we quickly see which countries have shown
 
 # 11.9 Encoding a third variable
 
+An earlier scatterplot showed the relationship between infant survival and average income. Below is a version of this plot that encodes three variables: OPEC membership, region, and population.
+
+```{r}
+present_year <- 2010
+
+gapminder |>
+  mutate(region = case_when(
+    region %in% west ~ "The West",
+    region %in% "Northern Africa" ~ "Northern Africa",
+    region %in% c("Eastern Asia", "South-Eastern Asia") ~ "East Asia",
+    region == "Southern Asia"~ "Southern Asia",
+    region %in% c("Central America", "South America", "Caribbean") ~ "Latin America",
+    continent == "Africa" & region != "Northern Africa" ~ "Sub-Saharan Africa",
+    region %in% c("Melanesia", "Micronesia", "Polynesia") ~ "Pacific Islands"),
+    dollars_per_day = gdp / population / 365) |>
+  filter(year %in% present_year & 
+         !is.na(gdp) & !is.na(infant_mortality) & 
+         !is.na(region) ) |>
+  mutate(OPEC = ifelse(country%in%opec, "Yes", "No")) ->
+  dat
+
+dat |>
+  ggplot(aes(dollars_per_day,
+             1 - infant_mortality / 1000,
+             col = region,
+             size = population / 10^6,
+             pch = OPEC)) +
+  scale_x_continuous(trans = "log2",
+                     limits = c(0.25, 150)) +
+  scale_y_continuous(trans = "logit",
+                     limit = c(0.875, .9981),
+                     breaks = c(.85, .90, .95, .99, .995, .998)) +
+  geom_point(alpha = 0.5) +
+  ylab("Infant survival proportion")
+```
+
+We encode categorical variables with color and shape. These shapes can be controlled with `shape`  argument. Below are the shapes available for use in R. For the last five, the color goes inside.
+
+```{r available-shapes, echo=FALSE, fig.height=2.25}
+dat=data.frame(x=c(0:25))
+ggplot() +
+  theme_minimal() +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank()) +
+scale_shape_identity() + scale_y_reverse() +
+geom_point(dat, 
+           mapping=aes(x%%9, 
+                       x%/%9, 
+                       shape=x), 
+           size=4, 
+           fill="blue") +
+geom_text(dat, 
+          mapping=aes(x%%9, 
+                      x%/%9+0.25, 
+                      label=x), 
+          size=4) 
+```
+
+For continuous variables, we can use color, intensity, or size. We now show an example of how we do this with a case study.
+
+When selecting colors to quantify a numeric variable, we choose between two options: sequential and diverging. <span class="orange">Sequential colors are suited for data that goes from high to low.</span>  High values are clearly distinguished from low values. Here are some examples offered by the package `RColorBrewer`:
+
+```{r}
+library(RColorBrewer)
+display.brewer.all(type="seq")
+```
+
+<span class="orange">Diverging colors are used to represent values that diverge from a center.</span> We put equal emphasis on both ends of the data range: higher than the center and lower than the center. An example of when we would use a divergent pattern would be if we were to show height in standard deviations away from the average. Here are some examples of divergent patterns:
+
+```{r}
+display.brewer.all(type = "div")
+```
+
+# 11.10 Avoid psuedo-three-dimensional plots
+
+The figure below, taken from the scientific literature38, shows three variables: dose, drug type and survival. Although your screen/book page is flat and two-dimensional, the plot tries to imitate three dimensions and assigned a dimension to each variable.
+
+<img src="https://raw.githubusercontent.com/kbroman/Talk_Graphs/master/Figs/fig8b.png />
+
+Humans are not good at seeing in three dimensions (which explains why it is hard to parallel park) and our limitation is even worse with regard to pseudo-three-dimensions. To see this, try to determine the values of the survival variable in the plot above. Can you tell when the purple ribbon intersects the red one? This is an example in which we can easily use color to represent the categorical variable instead of using a pseudo-3D:
+
+```{r}
+url <- "https://github.com/kbroman/Talk_Graphs/raw/master/R/fig8dat.csv"
+dat <- read.csv(url)
+dat |> 
+  gather(drug, survival, -log.dose) |>
+  mutate(drug = gsub("Drug.","",drug)) |>
+  ggplot(aes(log.dose, survival, color = drug)) +
+  geom_line()   
+```
+
+**`gather`**
+
+<blockquote id="gather">
+Gather columns into key-value pairs
+
+[Superseded]
+
+Development on `gather()` is complete, and for new code we recommend switching to `pivot_longer()`, which is easier to use, more featureful, and still under active development. `df %>% gather("key", "value", x, y, z)` is equivalent to `df %>% pivot_longer(c(x, y, z), names_to = "key", values_to = "value")`
+
+gather(
+  data,
+  key = "key",
+  value = "value",
+  ...,
+  na.rm = FALSE,
+  convert = FALSE,
+  factor_key = FALSE
+)
+
+</blockquote>
+
+**`grep`**
+
+<blockquote id="grep">
+- `grep(pattern, x, ignore.case = FALSE, perl = FALSE, value = FALSE, fixed = FALSE, useBytes = FALSE, invert = FALSE)` returns a vector of the indices of the elements of x that yielded a match (or not, for invert = TRUE)
+- `grepl(pattern, x, ...)` returns a logical vector (match or not for each element of x).
+- `sub(pattern, replacement, x, ...)` and `gsub(pattern, replacement, x, ...)` return a character vector of the same length and with the same attributes as x (after possible coercion to character). Elements of character vectors x which are not substituted will be returned unchanged (including any declared encoding). 
+-  `regexpr(pattern, text)` returns an integer vector of the same length as text giving the starting position of the first match or -1−1 if there is none, with attribute "match.length", an integer vector giving the length of the matched text (or -1−1 for no match). 
+- `gregexpr(pattern, text)` returns a list of the same length as text each element of which is of the same form as the return value for `regexpr`, except that the starting positions of every (disjoint) match are given.
+- `regexec(pattern, text)` returns a list of the same length as text each element of which is either -1−1 if there is no match, or a sequence of integers with the starting positions of the match and all substrings corresponding to parenthesized subexpressions of pattern, with attribute `match.length` a vector giving the lengths of the matches (or -1−1 for no match). The interpretation of positions and length and the attributes follows regexpr.
+- `gregexec(pattern, text)` returns the same as `regexec`, except that to accommodate multiple matches per element of text, the integer sequences for each match are made into columns of a matrix, with one matrix per element of text with matches.
+
+</blockquote>
 
 
+Notice how much easier it is to determine the survival values.
 
+Pseudo-3D is sometimes used completely gratuitously: plots are made to look 3D even when the 3rd dimension does not represent a quantity. This only adds confusion and makes it harder to relay your message. Here are two examples:
 
+<img src="http://rafalab.dfci.harvard.edu/dsbook/dataviz/img/fig1e.png" />
+<img src="http://rafalab.dfci.harvard.edu/dsbook/dataviz/img/fig2d.png" />
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+# 11.11 Avoid too many significant digits
 
 
 

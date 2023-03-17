@@ -2,6 +2,17 @@ body {
   background-color: #f0f8ff;
 }
 
+blockquote {
+  font-size: 1em;
+}
+
+img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 65%;
+}
+
 .green {
   background-color: #BBFA45;
 }

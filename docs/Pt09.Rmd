@@ -88,9 +88,9 @@ murders |>
   xlab("")
 ```
 
-**Information about the "current" group or variable** {#n}
+**Information about the "current" group or variable**
 
-<blockquote>
+<blockquote id="n">
 These functions return information about the "current" group or "current" variable, so only work inside specific contexts like `summarise()` and `mutate()`.
 
 - `n()` gives the current group size.
