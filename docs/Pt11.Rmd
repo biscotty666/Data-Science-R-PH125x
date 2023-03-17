@@ -554,6 +554,145 @@ gapminder |>
 
 About 10% of the population is color blind. Unfortunately, the default colors used in ggplot2 are not optimal for this group. However, ggplot2 does make it easy to change the color palette used in the plots. An example of how we can use a color blind friendly palette is described here: http://www.cookbook-r.com/Graphs/Colors_(ggplot2)/#a-colorblind-friendly-palette:
 
+```{r, eval=FALSE}
+color_blind_friendly_cols <- 
+  c("#999999", "#E69F00", "#56B4E9", "#009E73", 
+    "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+data.frame(x = 1:8,
+           y = rep(1, 8), col = as.character(1:8)) |>
+  ggplot(aes(x, y, color = col)) +
+  geom_point(size = 8, show.legend = FALSE) +
+  theme(axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.grid = element_blank()) -> 
+  p1
+
+p1 + scale_color_manual(values = color_blind_friendly_cols)
+```
+
+Here are the colors
+
+There are several resources that can help you select colors, for example this one: http://bconnelly.net/2013/10/creating-colorblind-friendly-figures/.
+
+<img src="https://bconnelly.net/posts/creating_colorblind-friendly_figures/img/cb-palette.png" />
+
+[Source: http://jfly.iam.u-tokyo.ac.jp/color/image/pallete.jpg](http://jfly.iam.u-tokyo.ac.jp/color/image/pallete.jpg])
+
+# 11.8 Plots for two variables
+
+<span class="orange">In general, you should use scatterplots to visualize the relationship between two variables.</span> In every single instance in which we have examined the relationship between two variables, including total murders versus population size, life expectancy versus fertility rates, and infant mortality versus income, we have used scatterplots. This is the plot we generally recommend. <span class="orange">However, there are some exceptions and we describe two alternative plots here: the **slope chart** and the **Bland-Altman plot**.</span>
+
+There is no geometry for slope charts in **ggplot2**, but we can construct one using `geom_line`. We need to do some tinkering to add labels. Below is an example comparing 2010 to 2015 for large western countries:
+
+```{r}
+west <- c("Western Europe","Northern Europe","Southern Europe",
+          "Northern America","Australia and New Zealand")
+
+gapminder |>
+  filter(year %in% c(2010, 2015) & 
+         region %in% west &
+         !is.na(life_expectancy) &
+         population > 10^7) -> 
+  dat
+
+dat |>
+  mutate(location = ifelse(year == 2010, 1, 2),
+         location = ifelse(year == 2015 &
+                             country %in% c("United Kingdom", "Portugal"),
+                           location + 0.22,
+                           location),
+         hjust = ifelse(year == 2010, 1, 0)) |>
+  mutate(year = as.factor(year)) |>
+  ggplot(aes(year, 
+             life_expectancy, 
+             group = country)) +
+  geom_line(aes(color = country), 
+            show.legend = FALSE) +
+  geom_text(aes(x = location, 
+                label = country, 
+                hjust = hjust),
+            show.legend = FALSE) +
+  xlab("") + ylab("Life Expectancy")
+```
+
+An advantage of the slope chart is that it permits us to quickly get an idea of changes based on the slope of the lines. Although we are using angle as the visual cue, we also have position to determine the exact values. Comparing the improvements is a bit harder with a scatterplot:
+
+```{r}
+library(ggrepel)
+c("Western Europe","Northern Europe","Southern Europe",
+          "Northern America","Australia and New Zealand") ->
+  west
+
+gapminder |> 
+  filter(year%in% c(2010, 2015) & region %in% west & 
+           !is.na(life_expectancy) & population > 10^7) ->
+  dat
+
+dat |> 
+  mutate(year = paste0("life_expectancy_", year)) |>
+  select(country, year, life_expectancy) |>
+  spread(year, life_expectancy) |> 
+  ggplot(aes(x=life_expectancy_2010,
+             y=life_expectancy_2015, 
+             label = country)) + 
+  geom_point() + 
+  geom_text_repel() +
+  scale_x_continuous(limits=c(78.5, 83)) +
+  scale_y_continuous(limits=c(78.5, 83)) +
+  geom_abline(lty = 2) +
+  xlab("2010") + 
+  ylab("2015")
+```
+
+
+In the scatterplot, we have followed the principle use common axes since we are comparing these before and after. However, if we have many points, slope charts stop being useful as it becomes hard to see all the lines.
+
+## 11.8.2 Bland-Altman plot
+
+Since we are primarily interested in the difference, it makes sense to dedicate one of our axes to it. The Bland-Altman plot, also known as the Tukey mean-difference plot and the MA-plot, shows <span class="orange">the difference versus the average</span>:
+
+```{r}
+library(ggrepel)
+dat |> 
+  mutate(year = paste0("life_expectancy_", year)) |>
+  select(country, year, life_expectancy) |> 
+  pivot_wider(names_from = "year", 
+              values_from = "life_expectancy") |> 
+  mutate(average = (life_expectancy_2015 + life_expectancy_2010)/2,
+         difference = life_expectancy_2015 - life_expectancy_2010) |>
+  ggplot(aes(average, 
+             difference, 
+             label = country)) + 
+  geom_point() +
+  geom_text_repel() +
+  geom_abline(lty = 2) +
+  xlab("Average of 2010 and 2015") + 
+  ylab("Difference between 2015 and 2010")
+```
+
+NB `paste0()` = `paste(..., sep = " ")`
+
+Here, by simply looking at the y-axis, we quickly see which countries have shown the most improvement. We also get an idea of the overall value from the x-axis.
+
+# 11.9 Encoding a third variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
