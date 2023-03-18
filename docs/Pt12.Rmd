@@ -11,7 +11,8 @@ output:
 
 R commands in this chapter
 
-|[`pnorm`](#pnorm)|
+|[`coord_cartesian`](#coord_cartesian)|
+[`pnorm`](#pnorm)|
 [`qnorm`](#qnorm)|
 [`scale`](#scale)|
 
@@ -496,7 +497,7 @@ So about 50% are shorter or equal to 69 inches. This implies that if $p=0.50$ th
 The idea of a QQ-plot is that if your data is well approximated by normal distribution then the quantiles of your data should be similar to the quantiles of a normal distribution. To construct a QQ-plot, we do the following:
 
 1. Define a vector of $m$ proportions $p_1, p_2, \dots, p_m$.
-2. Define a vector of quantiles $q_1, \dots, q_m$ for your data for the proportions $p_1, \dots, p_m$. We refer to these as the _sample quantiles_. 
+2. Define a vector of quantiles $q_1, \dots, q_m$ for your data for the proportions $p_1, \dots, p_m$. We refer to these as the __sample quantiles__. 
 3. Define a vector of theoretical quantiles for the proportions $p_1, \dots, p_m$ for a normal distribution with the same average and standard deviation as the data.
 4. Plot the sample quantiles versus the theoretical quantiles.
 
@@ -558,11 +559,67 @@ Another special case that receives a name are the quartiles, which are obtained 
 
 # 12.6 Boxplots
 
+To introduce boxplots we will use a dataset of US murders by state. <span class="green">Suppose we want to summarize the murder rate distribution.</span> Using the techniques we have learned, we can quickly see that the normal approximation does not apply here:
+
+```{r}
+data(murders)
+murders <- murders |>
+  mutate(rate = total / population * 10^5)
+library(gridExtra)
+p1 <- 
+  murders |>
+  ggplot(aes(rate)) +
+  geom_histogram(binwidth = 0.5, color = "black") +
+  ggtitle("Histogram")
+p2 <- 
+  murders |> 
+  ggplot(aes(sample=rate)) + 
+  geom_qq(dparams=summarize(murders, mean=mean(rate), sd=sd(rate))) +
+  geom_abline() + 
+  ggtitle("QQ-plot")
+grid.arrange(p1, p2, ncol = 2)
+```
+
+> NB. `geom_qq` requires an aesthetic named __sample__
+
+In this case, the histogram above or a smooth density plot would serve as a relatively succinct summary.
+
+Now suppose those used to receiving just two numbers as summaries ask us for a more compact numerical summary.
+
+The boxplot provides a five-number summary composed of the range along with the quartiles (the 25th, 50th, and 75th percentiles). The boxplot often ignore outliers when computing the range and instead plot these as independent points. We provide a detailed explanation of outliers later. Finally, he suggested we plot these numbers as a “box” with “whiskers” like this:
+
+```{r}
+murders |>
+  ggplot(aes("", rate)) +
+  geom_boxplot() +
+  coord_cartesian(xlim = c(0, 2)) +
+  xlab("")
+```
+with the box defined by the 25% and 75% percentile and the whiskers showing the range. The distance between these two is called the _interquartile_ range. The two points are considered outliers by the default R function we used. The median is shown with a horizontal line. Today, we call these _boxplots_. 
+
+From just this simple plot, we know that the median is about 2.5, that the distribution is not symmetric, and that the range is 0 to 5 for the great majority of states with two exceptions.
 
 
+<blockquote id="geom_boxplot">
+__`geom_boxplot`__ requires the following arguments:
 
+- x or y
+- lower or xlower
+- upper or xupper
+- middle or xmiddle
+- ymin or xmin
+- ymax or xmax
+</blockquote>
 
+__`coord_cartesian`__
 
+<blockquote id="coord_cartesian">
+The Cartesian coordinate system is the most familiar, and common, type of coordinate system. Setting limits on the coordinate system will zoom the plot (like you're looking at it with a magnifying glass), and will not change the underlying data like setting limits on a scale will.
+
+`coord_cartesian(xlim = NULL, ylim = NULL, expand = TRUE, default = FALSE, clip = "on")`
+</blockquote>
+
+# 12.7 Stratification
 
 
 
