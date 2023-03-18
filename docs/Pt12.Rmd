@@ -360,6 +360,78 @@ d. <span class="green">They are the same dataset, but the first is not in the lo
 
 # 12.4 The normal distribution
 
+The normal distribution, also known as the bell curve and as the Gaussian distribution, is one of the most famous mathematical concepts in history. A reason for this is that approximately normal distributions occur in many situations, including gambling winnings, heights, weights, blood pressure, standardized test scores, and experimental measurement errors. There are explanations for this, but we describe these later. Here we focus on how the normal distribution helps us summarize data.
+
+Rather than using data, the normal distribution is defined with a mathematical formula. For any interval $(a,b)$, the proportion of values in that interval can be computed using this formula:
+
+$$\mbox{Pr}(a < x \leq b) = \int_a^b \frac{1}{\sqrt{2\pi}s} e^{-\frac{1}{2}\left( \frac{x-m}{s} \right)^2} \, dx$$
+
+where $m$ is the mean and $s$ is the standard deviation.
+
+<span class="green">The distribution is symmetric, centered at the average, and most values (about 95%) are within 2 SDs from the average.</span> Here is what the normal distribution looks like when the average is 0 and the SD is 1:
+```{r}
+m <- 0; s <- 1
+norm_dist <- 
+  data.frame(x = seq(-4, 4, len = 50) * s + m) |> 
+  mutate(density = dnorm(x, m, s))
+norm_dist |> 
+  ggplot(aes(x,density)) + 
+  geom_line()
+```
+
+For a list of numbers contained in a vector x, the average is defined as:
+```
+m <- sum(x) / length(x)
+```
+and the SD is defined as:
+```
+s <- sqrt(sum((x-mu)^2) / length(x))
+```
+which can be interpreted as the average distance between values and their average.
+
+Let’s compute the values for the height for males which we will store in the object $x$:
+
+```{r}
+index <- heights$sex == "Male"
+x <- heights$height[index]
+str(x)
+```
+```{r}
+y <- heights |>
+  filter(sex == "Male") |>
+  pull(height)
+identical(x, y)
+```
+
+The pre-built functions mean and sd can be used here:
+```{r}
+options(digits = 3)
+m <- mean(x)
+s <- sd(x)
+c(average = m, sd = s)
+```
+
+Advanced note: for reasons explained in statistics textbooks, `sd` divides by `length(x)-1` rather than `length(x)`. So `sd(x)` and `sqrt(sum((x-mu)^2) / length(x))` are practically equal when length(x) is large.
+
+Here is a plot of the smooth density and the normal distribution with mean = 69.3 and SD = 3.6 plotted as a black line with our student height smooth density in blue:
+
+```{r}
+norm_dist <- 
+  data.frame(x = seq(-4, 4, len=50)*s + m) |> 
+  mutate(density = dnorm(x, m, s))
+heights |> 
+  filter(sex == "Male") |> 
+  ggplot(aes(height)) +
+  geom_density(fill="#0099FF") +
+  geom_line(aes(x, density),  
+            data = norm_dist, 
+            lwd=1.5) 
+```
+
+The normal distribution does appear to be quite a good approximation here. We now will see how well this approximation works at predicting the proportion of values within intervals.
+
+## 12.4.1 Standard units
+
 
 
 
