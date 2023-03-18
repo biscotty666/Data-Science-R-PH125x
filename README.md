@@ -168,6 +168,21 @@ Function index:
 
 ### [Chapter 11 Data visualization principles](docs/Pt11.html)
 
+[`annotate`](docs/Pt11.html#annotate),
+[`coord_polar`](docs/Pt11.html#coord_polar),
+[`gather`](docs/Pt11.html#gather),
+[`grep`](docs/Pt11.html#grep),
+[`grepl`](docs/Pt11.html#grep),
+[`gsub`](docs/Pt11.html#grep),
+[`grexpr`](docs/Pt11.html#grep),
+[`gregexec`](docs/Pt11.html#grep),
+[`regexpr`](docs/Pt11.html#grep),
+[`regexec`](docs/Pt11.html#grep),
+[`reorder`](docs/Pt11.html#reorder),
+[`rep`](docs/Pt11.html#rep),
+[`spread`](docs/Pt11.html#spread),
+[`sub`](docs/Pt11.html#grep)
+
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
 
