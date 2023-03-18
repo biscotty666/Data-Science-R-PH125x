@@ -200,9 +200,181 @@ tmp |>
   geom_line() +
   geom_area(aes(x = height, density),
             data = filter(tmp, between(height, 65, 68)),
-            alpha = 0.2,
+            alpha = 0.4,
             fill = "darkgoldenrod")
 ```
+
+The proportion of this area is about 0.3, meaning that about 30% of male heights are between 65 and 68 inches.
+
+By understanding this, we are ready to use the smooth density as a summary. For this dataset, we would feel quite comfortable with the smoothness assumption, and therefore with sharing this aesthetically pleasing figure with ET, which he could use to understand our male heights data:
+```{r}
+heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  geom_density(alpha = 0.4,
+            fill = "darkgoldenrod")
+```
+
+# 12.3 Exercises
+
+1. In the `murders` dataset, the region is a categorical variable and the following is its distribution:
+
+```{r}
+data("murders")
+ds_theme_set()
+str(murders)
+```
+
+```{r}
+murders |>
+  group_by(region) |>
+  summarise(n = n()) |>
+  mutate(Proportion = n / sum(n),
+         region = reorder(region, Proportion)) |>
+  ggplot(aes(region, Proportion, fill = region)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  xlab("")
+```
+To the closest 5%, what proportion of the states are in the North Central region? <span class="green">25%</span>
+
+2. Which of the following is true:
+
+a. The graph above is a histogram.
+b. The graph above shows only four numbers with a bar plot.
+c. <span class="green">Categories are not numbers, so it does not make sense to graph the distribution.</span>
+d. The colors, not the height of the bars, describe the distribution.
+
+3. The plot below shows the eCDF for male heights:
+```{r}
+heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  stat_ecdf() +
+  ylab("F(a)") + xlab("a")
+```
+
+Based on the plot, what percentage of males are shorter than 75 inches?
+
+a. 100%
+b. <span class="green">95%</span>
+c. 80%
+d. 72 inches
+
+4. To the closest inch, what height `m` has the property that 1/2 of the male students are taller than `m` and 1/2 are shorter?
+
+a. 61 inches
+b. 64 inches
+c. <span class="green">69 inches</span>
+d. 74 inches
+
+5. Here is an eCDF of the murder rates across states:
+
+```{r}
+str(murders)
+```
+```{r}
+murders |>  
+  mutate(murder_rate = total / population * 10^5) |>
+  ggplot(aes(murder_rate)) +
+  stat_ecdf()
+```
+
+Knowing that there are 51 states (counting DC) and based on this plot, how many states have murder rates larger than 10 per 100,000 people?
+
+a. <span class="green">1</span>
+b. 5
+c. 10
+d. 50
+
+6. Based on the eCDF above, which of the following statements are true:
+
+a. About half the states have murder rates above 7 per 100,000 and the other half below.
+b. Most states have murder rates below 2 per 100,000.
+c. All the states have murder rates above 2 per 100,000.
+d. <span class="green">With the exception of 4 states, the murder rates are below 5 per 100,000.</span>
+
+7. Below is a histogram of male heights in our heights dataset:
+```{r}
+heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, color = "black")
+```
+
+Based on this plot, how many males are between 63.5 and 65.5?
+
+a. 10
+b. 24
+c. <span class="green">34</span>
+d. 100
+
+8. About what percentage are shorter than 60 inches?
+
+a. <span class="green">1%</span>
+b. 10%
+c. 25%
+d. 50%
+
+9. Based on the density plot below, about what proportion of US states have populations larger than 10 million?
+```{r}
+murders |>
+  ggplot(aes(population/10^6)) +
+  geom_density(fill = "darkgoldenrod") +
+  scale_x_log10()
+```
+
+a. 0.02
+b. <span class="green>0.15</span>
+c. 0.50
+d. 0.55
+
+10. Below are three density plots. Is it possible that they are from the same dataset?
+```{r}
+murders |>
+  ggplot(aes(population / 10^6)) +
+  xlab("Population in millions") ->
+  tmp
+p1 <- 
+  tmp +
+  geom_density(bw = 5, fill = "grey") +
+  ggtitle("1")
+p2 <- 
+  tmp +
+  geom_density(bw = .05, fill = "grey") +
+  scale_x_log10() +
+  ggtitle("2")
+p3 <- 
+  tmp +
+  geom_density(bw = 1, fill = "grey") +
+  scale_x_log10() +
+  ggtitle("3")
+grid.arrange(p1, p2, p3, ncol = 2)
+```
+
+Which of the following statements is true:
+
+a. It is impossible that they are from the same dataset.
+b. They are from the same dataset, but the plots are different due to code errors.
+c. They are the same dataset, but the first and second plot undersmooth and the third oversmooths.
+d. <span class="green">They are the same dataset, but the first is not in the log scale, the second undersmooths, and the third oversmooths.</span>
+
+# 12.4 The normal distribution
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
