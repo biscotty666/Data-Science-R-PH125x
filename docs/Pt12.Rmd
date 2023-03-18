@@ -621,9 +621,49 @@ The Cartesian coordinate system is the most familiar, and common, type of coordi
 
 # 12.7 Stratification
 
+In data analysis we often divide observations into groups based on the values of one or more variables associated with those observations. For example in the next section we divide the height values into groups based on a sex variable: females and males. We call this procedure __stratification__ and refer to the resulting groups as __strata__.
 
+Stratification is common in data visualization because we are often interested in how the distribution of variables differs across different subgroups. We will see several examples throughout this part of the book.
 
+## 12.7.1 Case study: describing student heights (continued)
 
+Using the histogram, density plots, and QQ-plots, we have become convinced that the male height data is well approximated with a normal distribution. In this case, we report back to ET a very succinct summary: male heights follow a normal distribution with an average of 69.3 inches and a SD of 3.6 inches. With this information, ET will have a good idea of what to expect when he meets our male students. However, to provide a complete picture we need to also provide a summary of the female heights.
+
+We learned that boxplots are useful when we want to quickly compare two or more distributions. Here are the heights for men and women:
+```{r}
+heights |> 
+  ggplot(aes(x=sex, y=height, fill=sex)) +
+  geom_boxplot()
+```
+
+The plot immediately reveals that males are, on average, taller than females. The standard deviations appear to be similar. But does the normal approximation also work for the female height data collected by the survey? We expect that they will follow a normal distribution, just like males. However, exploratory plots reveal that the approximation is not as useful:
+```{r}
+p1 <- heights |>
+  ggplot(aes(height)) +
+  geom_density(fill = "olivedrab2") +
+  xlab("Women's heights")
+p2 <- heights |>
+  ggplot(aes(sample = scale(height))) +
+  geom_qq() + geom_abline() +
+  ylab("Standard Units")
+grid.arrange(p1, p2, ncol = 2)
+```
+
+We see something we did not see for the males: the density plot has a second _bump_. Also, the QQ-plot shows that the highest points tend to be taller than expected by the normal distribution. Finally,  we also see five points in the QQ-plot that suggest shorter than expected heights for a normal distribution. When reporting back to ET, we might need to provide a histogram rather than just the average and standard deviation for the female heights. 
+
+We have noticed what we didn't expect to see. If we look at other female height distributions, we do find that they are well approximated with a normal distribution. So why are our female students different? Is our class a requirement for the female basketball team? Are small proportions of females claiming to be taller than they are? Another, perhaps more likely, explanation is that in the form students used to enter their heights, `FEMALE` was the default sex and some males entered their heights, but forgot to change the sex variable. In any case, data visualization has helped discover a potential flaw in our data. 
+
+Regarding the five smallest values, note that these values are:
+```{r}
+heights |>
+  filter(sex == "Female") |>
+  slice_min(height, n = 5) |>
+  pull(height)
+```
+
+Because these are reported heights, a possibility is that the student meant to enter `5'1"`, `5'2"`, `5'3"` or `5'5"`. 
+
+# 12.8 Exercises
 
 
 
