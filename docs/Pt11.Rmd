@@ -863,7 +863,7 @@ dat <- us_contagious_diseases |>
 dat
 ```
 
-## 11.12 Know your audience
+# 11.12 Know your audience
 
 Graphs can be used for 1) our own exploratory data analysis, 2) to convey a message to experts, or 3) to help tell a story to a general audience. Make sure that the intended audience understands each element of the plot.
 

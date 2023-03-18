@@ -16,9 +16,194 @@ R commands in this chapter
 - __numeric__
   - discrete
   - continuous
-- **categorical**
+- __categorical__
   - ordinal
   - not
+
+Some categorical data can be ordered even if they are not numbers, such as spiciness (mild, medium, hot). In statistics textbooks, ordered categorical data are referred to as *ordinal* data.
+
+Keep in mind that discrete numeric data can be considered ordinal. Although this is technically true, we usually reserve the term ordinal data for variables belonging to a small number of different groups, with each group having many members. In contrast, when we have many groups with few cases in each group, we typically refer to them as discrete numerical variables. So, <span color="yellow">for example, the number of packs of cigarettes a person smokes a day, rounded to the closest pack, would be considered ordinal, while the actual number of cigarettes would be considered a numerical variable.</span> But, indeed, there are examples that can be considered both numerical and ordinal. 
+
+# 12.2 Distributions
+
+The most basic statistical summary of a list of objects or numbers is its distribution. The simplest way to think of a distribution is as a compact description of a list with many entries. This concept should not be new for readers of this book. For example, with categorical data, the distribution simply describes the proportion of each unique category. Here is an example with US state regions:
+
+```{r}
+prop.table(table(state.region))
+```
+
+When the data is numerical, the task of constructing a summary based on the distribution is more challenging. We introduce an artificial, yet illustrative, motivating problem that will help us introduce the concepts needed to understand distributions.
+
+## 12.2.1 Case study: describing student heights
+
+Pretend that we have to describe the heights of our classmates to ET, an extraterrestrial that has never seen humans. As a first step, we need to collect data. To do this, we ask students to report their heights in inches. We ask them to provide sex information because we know there are two different distributions by sex. We collect the data and save it in the heights data frame:
+
+```{r}
+library(tidyverse)
+library(dslabs)
+data("heights")
+```
+
+One way to convey the heights to ET is to simply send him this list of 1050 heights. But there are much more effective ways to convey this information, and understanding the concept of a distribution will help. To simplify the explanation, we first focus on male heights. We examine the female height data in Section 12.7.1.
+
+It turns out that, in some cases, the average and the standard deviation are pretty much all we need to understand the data. We will learn data visualization techniques that will help us determine when this two number summary is appropriate. These same techniques will serve as an alternative for when two numbers are not enough.
+
+## 12.2.2 Empirical cumulative distribution functions
+
+Numerical data that are not categorical also have distributions. In general, when data is not categorical, reporting the frequency of each entry is not an effective summary since most entries are unique. In our case study, while several students reported a height of 68 inches, only one student reported a height of `68.503937007874` inches and only one student reported a height `68.8976377952756` inches. We assume that they converted from 174 and 175 centimeters, respectively.
+
+Statistics textbooks teach us that a more useful way to define a distribution for numeric data is to define a function that reports the proportion of the data entries $x$ that are below $a$, for all possible values of $a$. This function is called the <span class="green">empirical cumulative distribution function (eCDF)</span> and often denoted with $F$:
+
+$$F(a)=\text{Proportion of data points >=a}$$
+Here is a plot of $F$ for the male height data:
+
+```{r}
+heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  stat_ecdf() +
+  ylab("F(a)") + xlab("a")
+```
+
+<span class="green">Similar to what the frequency table does for categorical data, the eCDF defines the distribution for numerical data.</span? From the plot, we can see that 16% of the values are below 65, since $F(66)=0.164$, or that 84% of the values are below 72, since $F(72)=0.841$, and so on. In fact, we can report the proportion of values between any two heights, say $a$ and $b$, by computing $F(b)−F(a)$. This means that if we send this plot above to ET, he will have all the information needed to reconstruct the entire list. Paraphrasing the expression “a picture is worth a thousand words”, in this case, a picture is as informative as 812 numbers.
+
+Note: the reason we add the word empirical is because, as we will see in 13.10.1, the cumulative distribution function (CDF) can be defined mathematically, meaning without any data.
+
+## 12.2.3 Histograms
+
+Although the eCDF concept is widely discussed in statistics textbooks, the summary plot is actually not very popular in practice. The main reason is that it does not easily convey characteristics of interest such as: at what value is the distribution centered? Is the distribution symmetric? What ranges contain 95% of the values? Histograms are much preferred because they greatly facilitate answering such questions. Histograms sacrifice just a bit of information to produce summaries that are much easier to interpret. 
+
+The simplest way to make a histogram is to divide the span of our data into non-overlapping bins of the same size. Then, for each bin, we count the number of values that fall in that interval. The histogram plots these counts as bars with the base of the bar defined by the intervals. Here is the histogram for the height data splitting the range of values into one inch intervals: $(49.5, 50.5],(50.5, 51.5],(51.5,52.5],(52.5,53.5],...,(82.5,83.5]$
+```{r}
+heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  geom_histogram(binwidth = 1, 
+                 color = "black")
+```
+As you can see in the figure above, <span class="green">a histogram is similar to a barplot, but it differs in that the x-axis is numerical, not categorical.</span>
+
+If we send this plot to ET, he will immediately learn some important properties about our data. First, the range of the data is from 50 to 84 with the majority (more than 95%) between 63 and 75 inches. Second, the heights are close to symmetric around 69 inches. Also, by adding up counts, ET could obtain a very good approximation of the proportion of the data in any interval. Therefore, the histogram above is not only easy to interpret, but also provides almost all the information contained in the raw list of `r sum(heights$sex=="Male")` heights with about 30 bin counts.
+
+What information do we lose?  Note that all values in each interval are treated the same when computing bin heights. So, for example, the histogram does not distinguish between 64, 64.1, and 64.2 inches. Given that these differences are almost unnoticeable to the eye, the practical implications are negligible and we were able to summarize the data to just 23 numbers.
+
+## 12.2.4 Smoothed density
+
+Smooth density plots are similar to histograms, but the data is not divided into bins. Here is what a smooth density plot looks like for our heights data:
+```{r}
+heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  geom_density(fill = "darkgoldenrod", 
+               alpha = .2)
+```
+In this plot, we no longer have sharp edges at the interval boundaries and many of the local peaks have been removed. Also, the scale of the y-axis changed from counts to _density_.
+
+To understand the smooth densities, we have to understand _estimates_, a topic we don't cover until later. However, we provide a heuristic explanation to help you understand the basics.
+
+The main new concept you must understand is that we assume that our list of observed values is a subset of a much larger list of unobserved values. In the case of heights, you can imagine that our list of `r sum(heights$sex=="Male")` male students comes from a hypothetical list containing all the heights of all the male students in all the world measured very precisely. Let's say there are 1,000,000 of these measurements. This list of values has a distribution, like any list of values, and this larger distribution is really what we want to report to ET since it is much more general. Unfortunately, we don't get to see it. 
+
+However, we make an assumption that helps us perhaps approximate it. If we had 1,000,000 values, measured very precisely, we could make a histogram with very, very small bins. The assumption is that if we show this, the height of consecutive bins will be similar. This is what we mean by smooth: we don't have big jumps in the heights of consecutive bins. Below we have a hypothetical histogram with bins of size 1:
+```{r}
+set.seed(1988)
+x <- data.frame(height = c(rnorm(1000000, 69, 3),
+                           rnorm(1000000, 65, 3)))
+x |> ggplot(aes(height)) + geom_histogram(binwidth = 1, color = "black")
+```
+The smaller we make the bins, the smoother the histogram gets. Here are the histograms with bin width of 1, 0.5, and 0.1:
+
+```{r}
+xplt <- x |> ggplot(aes(height))
+p1 <- xplt + geom_histogram(binwidth = 1) + ggtitle("binwidth = 1")
+p2 <- xplt + geom_histogram(binwidth = 0.5) + ggtitle("binwidth = 0.5")
+p3 <- xplt + geom_histogram(binwidth = 0.1) + ggtitle("binwidth = 0.1")
+library(gridExtra)
+grid.arrange(p1, p2, p3, nrow = 1)
+```
+
+The smooth density is basically the curve that goes through the top of the histogram bars when the bins are very, very small. To make the curve not depend on the hypothetical size of the hypothetical list, we compute the curve on frequencies rather than counts:
+```{r}
+xplt +
+  geom_histogram(aes(y = ..density..), binwidth = 0.1) +
+  geom_line(stat = "density")
+```
+
+Now, back to reality. We don’t have millions of measurements. Instead, we have 812 and we can’t make a histogram with very small bins.
+
+We therefore make a histogram, using bin sizes appropriate for our data and computing frequencies rather than counts, and we draw a smooth curve that goes through the tops of the histogram bars. The following plots demonstrate the steps that lead to a smooth density:
+
+```{r}
+hist1 <- 
+  heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 1,
+                 color = "black")
+hist2 <- 
+  hist1 +
+  geom_line(stat = "density")
+hist3 <- 
+  hist1 +
+  geom_point(data = ggplot_build(hist2)$data[[1]],
+             aes(x,y),
+             col = "blue")
+hist4 <- 
+  ggplot() +
+  geom_point(data = ggplot_build(hist2)$data[[1]],
+             aes(x,y),
+             col = "blue") +
+  xlab("height") + ylab("density")
+hist5 <- 
+  hist4 +
+  geom_line(data = ggplot_build(hist2)$data[[2]], aes(x,y))
+hist6 <- 
+  heights |>
+  filter(sex == "Male") |>
+  ggplot(aes(height)) +
+  geom_density(alpha = 0.2,
+               fill = "darkgoldenrod",
+               col = 0) +
+  geom_line(stat = "density") +
+  scale_y_continuous(limits = layer_scales(hist2)$y$range$range)
+
+grid.arrange(hist1, hist2, hist3, hist4, hist5, hist6, nrow=2)
+```
+
+However, remember that _smooth_ is a relative term. We can actually control the _smoothness_ of the curve that defines the smooth density through an option in the function that computes the smooth density curve. Here are two examples using different degrees of smoothness on the same histogram:
+
+```{r}
+tmp <- 
+  heights |> 
+  ggplot(aes(height)) +
+  geom_histogram(aes(y = ..density..),
+                 binwidth = 1,
+                 alpha = 0.5)
+p1 <- tmp +
+  geom_line(stat = "density", adjust = 0.5)
+p2 <- tmp +
+  geom_line(stat = "density", adjust = 2)
+
+grid.arrange(p1, p2, ncol=2)
+```
+
+We need to make this choice with care as the resulting summary can change our interpretation of the data. We should select a degree of smoothness that we can defend as being representative of the underlying data. In the case of height, we really do have reason to believe that the proportion of people with similar heights should be the same. For example, the proportion that is 72 inches should be more similar to the proportion that is 71 than to the proportion that is 78 or 65. This implies that the curve should be pretty smooth; that is, the curve should look more like the example on the right than on the left.
+
+While the histogram is an assumption-free summary, the smoothed density is based on some assumptions.
+
+Note that interpreting the y-axis of a smooth density plot is not straightforward. It is scaled so that the area under the density curve adds up to 1. If you imagine we form a bin with a base 1 unit in length, the y-axis value tells us the proportion of values in that bin. However, this is only true for bins of size 1. For other size intervals, the best way to determine the proportion of data in that interval is by computing the proportion of the total area contained in that interval. For example, here are the proportion of values between 65 and 68:
+```{r}
+d <- with(heights, density(height[sex == "Male"]))
+tmp <- data.frame(height = d$x, density = d$y)
+tmp |>
+  ggplot(aes(height, density)) +
+  geom_line() +
+  geom_area(aes(x = height, density),
+            data = filter(tmp, between(height, 65, 68)),
+            alpha = 0.2,
+            fill = "darkgoldenrod")
+```
+
 
 
 

@@ -183,6 +183,8 @@ Function index:
 [`spread`](docs/Pt11.html#spread),
 [`sub`](docs/Pt11.html#grep)
 
+### [Chapter 12 Summary statistics](docs/Pt12.html)
+
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
 
