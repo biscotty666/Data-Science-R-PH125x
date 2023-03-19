@@ -185,6 +185,13 @@ Function index:
 
 ### [Chapter 12 Summary statistics](docs/Pt12.html)
 
+[`coord_cartesian`](docs/Pt12.html#coord_cartesian),
+[`IQR`](docs/Pt12.html#iqr),
+[`mad`](docs/Pt12.html#mad),
+[`pnorm`](docs/Pt12.html#pnorm),
+[`qnorm`](docs/Pt12.html#qnorm),
+[`scale`](docs/Pt12.html#scale)
+
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
 

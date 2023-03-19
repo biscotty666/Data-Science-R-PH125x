@@ -872,6 +872,161 @@ mad(outlier_example)
 
 which is about 3 inches.
 
+# 12.10 Exercises
+
+We are going to use the __HistData__ package. If it is not installed you can install it like this:
+```{r}
+# install.packages("HistData")
+```
+
+Load the height data set and create a vector x with just the male heights used in Galton’s data on the heights of parents and their children from his historic research on heredity.
+```{r}
+library(HistData)
+data(Galton)
+x <- Galton$child
+str(x)
+```
+1. Compute the average and median of these data.
+```{r}
+mean(x)
+median(x)
+```
+
+2. Compute the median and median absolute deviation of these data.
+
+```{r}
+median(x)
+mad(x)
+```
+
+3. Now suppose Galton made a mistake when entering the first value and forgot to use the decimal point. You can imitate this error by typing:
+
+```{r}
+x_with_error <- x
+x_with_error[1] <- x_with_error[1]*10
+mean(x_with_error) - mean(x)
+```
+```{r}
+sd(x_with_error) - sd(x)
+```
+
+5. How many inches does the median grow after this mistake?
+
+```{r}
+median(x_with_error) - median(x)
+```
+
+6. How many inches does the MAD grow after this mistake?
+
+```{r}
+mad(x_with_error) - mad(x)
+```
+
+7. How could you use exploratory data analysis to detect that an error was made?
+
+a. Since it is only one value out of many, we will not be able to detect this.
+b. <span class="green">We would see an obvious shift in the distribution.</span>
+c. <span class="green">A boxplot, histogram, or qq-plot would reveal a clear outlier.</span>
+d. A scatterplot would show high levels of measurement error.
+
+8. How much can the average accidentally grow with mistakes like this? Write a function called error_avg that takes a value k and returns the average of the vector x after the first entry changed to k. Show the results for k=10000 and k=-10000.
+
+```{r}
+error_avg <- function(x, k) {
+  x_with_error <- x
+  x_with_error[1] <- x_with_error[1]*k
+  mean(x_with_error)
+}
+error_avg(x, 10000)
+error_avg(x, -10000)
+```
+## 12.10.1 Case study: self-reported student heights
+
+The heights we have been looking at are not the original heights reported by students. The original reported heights are also included in the dslabs package and can be loaded like this:
+```{r}
+library(dslabs)
+data("reported_heights")
+str(reported_heights)
+```
+```{r}
+reported_heights <- 
+  reported_heights |>
+  mutate(original_heights = height,
+         height = as.numeric(height))
+str(reported_heights)
+```
+
+Note that we get a warning about NAs. This is because some of the self reported heights were not numbers. We can see why we get these:
+```{r}
+reported_heights |> filter(is.na(height)) |> head()
+```
+
+Some students self-reported their heights using feet and inches rather than just inches. Others used centimeters and others were just trolling. For now we will remove these entries:
+
+```{r}
+reported_heights <- filter(reported_heights, !is.na(height))
+reported_heights |> filter(is.na(height)) |> head()
+```
+
+If we compute the average and standard deviation, we notice that we obtain strange results. The average and standard deviation are different from the median and MAD:
+```{r}
+reported_heights |>
+  group_by(sex) |>
+  summarise(average = mean(height), sd = sd(height),
+            median = median(height), MAD = mad(height))
+```
+
+This suggests that we have outliers, which is confirmed by creating a boxplot:
+
+```{r}
+reported_heights |>
+  ggplot(aes(sex, height)) +
+  geom_boxplot()
+```
+
+We can see some rather extreme values. To see what these values are, we can quickly look at the largest values using the arrange function:
+```{r}
+reported_heights |>
+  arrange(desc(height)) |>
+  slice_max(height, n = 10)
+```
+
+The first seven entries look like strange errors. However, the next few look like they were entered as centimeters instead of inches. Since 184 cm is equivalent to six feet tall, we suspect that 184 was actually meant to be 72 inches.
+
+<span class="green">We can review all the nonsensical answers by looking at the data considered to be far out by Tukey</span>:
+
+
+```{r}
+whisker <- 3*IQR(reported_heights$height)
+max_height <- quantile(reported_heights$height, .75) + whisker
+min_height <- quantile(reported_heights$height, .25) - whisker
+reported_heights |> 
+  filter(!between(height, min_height, max_height)) |> 
+  select(original_heights) |>
+  head(n=10) |> pull(original_heights)
+```
+
+Examining these heights carefully, we see two common mistakes: entries in centimeters, which turn out to be too large, and entries of the form `x.y` with `x` and `y` representing feet and inches, respectively, which turn out to be too small. Some of the even smaller values, such as 1.6, could be entries in meters.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
