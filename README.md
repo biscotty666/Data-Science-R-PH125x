@@ -2,7 +2,7 @@
 
 My notes and exercises from the book [Introduction to Data Science: Data Analysis and Prediction Algorithms with R](http://rafalab.dfci.harvard.edu/dsbook/) by Rafael A. Irizarry.
 
-[Github Pages (live)](https://biscotty666.github.io/Data-Science-R-PH125.1x/)
+[Github Pages (live)](https://biscotty666.github.io/Data-Science-R-PH125x/)
 
 [Github Repo](https://github.com/biscotty666/Data-Science-R-PH125.1x)
 
