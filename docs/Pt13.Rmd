@@ -14,6 +14,7 @@ R commands in this chapter
 |[`prop.table`](#prop.table)|
 [`replicate`](#replicate)|
 [`sample`](#sample)|
+[`set.seed`](#set.seed)|
 [`table`](#table)|
 
 # 13.1 Discrete probability
@@ -113,6 +114,11 @@ The numbers above are the estimated probabilities provided by this Monte Carlo s
 
 Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.
 
+## 13.2.1 Setting the random seed {#set.seed}
+
+```{r}
+set.seed(1986)
+```
 
 
 

@@ -175,13 +175,16 @@ pre code {
 <li><a href="#notation">13.1.2 Notation</a></li>
 <li><a href="#probability-distribution">13.1.3 Probability distribution</a></li>
 </ul></li>
-<li><a href="#monte-carlo-simulation">13.2 Monte Carlo simulation</a></li>
+<li><a href="#monte-carlo-simulation">13.2 Monte Carlo simulation</a>
+<ul>
+<li><a href="#set.seed">13.2.1 Setting the random seed</a></li>
+</ul></li>
 </ul>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <p>R commands in this chapter</p>
-<p>|<a href="#prop.table"><code>prop.table</code></a>| <a href="#replicate"><code>replicate</code></a>| <a href="#sample"><code>sample</code></a>| <a href="#table"><code>table</code></a>|</p>
+<p>|<a href="#prop.table"><code>prop.table</code></a>| <a href="#replicate"><code>replicate</code></a>| <a href="#sample"><code>sample</code></a>| <a href="#set.seed"><code>set.seed</code></a>| <a href="#table"><code>table</code></a>|</p>
 <div id="discrete-probability" class="section level1">
 <h1>13.1 Discrete probability</h1>
 <p>We start by covering some basic principles related to categorical data. The subset of probability is referred to as <strong>discrete probability</strong>. It will help us understand the probability theory we will later introduce for numeric and continuous data, which is much more common in data science applications. Discrete probability is more useful in card games and therefore we use these as examples.</p>
@@ -261,14 +264,18 @@ events &lt;- replicate(B, sample(beads, 1))</code></pre>
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 6091 3909</code></pre>
+## 5980 4020</code></pre>
 <p>and <span id="prop.table"><code>prop.table</code></span> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
-##   blue    red 
-## 0.6091 0.3909</code></pre>
+##  blue   red 
+## 0.598 0.402</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
+<div id="set.seed" class="section level2">
+<h2>13.2.1 Setting the random seed</h2>
+<pre class="r"><code>set.seed(1986)</code></pre>
+</div>
 </div>
 
 
