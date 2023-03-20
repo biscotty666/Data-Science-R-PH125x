@@ -178,7 +178,9 @@ pre code {
 <li><a href="#monte-carlo-simulation">13.2 Monte Carlo simulation</a>
 <ul>
 <li><a href="#set.seed">13.2.1 Setting the random seed</a></li>
+<li><a href="#with-and-without-replacement">13.2.2 With and without replacement</a></li>
 </ul></li>
+<li><a href="#independence">13.3 Independence</a></li>
 </ul>
 </div>
 
@@ -259,23 +261,47 @@ logical or character string; should the result be simplified to a vector, matrix
 <p>Here, we repeat the random event <span class="math inline">\(B=10,000\)</span> times:</p>
 <pre class="r"><code>B &lt;- 10000
 events &lt;- replicate(B, sample(beads, 1))</code></pre>
-<p>We can now see if our definition actually is in agreement with this Monte Carlo simulation approximation. We can use &lt;span id=“table&gt;<code>table</code></span> to see the distribution:</p>
+<p>We can now see if our definition actually is in agreement with this Monte Carlo simulation approximation. We can use <span id="table"><code>table</code></span> to see the distribution:</p>
 <pre class="r"><code>tab &lt;- table(events)
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 5980 4020</code></pre>
+## 5916 4084</code></pre>
 <p>and <span id="prop.table"><code>prop.table</code></span> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
-##  blue   red 
-## 0.598 0.402</code></pre>
+##   blue    red 
+## 0.5916 0.4084</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
 <div id="set.seed" class="section level2">
 <h2>13.2.1 Setting the random seed</h2>
 <pre class="r"><code>set.seed(1986)</code></pre>
 </div>
+<div id="with-and-without-replacement" class="section level2">
+<h2>13.2.2 With and without replacement</h2>
+<p>The function <code>sample</code> has an argument that permits us to pick more than one element from the urn. However, by default, this selection occurs without replacement: after a bead is selected, it is not put back in the bag. Notice what happens when we ask to randomly select five beads:</p>
+<pre class="r"><code>sample(beads, 5)</code></pre>
+<pre><code>## [1] &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot; &quot;red&quot;</code></pre>
+<pre class="r"><code>sample(beads, 5)</code></pre>
+<pre><code>## [1] &quot;red&quot;  &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot;</code></pre>
+<pre class="r"><code>sample(beads, 5)</code></pre>
+<pre><code>## [1] &quot;blue&quot; &quot;red&quot;  &quot;blue&quot; &quot;red&quot;  &quot;blue&quot;</code></pre>
+<p>This results in rearrangements that always have three blue and two red beads. If we ask that six beads be selected, we get an error:</p>
+<pre class="r"><code>#sample(beads, 6)</code></pre>
+<p>`Error in sample.int(length(x), size, replace, prob) : cannot take a sample larger than the population when ‘replace = FALSE’</p>
+<p>However, the <code>sample</code> function can be used directly, without the use of <code>replicate</code>, to repeat the same experiment of picking 1 out of the 5 beads, continually, under the same conditions. To do this, we sample <strong>with replacement</strong>: return the bead back to the urn after selecting it. We can tell sample to do this by changing the <code>replace</code> argument, which defaults to <code>FALSE</code>, to <code>replace = TRUE</code>:</p>
+<pre class="r"><code>options(digits = 3)
+events &lt;- sample(beads, B, replace = TRUE)
+prop.table(table(events))</code></pre>
+<pre><code>## events
+##  blue   red 
+## 0.602 0.398</code></pre>
+<p>Not surprisingly, we get results very similar to those previously obtained with <code>replicate</code>.</p>
+</div>
+</div>
+<div id="independence" class="section level1">
+<h1>13.3 Independence</h1>
 </div>
 
 

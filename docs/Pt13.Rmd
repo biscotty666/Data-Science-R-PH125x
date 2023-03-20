@@ -100,7 +100,7 @@ B <- 10000
 events <- replicate(B, sample(beads, 1))
 ```
 
-We can now see if our definition actually is in agreement with this Monte Carlo simulation approximation. We can use <span id="table>`table`</span> to see the distribution:
+We can now see if our definition actually is in agreement with this Monte Carlo simulation approximation. We can use <span id="table">`table`</span> to see the distribution:
 
 ```{r}
 tab <- table(events)
@@ -119,6 +119,56 @@ Although this is a simple and not very useful example, we will use Monte Carlo s
 ```{r}
 set.seed(1986)
 ```
+
+## 13.2.2 With and without replacement
+
+The function `sample` has an argument that permits us to pick more than one element from the urn. However, by default, this selection occurs without replacement: after a bead is selected, it is not put back in the bag. Notice what happens when we ask to randomly select five beads:
+```{r}
+sample(beads, 5)
+sample(beads, 5)
+sample(beads, 5)
+```
+This results in rearrangements that always have three blue and two red beads. If we ask that six beads be selected, we get an error:
+```{r}
+#sample(beads, 6)
+```
+`Error in sample.int(length(x), size, replace, prob) : cannot take a sample larger than the population when 'replace = FALSE'
+
+However, the `sample` function can be used directly, without the use of `replicate`, to repeat the same experiment of picking 1 out of the 5 beads, continually, under the same conditions. To do this, we sample __with replacement__: return the bead back to the urn after selecting it. We can tell sample to do this by changing the `replace` argument, which defaults to `FALSE`, to `replace = TRUE`:
+
+```{r}
+options(digits = 3)
+events <- sample(beads, B, replace = TRUE)
+prop.table(table(events))
+```
+Not surprisingly, we get results very similar to those previously obtained with `replicate`.
+
+# 13.3 Independence
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
