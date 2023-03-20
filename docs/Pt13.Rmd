@@ -561,7 +561,10 @@ We can now make a plot of the estimated probabilities of two people having the s
 
 ```{r}
 library(tidyverse)
-qplot(n, prob)
+# qplot(n, prob)  Depracated
+data.frame(n = n, prob = prob) |>
+  ggplot(aes(n, prob)) +
+  geom_point()
 ```
 
 Now let's compute the exact probabilities rather than use Monte Carlo approximations. Not only do we get the exact answer using math, but the computations are much faster since we don't have to generate experiments.  
@@ -577,13 +580,43 @@ $$
 
 We can write a function that does this for any number:
 
+```{r}
+exact_prob <- function(n) {
+  prob_unique <- seq(365, 365 - n + 1) / 365
+  1 - prod(prob_unique)
+}
+eprob <- sapply(n, exact_prob)
+data.frame(n = n, eprob = eprob) |>
+  ggplot(aes(n, eprob)) +
+  geom_line(col = "red") +
+  geom_point(aes(n, prob))
+```
 
+This plot shows that the Monte Carlo simulation provided a very good estimate of the exact probability. Had it not been possible to compute the exact probabilities, we would have still been able to accurately estimate the probabilities.
 
+# 13.8 Infinity in practice
 
+The theory described here requires repeating experiments over and over forever. In practice we can’t do this. In the examples above, we used $B=10,000$
+  Monte Carlo experiments and it turned out that this provided accurate estimates. The larger this number, the more accurate the estimate becomes until the approximaton is so good that your computer can’t tell the difference. But in more complex calculations, 10,000 may not be nearly enough. Also, for some calculations, 10,000 experiments might not be computationally feasible. In practice, we won’t know what the answer is, so we won’t know if our Monte Carlo estimate is accurate. <span class="blue">We know that the larger $B$, the better the approximation. But how big do we need it to be? This is actually a challenging question and answering it often requires advanced theoretical statistics training.</span>
 
+One practical approach we will describe here is to <span class="blue">check for the stability of the estimate.</span> The following is an example with the birthday problem for a group of 25 people.
 
+```{r}
+B <- 10^seq(1, 5, len = 100)
+compute_prob <- function(B, n = 25) {
+  same_day <- replicate(B, same_birthday(n))
+  mean(same_day)
+}
+prob <- sapply(B, compute_prob)
+data.frame(logB = log10(B), prob) |>
+  ggplot(aes(logB, prob)) +
+  xlab("log10(B)") +
+  geom_line()
+```
 
+In this plot, we can see that the values start to stabilize (that is, they vary less than .01) around 1000. Note that the exact probability, which we know in this case, is 0.569.
 
+# 13.9 Exercises
 
 
 
