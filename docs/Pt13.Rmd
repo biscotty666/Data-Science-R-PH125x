@@ -138,6 +138,7 @@ However, the `sample` function can be used directly, without the use of `replica
 
 ```{r}
 options(digits = 3)
+set.seed(1986)
 events <- sample(beads, B, replace = TRUE)
 prop.table(table(events))
 ```
@@ -145,11 +146,114 @@ Not surprisingly, we get results very similar to those previously obtained with 
 
 # 13.3 Independence
 
+We say two events are independent if the outcome of one does not affect the other. The classic example is coin tosses. Every time we toss a fair coin, the probability of seeing heads is 1/2 regardless of what previous tosses have revealed. The same is true when we pick beads from an urn with replacement. In the example above, the probability of red is 0.40 regardless of previous draws.
+
+Many examples of events that are not independent come from card games. When we deal the first card, the probability of getting a King is 1/13 since there are thirteen possibilities: Ace, Deuce, Three, $\dots$, Ten, Jack, Queen, King, and Ace. Now if we deal a King for the first card, and don’t replace it into the deck, the probabilities of a second card being a King is less because there are only three Kings left: the probability is 3 out of 51. These events are therefore __not independent__: the first outcome affected the next one.
+
+To see an extreme case of non-independent events, consider our example of drawing five beads at random __without__ replacement:
+
+```{r}
+set.seed(1986)
+x <- sample(beads, 5)
+```
+
+If you have to guess the color of the first bead, you will predict blue since blue has a 60% chance. But if I show you the result of the last four outcomes:
+```{r}
+x[2:5]
+```
+would you still guess blue? Of course not. Now you know that the probability of red is 1 since the only bead left is red. The events are not independent, so the probabilities change.
+
+# 13.4 Conditional probabilities
+
+When events are not independent, _conditional probabilities_ are useful. We already saw an example of a conditional probability: we computed the probability that a second dealt card is a King given that the first was a King. In probability, we use the following notation:
+
+$$
+\mbox{Pr}(\mbox{Card 2 is a king} \mid \mbox{Card 1 is a king}) = 3/51
+$$
+
+We use the $\mid$ as shorthand for "given that" or "conditional on". 
+
+When two events, say $A$ and $B$, are independent, we have:
+
+$$
+\mbox{Pr}(A \mid B) = \mbox{Pr}(A) 
+$$
+
+This is the mathematical way of saying: the fact that $B$ happened does not affect the probability of $A$ happening. In fact, this can be considered the mathematical definition of independence.
 
 
+# 13.5 Addition and multiplication rules
+
+# 13.5.1 Multiplication rule
+
+If we want to know the probability of two events, say $A$ and $B$, occurring, we can use the multiplication rule:
+
+$$ 
+\mbox{Pr}(A \mbox{ and } B) = \mbox{Pr}(A)\mbox{Pr}(B \mid A)
+$$
+Let's use Blackjack as an example. In Blackjack, you are assigned two random cards. After you see what you have, you can ask for more. The goal is to get closer to 21 than the dealer, without going over. Face cards are worth 10 points and Aces are worth 11 or 1 (you choose).
+
+So, in a Blackjack game, to calculate the chances of getting a 21 by drawing an Ace and then a face card, we compute the probability of the first being an Ace and multiply by the probability of drawing a face card or a 10 given that the first was an Ace: $1/13 \times 16/51 \approx 0.025$
+
+The multiplication rule also applies to more than two events. We can use induction to expand for more events:
+
+$$ 
+\mbox{Pr}(A \mbox{ and } B \mbox{ and } C) = \mbox{Pr}(A)\mbox{Pr}(B \mid A)\mbox{Pr}(C \mid A \mbox{ and } B)
+$$
+
+## 13.5.2 Multiplication rule under independence
+
+When we have independent events, then the multiplication rule becomes simpler:
+
+$$ 
+\mbox{Pr}(A \mbox{ and } B \mbox{ and } C) = \mbox{Pr}(A)\mbox{Pr}(B)\mbox{Pr}(C)
+$$
+
+But we have to be very careful before using this since assuming independence can result in very different and incorrect probability calculations when we don't actually have independence.
+
+As an example, imagine a court case in which the suspect was described as having a mustache and a beard. The defendant has a mustache and a beard and the prosecution brings in an "expert" to testify that 1/10 men have beards and 1/5 have mustaches, so using the multiplication rule we conclude that only $1/10 \times 1/5$ or 0.02 have both. 
+
+But to multiply like this we need to assume independence! Say the conditional probability of a man having a mustache conditional on him having a beard is .95. So the correct calculation probability is much higher: $1/10 \times 95/100 = 0.095$.
+
+The multiplication rule also gives us a general formula for computing conditional probabilities:
 
 
+$$ 
+\mbox{Pr}(B \mid A) = \frac{\mbox{Pr}(A \mbox{ and } B)}{ \mbox{Pr}(A)}
+$$
 
+To illustrate how we use these formulas and concepts in practice, we will use several examples related to card games.
+
+## 13.5.3 Addition rule
+
+The addition rule tells us that:
+
+$$
+\mbox{Pr}(A \mbox{ or } B) = \mbox{Pr}(A) + \mbox{Pr}(B) - \mbox{Pr}(A \mbox{ and } B)
+$$
+
+This rule is intuitive: think of a Venn diagram. If we simply add the probabilities, we count the intersection twice so we need to substract one instance.
+
+```{r}
+# install.packages("VennDiagram")
+# install.packages("rafalib")
+library(VennDiagram)
+# rafalib::mypar()
+grid.newpage()
+tmp <- draw.pairwise.venn(22, 20, 11, category = c("A", "B"), 
+                   lty = rep("blank", 2), 
+                   fill = c("lightblue", "pink"), 
+                   alpha = rep(0.5, 2),  
+                   cat.dist = rep(0.025, 2), 
+                   cex=0, 
+                   cat.cex = rep(2.5,2))
+```
+
+<blockquote>
+__`mypar`__
+
+Called without arguments, this function optimizes graphical parameters for the RStudio plot window. bigpar uses big fonts which are good for presentations.
+</blockquote>
 
 
 
