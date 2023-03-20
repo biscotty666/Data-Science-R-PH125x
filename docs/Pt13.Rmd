@@ -22,7 +22,9 @@ R commands in this chapter
 [`paste`](#paste)|
 [`permutations`](#permutations)|
 [`pi`](#constants)|
+[`pnorm`](#pnorm)|
 [`prop.table`](#prop.table)|
+[`rep`](#rep)|
 [`replicate`](#replicate)|
 [`sample`](#sample)|
 [`sapply`](#sapply)|
@@ -79,6 +81,20 @@ The optional prob argument can be used to give a vector of weights for obtaining
 </blockquote>
 
 We demonstrate its use in the code below. First, we use the function `rep` to generate the urn:
+
+<blockquote id="rep">
+__`rep()`__
+
+rep replicates the values in x. It is a generic function, and the (internal) default method is described here.
+
+`rep(x, ...)`
+
+- $x$: a vector (of any mode including a list) or a factor
+- times: an integer-valued vector giving the (non-negative) number of times to repeat each element if of length length(x), or to repeat the whole vector if of length 1. Negative or NA values are an error. A double vector is accepted, other inputs being coerced to an integer or double vector.
+- length.out: non-negative integer. The desired length of the output vector. Other inputs will be coerced to a double vector and the first element taken. Ignored if NA or invalid.
+- each: non-negative integer. Each element of `x` is repeated `each` times. Other inputs will be coerced to an integer or double vector and the first element taken. Treated as 1 if NA or invalid.
+</blockquote>
+
 
 ```{r}
 beads <- rep(c("red", "blue"), times = c(2,3))
@@ -617,6 +633,285 @@ data.frame(logB = log10(B), prob) |>
 In this plot, we can see that the values start to stabilize (that is, they vary less than .01) around 1000. Note that the exact probability, which we know in this case, is 0.569.
 
 # 13.9 Exercises
+
+1. One ball will be drawn at random from a box containing: 3 cyan balls, 5 magenta balls, and 7 yellow balls. What is the probability that the ball will be cyan?
+
+```{r}
+# urn <- c(rep("cyan", 3), rep("magenta", 5), rep("yellow", 7))
+urn <- rep(c("cyan", "magenta", "yellow"), times = c(3, 5, 7))
+urn
+```
+```{r}
+sample(urn, 1)
+```
+```{r}
+B <- 10000
+events <- replicate(B, sample(urn, 1))
+tab <- table(events)
+tab
+```
+```{r}
+prop.table(tab)
+```
+```{r}
+mean(events %in% "cyan")
+```
+<span class="blue">Answer 20%</span>
+
+2. What is the probability that the ball will not be cyan?
+```{r}
+mean(!events %in% "cyan")
+```
+<span class="blue">80%</span>
+
+3. Instead of taking just one draw, consider taking two draws. You take the second draw without returning the first draw to the box. We call this sampling without replacement. What is the probability that the first draw is cyan and that the second draw is not cyan?
+
+```{r}
+events <- replicate(B, sample(urn, 2))
+mean(events[1,] %in% "cyan" & !events[2,] %in% "cyan")
+```
+<span class="blue">17%</span>
+
+4. Now repeat the experiment, but this time, after taking the first draw and recording the color, return it to the box and shake the box. We call this sampling with replacement. What is the probability that the first draw is cyan and that the second draw is not cyan?
+
+```{r}
+events <- replicate(B, sample(urn, 2, replace = TRUE))
+mean(events[1,] %in% "cyan" & !events[2,] %in% "cyan")
+```
+<span class="blue">16%</span>
+
+5. Two events $A$ and $B$ are independent if $Pr(A and B)=Pr(A)P(B). Under which situation are the draws independent?
+
+a. You don’t replace the draw.
+b. <span class="blue">You replace the draw.</span>
+c. Neither
+d. Both
+
+6. Say you’ve drawn 5 balls from the box, with replacement, and all have been yellow. What is the probability that the next one is yellow?
+```{r}
+events <- replicate(B, sample(urn, 5))
+mean(events[1:4,] %in% "yellow" & events[5,] %in% "yellow")
+```
+```{r}
+mean(events[1,] %in% "yellow" & 
+       events[2,] %in% "yellow" & 
+       events[3,] %in% "yellow" & 
+       events[4,] %in% "yellow" & 
+       events[4,] %in% "yellow")
+
+```
+<span class="blue">2.8%</span>
+
+7. If you roll a 6-sided die six times, what is the probability of not seeing a 6?
+
+```{r}
+die <- as.character(c(1,2,3,4,5,6))
+sample(die, 6, replace = TRUE)
+```
+```{r}
+events <- replicate(B, sample(die, 6, replace = TRUE))
+sum(!events == "6")
+```
+```{r}
+(length(events) - sum(!events == "6")) / length(events)
+```
+<span class="blue">17%</span>
+
+8. Two teams, say the Celtics and the Cavs, are playing a seven game series. The Cavs are a better team and have a 60% chance of winning each game. What is the probability that the Celtics win at least one game?
+
+```{r}
+events <- replicate(B, sample(c(0,1), 
+                              4, 
+                              replace = TRUE, 
+                              prob = c(0.6, 0.4)))
+mean(events == 1)
+```
+<span class="blue">40%</span>
+
+9. Create a Monte Carlo simulation to confirm your answer to the previous problem. Use B <- 10000 simulations. Hint: use the following code to generate the results of the first four games:
+
+```{r}
+celtic_wins <- sample(c(0,1), 4, replace = TRUE, prob = c(0.6, 0.4))
+```
+The Celtics must win one of these 4 games.
+
+10. Two teams, say the Cavs and the Warriors, are playing a seven game championship series. The first to win four games, therefore, wins the series. The teams are equally good so they each have a 50-50 chance of winning each game. If the Cavs lose the first game, what is the probability that they win the series?
+
+```{r}
+celtic_wins <- sample(c(0,1), 7, replace = TRUE, prob = c(0.5, 0.5))
+str(celtic_wins)
+all_perms <- permutations(2, 7, v = c(0,1), repeats.allowed = TRUE)
+mean(all_perms[,1] == 0 & 
+       (all_perms[,2] + all_perms[,3] + all_perms[,4] +
+          all_perms[,5] + all_perms[,6] + all_perms[,7]) >= 4)
+```
+<span class="green">17%</span>
+
+11. Confirm the results of the previous question with a Monte Carlo simulation.
+
+# 13.10 Continuous probability
+
+In Section 12.2.2, we explained why when summarizing a list of numeric values, such as heights, it is not useful to construct a distribution that defines a proportion to each possible outcome. Similarly, for a random variable that can take any value in a continuous set, it impossible to assign a positive probabilities to the infinite number of possible values. Here we describe how we mathematically define distributions for continuos random variables and useful approximations often used in data analysis.
+
+## 13.10.1 Cumulative distribution functions
+
+We used the heights of adult male students as an example
+```{r}
+library(tidyverse)
+library(dslabs)
+data(heights)
+x <- 
+  heights %>% 
+  filter(sex == "Male") %>% 
+  pull(height)
+```
+and <span class="blue">defined the empirical cumulative distribution function (eCDF) as</span>
+```{r}
+F <- function(a) mean(x<=a)
+```
+<span class="blue">which, for any value a, gives the proportion of values in the list `x` that are smaller or equal than `a`.</span>
+
+Let’s connect the eCDF to probability by asking: if I pick one of the male students at random, what is the chance that he is taller than 70.5 inches? Because every student has the same chance of being picked, the answer to this is equivalent to the proportion of students that are taller than 70.5 inches. Using the eCDF we obtain an answer by typing:
+
+```{r}
+1 - F(70)
+```
+The CDF is a version of the eCDF that assigns theoretical probabilities for each $a$ rather than proportions computed from data. Although, as we just demonstrated, proportions computed from data can be used to define probabilities for a random variable.
+Specifically, the CDF for a random outcome $X$ defines, for any number $a$, the probability of observing a value larger than $a$. 
+
+$$ F(a) = \mbox{Pr}(X \leq a) $$
+
+Once a CDF is defined, we can use it to compute the probability of any subset of values. For instance, the probability of a student being between height `a` and height `b` is:
+
+$$
+\mbox{Pr}(a < X \leq b) = F(b)-F(a)
+$$
+
+Because we can compute the probability for any possible event this way, the CDF defines the probability distribution.
+
+## 13.10.2 Probability density function
+
+A mathematical result that is actually very useful in practice is that for most CDFs we can define a function, call it $f(x)$, that permits us to construct the CDF using Calculus, like this:
+
+$$
+F(b) - F(a) = \int_a^b f(x)\,dx
+$$
+$f(x)$ is referred to as the _probability density function_. The intuition is that even for continuous outcomes we can define tiny intervals, that are almost as small as points, that have positive probabilities. If we think of the size of these intervals as the base of a rectangle,the probability density function $f$ determines the height of the rectangle so that the summing up the area of these rectangles approximate the probability  $F(b) - F(a)$. This sum can be written as Reimann sum that is approximated by an integral:
+
+```{r}
+cont <- 
+  data.frame(x=seq(0,5, len = 300), 
+             y=dgamma(seq(0,5, len = 300), 2, 2))
+disc <- 
+  data.frame(x=seq(0, 5, 0.075), 
+             y=dgamma(seq(0, 5, 0.075), 2, 2))
+
+ggplot(mapping = aes(x,y)) +
+  geom_col(data =  disc) +
+  geom_line(data = cont) +
+  ylab("f(x)")
+```
+
+An example of such a continuous distribution is the normal distribution. As we saw in \@ref(normal-distribution), the probability density function is given by:
+
+
+$$f(x) = e^{-\frac{1}{2}\left( \frac{x-m}{s} \right)^2} $$
+
+
+The cumulative distribution for the normal distribution is defined by a mathematical formula which in R can be obtained with the function <span id="pnorm">__`pnorm`__</span>. We say that a random quantity is normally distributed with average `m` and standard deviation `s` if its probability distribution is defined by:
+
+```
+F(a) = pnorm(a, m, s)
+```
+
+This is useful because if we are willing to use the normal approximation for, say, height, we don't need the entire dataset to answer questions such as: what is the probability that a randomly selected student is taller then 70 inches? We just need the average height and standard deviation:
+
+```{r}
+m <- mean(x)
+s <- sd(x)
+1 - pnorm(70.5, m, s)
+```
+
+## 13.10.3 Theoretical distributions as approximations
+
+The normal distribution is derived mathematically: we do not need data to define it. For practicing data scientists, almost everything we do involves data. Data is always, technically speaking, discrete. For example, we could consider our height data categorical with each specific height a unique category. The probability distribution is defined by the proportion of students reporting each height. Here is a plot of that probability distribution:
+
+```{r}
+rafalib::mypar()
+plot(prop.table(table(x)), 
+     xlab = "a = Height in inches", 
+     ylab = "Pr(X = a)")
+```
+
+While most students rounded up their heights to the nearest inch, others reported values with more precision. One student reported his height to be 69.6850393700787, which is 177 centimeters. The probability assigned to this height is `r 1/length(x)` or 1 in `r length(x)`. The probability for 70 inches is much higher at `r mean(x==70)`, but does it really make sense to think of the probability of being exactly 70 inches as being different than 69.6850393700787? Clearly it is much more useful for data analytic purposes to treat this outcome as a continuous numeric variable, keeping in mind that very few people, or perhaps none, are exactly 70 inches, and that the reason we get more values at 70 is because people round to the nearest inch. 
+
+<span class="blue">With continuous distributions, the probability of a singular value is not even defined.</span> For example, it does not make sense to ask what is the probability that a normally distributed value is 70. Instead, <span class="blue">we define probabilities for intervals.</span> We thus could ask what is the probability that someone is between 69.5 and 70.5.
+
+In cases like height, in which the data is rounded, the normal approximation is particularly useful if we deal with intervals that include exactly one round number. For example, the normal distribution is useful for approximating the proportion of students reporting values in intervals like the following three:
+
+```{r}
+options(digits = 3)
+mean(x <= 68.5) - mean(x <= 67.5)
+mean(x <= 69.5) - mean(x <= 68.5)
+mean(x <= 70.5) - mean(x <= 69.5)
+```
+Note how close we get with the normal approximation:
+```{r}
+pnorm(68.5, m, s) - pnorm(67.5, m, s)
+pnorm(69.5, m, s) - pnorm(68.5, m, s)
+pnorm(70.5, m, s) - pnorm(69.5, m, s)
+```
+However, <span class="blue">the approximation is not as useful for other intervals. For instance, notice how the approximation breaks down when we try to estimate: </span>
+```{r}
+mean(x <= 70.9) - mean(x <= 70.1)
+pnorm(70.9, m, s) - pnorm(70.1, m, s)
+```
+
+In general, we call this situation __discretization__. Although the true height distribution is continuous, the reported heights tend to be more common at discrete values, in this case, due to rounding. As long as we are aware of how to deal with this reality, the normal approximation can still be a very useful tool.
+
+## 13.10.4 The probability density
+
+For categorical distributions, we can define the probability of a category. For example, a roll of a die, let's call it $X$, can be 1, 2, 3, 4, 5 or 6. The probability of 4 is defined as:
+
+$$
+\mbox{Pr}(X=4) = 1/6
+$$
+
+The CDF can then easily be defined:
+$$
+F(4) = \mbox{Pr}(X\leq 4) =  \mbox{Pr}(X = 4) +  \mbox{Pr}(X = 3) +  \mbox{Pr}(X = 2) +  \mbox{Pr}(X = 1) 
+$$
+
+Although for continuous distributions the probability of a single value $\mbox{Pr}(X=x)$ is not defined, there is a theoretical definition that has a similar interpretation. The probability density at $x$ is defined as the function $f(a)$ such that:
+
+$$
+F(a) = \mbox{Pr}(X\leq a) = \int_{-\infty}^a f(x)\, dx
+$$
+
+For those that know calculus, remember that the integral is related to a sum: it is the sum of bars with widths approximating 0. If you don't know calculus, you can think of $f(x)$ as a curve for which the area under that curve up to the value $a$, gives you the probability $\mbox{Pr}(X\leq a)$. 
+
+For example, to use the normal approximation to estimate the probability of someone being taller than 76 inches, we use:
+
+```{r}
+1 - pnorm(76, m, s)
+```
+
+which mathematically is the grey area below:
+
+```{r}
+dat <- tibble(x = seq(-4, 4, length=100) * s + m,
+              y = dnorm(x, m, s))
+dat_ribbon <- filter(dat, x >= 2 * s + m)
+ggplot(dat, aes(x, y)) +
+  geom_line() +
+  geom_ribbon(aes(ymin = 0, ymax = y), data = dat_ribbon)
+```
+
+The curve you see is the probability density for the normal distribution. In R, we get this using the function `dnorm`.
+
+Although it may not be immediately obvious why knowing about probability densities is useful, understanding this concept will be essential to those wanting to fit models to data for which predefined functions are not available.
+
+# 13.11 Monte Carlo simulations for continuous variables
 
 
 
