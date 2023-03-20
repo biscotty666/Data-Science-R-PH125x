@@ -11,7 +11,16 @@ output:
 
 R commands in this chapter
 
-|[`prop.table`](#prop.table)|
+|[`combinations`](#permutations)|
+[`expand.grid`](#expand.grid)|
+[`LETTERS`](#constants)|
+[`letters`](#constants)|
+[`month.abb`](#constants)|
+[`month.name`](#constants)|
+[`paste`](#paste)|
+[`permutations`](#permutations)|
+[`pi`](#constants)|
+[`prop.table`](#prop.table)|
 [`replicate`](#replicate)|
 [`sample`](#sample)|
 [`set.seed`](#set.seed)|
@@ -238,7 +247,7 @@ This rule is intuitive: think of a Venn diagram. If we simply add the probabilit
 # install.packages("VennDiagram")
 # install.packages("rafalib")
 library(VennDiagram)
-# rafalib::mypar()
+rafalib::mypar()
 grid.newpage()
 tmp <- draw.pairwise.venn(22, 20, 11, category = c("A", "B"), 
                    lty = rep("blank", 2), 
@@ -255,24 +264,182 @@ __`mypar`__
 Called without arguments, this function optimizes graphical parameters for the RStudio plot window. bigpar uses big fonts which are good for presentations.
 </blockquote>
 
+# 13.6 Combinations and permutations
+
+In our very first example, we imagined an urn with five beads. As a reminder, to compute the probability distribution of one draw, we simply listed out all the possibilities. There were 5 and so then, for each event, we counted how many of these possibilities were associated with the event. The resulting probability of choosing a blue bead is 3/5 because out of the five possible outcomes, three were blue.
+
+For more complicated cases, the computations are not as straightforward. For instance, what is the probability that if I draw five cards without replacement, I get all cards of the same suit, what is known as a “flush” in poker? In a discrete probability course you learn theory on how to make these computations. Here we focus on how to use R code to compute the answers.
+
+First, let’s construct a deck of cards. For this, we will use the <span id="expand.grid">__`expand.grid`__</span> and <span id="paste">__`paste`__</span> functions. We use `paste` to create strings by joining smaller strings. To do this, we take the number and suit of a card and create the card name like this:
+```{r}
+number <- "Three"
+suit <- "Hearts"
+paste(number, suit)
+```
+`paste` also works on pairs of vectors performing the operation element-wise:
+```{r}
+paste(letters[1:5], as.character(1:5), sep = ":", collapse = ",")
+```
+<blockquote id="constants">
+__Built-in Constants__
+
+- LETTERS: the 26 upper-case letters of the Roman alphabet;
+- letters: the 26 lower-case letters of the Roman alphabet;
+- month.abb: the three-letter abbreviations for the English month names;
+- month.name: the English names for the months of the year;
+- pi: the ratio of the circumference of a circle to its diameter.
+
+</blockquote>
 
 
+The function `expand.grid` gives us all the combinations of entries of two vectors. For example, if you have blue and black pants and white, grey, and plaid shirts, all your combinations are:
 
+```{r}
+expand.grid(pants = c("blue", "black"),
+            shirt = c("white", "grey", "plaid"))
+```
+Generate a deck of cards
+```{r}
+ranks <- c("Ace", "Two", "Three", "Four", "Five", "Six", "Seven",
+           "Eight", "Nine", "Ten", "Jack", "Queen", "King")
+suits <- c("Hearts", "Spades", "Diamonds", "Clubs")
+deck <- expand.grid(rank = ranks, suit = suits)
+deck <- paste(deck$rank, deck$suit)
+```
 
+With the deck constructed, <span class="blue">we can double check that the probability of a King in the first card is 1/13 by computing the proportion of possible outcomes that satisfy our condition</span>:
 
+```{r}
+kings <- paste("King", suits)
+mean(deck %in% kings)
+```
 
+Now, how about the conditional probability of the second card being a King given that the first was a King? Earlier, we deduced that if one King is already out of the deck and there are 51 left, then this probability is 3/51. Let’s confirm by listing out all possible outcomes.
 
+To do this, we can use the <span id="permutations">`permutations`</span> function from the __gtools__ package. For any list of size `n`, this function computes all the different combinations we can get when we select `r` items. Here are all the ways we can choose two numbers from a list consisting of 1,2,3:
+```{r}
+# install.packages("gtools")
+library(gtools)
+permutations(3, 2)
+```
+<blockquote id="permutations">
+`combinations(n, r, v = 1:n, set = TRUE, repeats.allowed = FALSE)`
 
+`permutations(n, r, v = 1:n, set = TRUE, repeats.allowed = FALSE)`
 
+- n: Size of the source vector
+- r: Size of the target vectors
+- v: Source vector. Defaults to 1:n
+- set: Logical flag indicating whether duplicates should be removed from the source vector v. Defaults to TRUE.
+- repeats.allowed: Logical flag indicating whether the constructed vectors may include duplicated values. Defaults to FALSE.
+</blockquote>
 
+Notice that the order matters here: 3,1 is different than 1,3. Also, note that (1,1), (2,2), and (3,3) do not appear because once we pick a number, it can’t appear again.
 
+Optionally, we can add a vector. If you want to see five random seven digit phone numbers out of all possible phone numbers (without repeats), you can type:
 
+```{r}
+all_phone_numbers <- permutations(10, 7, v = 0:9)
+n <- nrow(all_phone_numbers)
+set.seed(1986)
+index <- sample(n, 5)
+all_phone_numbers[index,]
+```
+Instead of using the numbers 1 through 10, the default, it uses what we provided through v: the digits 0 through 9.
 
+To compute all possible ways we can choose two cards when the order matters, we type:
+```{r}
+hands <- permutations(52, 2, v = deck)
+str(hands)
+```
+With a matrix we can get the first and second cards like this:
+```{r}
+first_card <- hands[,1]
+second_card <- hands[,2]
+```
 
+Now the cases for which the first hand was a King can be computed like this:
 
+```{r}
+kings <- paste("King", suits)
+sum(first_card %in% kings)
+```
+To get the conditional probability, we compute what fraction of these have a King in the second card:
+```{r}
+sum(first_card %in% kings & second_card %in% kings) / sum(first_card %in% kings)
+```
+which is exactly 3/51, as we had already deduced. Notice that the code above is equivalent to:
+```{r}
+mean(first_card%in%kings & second_card%in%kings) / mean(first_card%in%kings)
+```
+which uses `mean` instead of `sum` and is an R version of: 
 
+$$
+\frac{\mbox{Pr}(A \mbox{ and } B)}{ \mbox{Pr}(A)}
+$$
 
+How about if the order doesn’t matter? For example, in Blackjack if you get an Ace and a face card in the first draw, it is called a Natural 21 and you win automatically. If we wanted to compute the probability of this happening, we would enumerate the combinations, not the permutations, since the order does not matter.
+```{r}
+combinations(3, 2)
+```
+In the second line, the outcome does not include (2,1) because (1,2) already was enumerated. The same applies to (3,1) and (3,2).
 
+So to compute the probability of a Natural 21 in Blackjack, we can do this:
+
+```{r}
+aces <- paste("Ace", suits)
+facecard <- c("Ten", "Jack", "Queen", "King")
+facecard <- expand.grid(number = facecard, suit = suits)
+facecard <- paste(facecard$number, facecard$suit)
+
+hands <- combinations(52, 2, v = deck)
+mean(hands[,1] %in% aces & hands[,2] %in% facecard)
+```
+n the last line, we assume the Ace comes first. This is only because we know the way combination enumerates possibilities and it will list this case first. But to be safe, we could have written this and produced the same answer:
+
+```{r}
+mean((hands[,1] %in% aces & hands[,2] %in% facecard) | 
+    (hands[,2] %in% aces & hands[,1] %in% facecard))
+```
+
+## 13.6.1 Monte Carlo example
+
+Instead of using `combinations` to deduce the exact probability of a Natural 21, we can use a Monte Carlo to estimate this probability. In this case, we draw two cards over and over and keep track of how many 21s we get. We can use the function sample to draw two cards without replacements:
+
+```{r}
+hand <- sample(deck, 2)
+hand
+```
+And then check if one card is an Ace and the other a face card or a 10. Going forward, we include 10 when we say face card. Now we need to check both possibilities:
+```{r}
+(hands[1] %in% aces & hands[2] %in% facecard) | 
+  (hands[2] %in% aces & hands[1] %in% facecard)
+```
+If we repeat this 10,000 times, we get a very good approximation of the probability of a Natural 21.
+
+Let’s start by writing a function that draws a hand and returns TRUE if we get a 21. The function does not need any arguments because it uses objects defined in the global environment.
+
+```{r}
+blackjack <- function(){
+   hand <- sample(deck, 2)
+  (hand[1] %in% aces & hand[2] %in% facecard) | 
+    (hand[2] %in% aces & hand[1] %in% facecard)
+}
+```
+
+Here we do have to check both possibilities: Ace first or Ace second because we are not using the combinations function. The function returns `TRUE` if we get a 21 and `FALSE` otherwise:
+
+```{r}
+blackjack()
+```
+Now we can play this game, say, 10,000 times:
+```{r}
+B <- 10000
+results <- replicate(B, blackjack())
+mean(results)
+```
+
+# 13.7 Examples
 
 
 
