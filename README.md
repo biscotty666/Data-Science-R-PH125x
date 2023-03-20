@@ -192,6 +192,9 @@ Function index:
 [`qnorm`](docs/Pt12.html#qnorm),
 [`scale`](docs/Pt12.html#scale)
 
+### [Chapter 13 Probability](docs/Pt13.html)
+
+
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
 

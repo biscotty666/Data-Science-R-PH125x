@@ -1,0 +1,130 @@
+---
+title: "13 Probabilities"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+R commands in this chapter
+
+|[`prop.table`](#prop.table)|
+[`replicate`](#replicate)|
+[`sample`](#sample)|
+[`table`](#table)|
+
+# 13.1 Discrete probability
+
+We start by covering some basic principles related to categorical data. The subset of probability is referred to as __discrete probability__. It will help us understand the probability theory we will later introduce for numeric and continuous data, which is much more common in data science applications. Discrete probability is more useful in card games and therefore we use these as examples.
+
+## 13.1.1 Relative frequency
+
+The word probability is used in everyday language. Answering questions about probability is often hard, if not impossible. Here we discuss a mathematical definition of probability that does permit us to give precise answers to certain questions.
+
+For example, if I have 2 red beads and 3 blue beads inside an urn44 (most probability books use this archaic term, so we do too) and I pick one at random, what is the probability of picking a red one? Our intuition tells us that the answer is 2/5 or 40%. A precise definition can be given by noting that there are five possible outcomes of which two satisfy the condition necessary for the event “pick a red bead”. Since each of the five outcomes has the same chance of occurring, we conclude that the probability is .4 for red and .6 for blue.
+
+A more tangible way to think about the probability of an event is as the proportion of times the event occurs when we repeat the experiment an infinite number of times, independently, and under the same conditions.
+
+## 13.1.2 Notation
+
+We use the notation $Pr(A)$ to denote the probability of event $A$ happening. We use the very general term event to refer to things that can happen when something occurs by chance. In our previous example, the event was “picking a red bead”. In a political poll in which we call 100 likely voters at random, an example of an event is “calling 48 Democrats and 52 Republicans”.
+
+In data science applications, we will often deal with continuous variables. These events will often be things like “is this person taller than 6 feet”. In this case, we write events in a more mathematical form: $X≥6$. We will see more of these examples later. Here we focus on categorical data.
+
+## 13.1.3 Probability distribution
+
+If we know the relative frequency of the different categories, defining a distribution for categorical outcomes is relatively straightforward. We simply assign a probability to each category. In cases that can be thought of as beads in an urn, for each bead type, their proportion defines the distribution.
+
+If we are randomly calling likely voters from a population that is 44% Democrat, 44% Republican, 10% undecided, and 2% Green Party, these proportions define the probability for each group. The probability distribution is:
+
+||||
+|-------------------------|---|----|
+|Pr(picking a Republican)|=|0.44|
+|Pr(picking a Democrat)|=|0.44|
+|Pr(picking an undecided)|=|0.10|
+|Pr(picking a Green)|=|0.02|
+
+# 13.2 Monte Carlo simulation
+
+Computers provide a way to actually perform the simple random experiment described above: pick a bead at random from a bag that contains three blue beads and two red ones. Random number generators permit us to mimic the process of picking at random.
+
+An example is the `sample function in` R. 
+
+<blockquote id="sample">
+__`sample`__
+
+sample takes a sample of the specified size from the elements of x using either with or without replacement.
+
+`sample(x, size, replace = FALSE, prob = NULL)`
+
+prob
+
+The optional prob argument can be used to give a vector of weights for obtaining the elements of the vector being sampled. They need not sum to one, but they should be non-negative and not all zero. 
+</blockquote>
+
+We demonstrate its use in the code below. First, we use the function `rep` to generate the urn:
+
+```{r}
+beads <- rep(c("red", "blue"), times = c(2,3))
+beads
+```
+```{r}
+sample(beads, 1)
+```
+This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, <span class="blue">we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever.</span> This is an example of a Monte Carlo simulation.
+
+Much of what mathematical and theoretical statisticians study, which we do not cover in this book, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this section, we provide a practical approach to deciding what is “large enough”.
+
+To perform our first Monte Carlo simulation, we use the `replicate` function, which permits us to repeat the same task any number of times. 
+
+<blockquote id="replicate">
+__`replicate`__
+
+replicate is a wrapper for the common use of sapply for repeated evaluation of an expression (which will usually involve random number generation).
+
+`replicate(n, expr, simplify = "array")`
+
+simplify
+
+logical or character string; should the result be simplified to a vector, matrix or higher dimensional array if possible? 
+</blockquote>
+
+Here, we repeat the random event $B=10,000$ times:
+
+```{r}
+B <- 10000
+events <- replicate(B, sample(beads, 1))
+```
+
+We can now see if our definition actually is in agreement with this Monte Carlo simulation approximation. We can use <span id="table>`table`</span> to see the distribution:
+
+```{r}
+tab <- table(events)
+tab
+```
+and <span id="prop.table">`prop.table`</span> gives us the proportions:
+```{r}
+prop.table(tab)
+```
+The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as $B$ gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.
+
+Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -751,7 +751,7 @@ mean(69 < x & x < 72)
 ```{r}
 m <- mean(x)
 s <- sd(x)
-c(average = m, sd = s)
+pnorm(x, m, s)
 ```
 
 # 12.9 Robust summaries
