@@ -192,13 +192,16 @@ pre code {
 <ul>
 <li><a href="#monte-carlo-example">13.6.1 Monte Carlo example</a></li>
 </ul></li>
-<li><a href="#examples">13.7 Examples</a></li>
+<li><a href="#examples">13.7 Examples</a>
+<ul>
+<li><a href="#birthday-problem">13.7.2 Birthday problem</a></li>
+</ul></li>
 </ul>
 </div>
 
 <p><a href="http://rafalab.dfci.harvard.edu/dsbook/r-basics.html">Book</a></p>
 <p>R commands in this chapter</p>
-<p>|<a href="#permutations"><code>combinations</code></a>| <a href="#expand.grid"><code>expand.grid</code></a>| <a href="#constants"><code>LETTERS</code></a>| <a href="#constants"><code>letters</code></a>| <a href="#constants"><code>month.abb</code></a>| <a href="#constants"><code>month.name</code></a>| <a href="#paste"><code>paste</code></a>| <a href="#permutations"><code>permutations</code></a>| <a href="#constants"><code>pi</code></a>| <a href="#prop.table"><code>prop.table</code></a>| <a href="#replicate"><code>replicate</code></a>| <a href="#sample"><code>sample</code></a>| <a href="#set.seed"><code>set.seed</code></a>| <a href="#table"><code>table</code></a>|</p>
+<p>|<a href="#any"><code>any</code></a>| <a href="#permutations"><code>combinations</code></a>| <a href="#duplicated"><code>duplicated</code></a>| <a href="#expand.grid"><code>expand.grid</code></a>| <a href="#constants"><code>LETTERS</code></a>| <a href="#constants"><code>letters</code></a>| <a href="#constants"><code>month.abb</code></a>| <a href="#constants"><code>month.name</code></a>| <a href="#paste"><code>paste</code></a>| <a href="#permutations"><code>permutations</code></a>| <a href="#constants"><code>pi</code></a>| <a href="#prop.table"><code>prop.table</code></a>| <a href="#replicate"><code>replicate</code></a>| <a href="#sample"><code>sample</code></a>| <a href="#set.seed"><code>set.seed</code></a>| <a href="#table"><code>table</code></a>|</p>
 <div id="discrete-probability" class="section level1">
 <h1>13.1 Discrete probability</h1>
 <p>We start by covering some basic principles related to categorical data. The subset of probability is referred to as <strong>discrete probability</strong>. It will help us understand the probability theory we will later introduce for numeric and continuous data, which is much more common in data science applications. Discrete probability is more useful in card games and therefore we use these as examples.</p>
@@ -259,7 +262,7 @@ The optional prob argument can be used to give a vector of weights for obtaining
 beads</code></pre>
 <pre><code>## [1] &quot;red&quot;  &quot;red&quot;  &quot;blue&quot; &quot;blue&quot; &quot;blue&quot;</code></pre>
 <pre class="r"><code>sample(beads, 1)</code></pre>
-<pre><code>## [1] &quot;blue&quot;</code></pre>
+<pre><code>## [1] &quot;red&quot;</code></pre>
 <p>This line of code produces one random outcome. We want to repeat this experiment an infinite number of times, but it is impossible to repeat forever. Instead, <span class="blue">we repeat the experiment a large enough number of times to make the results practically equivalent to repeating forever.</span> This is an example of a Monte Carlo simulation.</p>
 <p>Much of what mathematical and theoretical statisticians study, which we do not cover in this book, relates to providing rigorous definitions of “practically equivalent” as well as studying how close a large number of experiments gets us to what happens in the limit. Later in this section, we provide a practical approach to deciding what is “large enough”.</p>
 <p>To perform our first Monte Carlo simulation, we use the <code>replicate</code> function, which permits us to repeat the same task any number of times.</p>
@@ -278,12 +281,12 @@ events &lt;- replicate(B, sample(beads, 1))</code></pre>
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 5986 4014</code></pre>
+## 6013 3987</code></pre>
 <p>and <span id="prop.table"><code>prop.table</code></span> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
 ##   blue    red 
-## 0.5986 0.4014</code></pre>
+## 0.6013 0.3987</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
 <div id="set.seed" class="section level2">
@@ -477,7 +480,7 @@ all_phone_numbers[index,]</code></pre>
 ## [4,]    6    0    4    7    1    3    2
 ## [5,]    6    5    3    7    9    8    2</code></pre>
 <p>Instead of using the numbers 1 through 10, the default, it uses what we provided through v: the digits 0 through 9.</p>
-<p>To compute all possible ways we can choose two cards when the order matters, we type:</p>
+<p><span class="blue">To compute all possible ways we can choose two cards when the order matters, we type:</span></p>
 <pre class="r"><code>hands &lt;- permutations(52, 2, v = deck)
 str(hands)</code></pre>
 <pre><code>##  chr [1:2652, 1:2] &quot;Ace Clubs&quot; &quot;Ace Clubs&quot; &quot;Ace Clubs&quot; &quot;Ace Clubs&quot; ...</code></pre>
@@ -488,8 +491,9 @@ second_card &lt;- hands[,2]</code></pre>
 <pre class="r"><code>kings &lt;- paste(&quot;King&quot;, suits)
 sum(first_card %in% kings)</code></pre>
 <pre><code>## [1] 204</code></pre>
-<p>To get the conditional probability, we compute what fraction of these have a King in the second card:</p>
-<pre class="r"><code>sum(first_card %in% kings &amp; second_card %in% kings) / sum(first_card %in% kings)</code></pre>
+<p><span class="blue">To get the conditional probability, we compute what fraction of these have a King in the second card:</span></p>
+<pre class="r"><code>sum(first_card %in% kings &amp; second_card %in% kings) / 
+  sum(first_card %in% kings)</code></pre>
 <pre><code>## [1] 0.0588</code></pre>
 <p>which is exactly 3/51, as we had already deduced. Notice that the code above is equivalent to:</p>
 <pre class="r"><code>mean(first_card%in%kings &amp; second_card%in%kings) / mean(first_card%in%kings)</code></pre>
@@ -505,7 +509,7 @@ sum(first_card %in% kings)</code></pre>
 ## [2,]    1    3
 ## [3,]    2    3</code></pre>
 <p>In the second line, the outcome does not include (2,1) because (1,2) already was enumerated. The same applies to (3,1) and (3,2).</p>
-<p>So to compute the probability of a Natural 21 in Blackjack, we can do this:</p>
+<p><span class="blue">So to compute the probability of a Natural 21 in Blackjack, we can do this:</span></p>
 <pre class="r"><code>aces &lt;- paste(&quot;Ace&quot;, suits)
 facecard &lt;- c(&quot;Ten&quot;, &quot;Jack&quot;, &quot;Queen&quot;, &quot;King&quot;)
 facecard &lt;- expand.grid(number = facecard, suit = suits)
@@ -547,6 +551,57 @@ mean(results)</code></pre>
 </div>
 <div id="examples" class="section level1">
 <h1>13.7 Examples</h1>
+<p>In the 1970s, there was a game show called “Let’s Make a Deal” and Monty Hall was the host. At some point in the game, contestants were asked to pick one of three doors. Behind one door there was a prize. The other doors had a goat behind them to show the contestant they had lost. After the contestant picked a door, before revealing whether the chosen door contained a prize, Monty Hall would open one of the two remaining doors and show the contestant there was no prize behind that door. Then he would ask “Do you want to switch doors?” What would you do?</p>
+<p>We can use probability to show that if you stick with the original door choice, your chances of winning a prize remain 1 in 3. However, if you switch to the other door, your chances of winning double to 2 in 3! This seems counterintuitive. Many people incorrectly think both chances are 1 in 2 since you are choosing between 2 options. You can watch a detailed mathematical explanation on Khan Academy45 or read one on Wikipedia46. Below we use a Monte Carlo simulation to see which strategy is better. Note that this code is written longer than it should be for pedagogical purposes.</p>
+<p>Let’s start with the stick strategy:</p>
+<pre class="r"><code>B &lt;- 10000
+monty_hall &lt;- function(strategy){
+  doors &lt;- as.character(1:3)
+  prize &lt;- sample(c(&quot;car&quot;, &quot;goat&quot;, &quot;goat&quot;))
+  prize_door &lt;- doors[prize == &quot;car&quot;]
+  my_pick  &lt;- sample(doors, 1)
+  show &lt;- sample(doors[!doors %in% c(my_pick, prize_door)],1)
+  stick &lt;- my_pick
+  stick == prize_door
+  switch &lt;- doors[!doors%in%c(my_pick, show)]
+  choice &lt;- ifelse(strategy == &quot;stick&quot;, stick, switch)
+  choice == prize_door
+}
+stick &lt;- replicate(B, monty_hall(&quot;stick&quot;))
+mean(stick)</code></pre>
+<pre><code>## [1] 0.325</code></pre>
+<pre class="r"><code>switch &lt;- replicate(B, monty_hall(&quot;switch&quot;))
+mean(switch)</code></pre>
+<pre><code>## [1] 0.665</code></pre>
+<p>As we write the code, we note that the lines starting with <code>my_pick</code> and <code>show</code> have no influence on the last logical operation when we stick to our original choice anyway. From this we should realize that the chance is 1 in 3, what we began with. When we switch, the Monte Carlo estimate confirms the 2/3 calculation. This helps us gain some insight by showing that we are removing a door, show, that is definitely not a winner from our choices. We also see that unless we get it right when we first pick, you win: 1 - 1/3 = 2/3.</p>
+<div id="birthday-problem" class="section level2">
+<h2>13.7.2 Birthday problem</h2>
+<p>Suppose you are in a classroom with 50 people. If we assume this is a randomly selected group of 50 people, what is the chance that at least two people have the same birthday? Although it is somewhat advanced, we can deduce this mathematically. We will do this later. Here we use a Monte Carlo simulation. For simplicity, we assume nobody was born on February 29. This actually doesn’t change the answer much.</p>
+<p>First, note that birthdays can be represented as numbers between 1 and 365, so a sample of 50 birthdays can be obtained like this:</p>
+<pre class="r"><code>n &lt;- 50
+bdays &lt;- sample(1:365, n, replace = TRUE)</code></pre>
+<p>To check if in this particular set of 50 people we have at least two with the same birthday, we can use the function duplicated, which returns TRUE whenever an element of a vector is a duplicate. Here is an example:</p>
+<pre class="r"><code>duplicated(c(1,2,3,1,4,3,5))</code></pre>
+<pre><code>## [1] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE</code></pre>
+<blockquote id="duplicated">
+<p><strong><code>duplicated</code></strong></p>
+<p>Determines which elements of a vector or data frame are duplicates of elements with smaller subscripts, and returns a logical vector indicating which elements (rows) are duplicates.</p>
+<p><code>duplicated(x, incomparables = FALSE, ...)</code></p>
+<ul>
+<li>incomparables: a vector of values that cannot be compared. <code>FALSE</code> is a special value, meaning that all values can be compared, and may be the only value accepted for methods other than the default. It will be coerced internally to the same type as <code>x</code>.</li>
+<li>fromLast: logical indicating if duplication should be considered from the reverse side, i.e., the last (or rightmost) of identical elements would correspond to duplicated = FALSE.</li>
+<li>nmax: the maximum number of unique items expected (greater than one).</li>
+</ul>
+</blockquote>
+<p>So to check if two birthdays were the same, we simply use the any and duplicated functions like this:</p>
+<pre class="r"><code>any(duplicated(bdays))</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<blockquote id="any">
+<p><strong><code>any()</code></strong></p>
+<p>Given a set of logical vectors, is at least one of the values true?</p>
+<code>any(..., na.rm = FALSE)</code>
+</blockquote>
+</div>
 </div>
 
 

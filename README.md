@@ -194,6 +194,22 @@ Function index:
 
 ### [Chapter 13 Probability](docs/Pt13.html)
 
+[`any`](docs/Pt13.html#any),
+[`combinations`](docs/Pt13.html#permutations),
+[`duplicated`](docs/Pt13.html#duplicated),
+[`expand.grid`](docs/Pt13.html#expand.grid),
+[`LETTERS`](docs/Pt13.html#constants),
+[`letters`](docs/Pt13.html#constants),
+[`month.abb`](docs/Pt13.html#constants),
+[`month.name`](docs/Pt13.html#constants),
+[`paste`](docs/Pt13.html#paste),
+[`permutations`](docs/Pt13.html#permutations),
+[`pi`](docs/Pt13.html#constants),
+[`prop.table`](docs/Pt13.html#prop.table),
+[`replicate`](docs/Pt13.html#replicate),
+[`sample`](docs/Pt13.html#sample),
+[`set.seed`](docs/Pt13.html#set.seed),
+[`table`](docs/Pt13.html#table)
 
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
