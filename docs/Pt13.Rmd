@@ -24,8 +24,10 @@ R commands in this chapter
 [`pi`](#constants)|
 [`pnorm`](#pnorm)|
 [`prop.table`](#prop.table)|
+[`qnorm`](#qnorm)|
 [`rep`](#rep)|
 [`replicate`](#replicate)|
+[`rnorm`](#rnorm)|
 [`sample`](#sample)|
 [`sapply`](#sapply)|
 [`set.seed`](#set.seed)|
@@ -913,12 +915,59 @@ Although it may not be immediately obvious why knowing about probability densiti
 
 # 13.11 Monte Carlo simulations for continuous variables
 
+R provides functions to generate normally distributed outcomes. Specifically, the <span id="rnorm">__`rnorm`__</span> function takes three arguments: size, average (defaults to 0), and standard deviation (defaults to 1) and produces random numbers. Here is an example of how we could generate data that looks like our reported heights:
 
+```{r}
+n <- length(x)
+m <- mean(x)
+s <- sd(x)
+simulated_heights <- rnorm(n, m, s)
+```
 
+Not surprisingly, the distribution looks normal:
 
+```{r}
+data.frame(simulated_heights = simulated_heights) %>% 
+  ggplot(aes(simulated_heights)) +
+  geom_histogram(color = "black", binwidth = 1)
+```
 
+This is one of the most useful functions in R as it will permit us to generate data that mimics natural events and answers questions related to what could happen by chance by running Monte Carlo simulations.
 
+If, for example, we pick 800 males at random, what is the distribution of the tallest person? How rare is a seven footer in a group of 800 males? The following Monte Carlo simulation helps us answer that question:
 
+```{r}
+B <- 10000
+tallest <- replicate(B, {
+  simulated_data <- rnorm(800, m, s)
+  max(simulated_data)
+})
+```
+Having a seven footer is quite rare:
+```{r}
+mean(tallest >= 7*12)
+```
+```{r}
+data.frame(tallest = tallest) %>% 
+  ggplot(aes(tallest)) +
+  geom_histogram(color = "black", binwidth = 1)
+```
+
+<span class="blue">Note that it does not look normal.</span>
+
+# 13.12 Continuous distributions
+
+The normal distribution is not the only useful theoretical distribution.  Other continuous distributions that we may encounter are the student-t, Chi-square, exponential, gamma, beta, and beta-binomial. R provides functions to compute the density, the quantiles, the cumulative distribution functions and to generate Monte Carlo simulations. R uses a convention that lets us remember the names, namely using the letters `d`, `q`, `p`, and `r` in front of a shorthand for the distribution. We have already seen the functions `dnorm`, `pnorm`, and `rnorm` for the normal distribution. The functions <span id="qnorm">__`qnorm`__</span> gives us the quantiles. We can therefore draw a distribution like this:
+
+```{r}
+x <- seq(-4, 4, length.out = 100)
+# qplot(x, f, geom = "line", data = data.frame(x, f = dnorm(x)))
+data.frame(x = x, f = dnorm(x)) %>% 
+  ggplot(aes(x, f)) +
+  geom_line()
+```
+
+For the student-t, described later in Section \@ref(t-dist), the shorthand `t` is used so the functions are `dt` for the density, `qt` for the quantiles, `pt` for the cumulative distribution function, and `rt` for Monte Carlo simulation.
 
 
 

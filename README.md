@@ -194,7 +194,7 @@ Function index:
 
 ### [Chapter 13 Probability](docs/Pt13.html)
 
-[`any`](docs/Pt13.html#any),
+[`any`](#any),
 [`combinations`](docs/Pt13.html#permutations),
 [`duplicated`](docs/Pt13.html#duplicated),
 [`expand.grid`](docs/Pt13.html#expand.grid),
@@ -205,9 +205,14 @@ Function index:
 [`paste`](docs/Pt13.html#paste),
 [`permutations`](docs/Pt13.html#permutations),
 [`pi`](docs/Pt13.html#constants),
+[`pnorm`](docs/Pt13.html#pnorm),
 [`prop.table`](docs/Pt13.html#prop.table),
+[`qnorm`](docs/Pt13.html#qnorm),
+[`rep`](docs/Pt13.html#rep),
 [`replicate`](docs/Pt13.html#replicate),
+[`rnorm`](docs/Pt13.html#rnorm),
 [`sample`](docs/Pt13.html#sample),
+[`sapply`](docs/Pt13.html#sapply),
 [`set.seed`](docs/Pt13.html#set.seed),
 [`table`](docs/Pt13.html#table)
 
