@@ -11,9 +11,21 @@ output:
 
 R commands in this chapter
 
+|[`dbinom`](#binom)|
+[`pbinom`](#binom)|
+[`qbinom`](#binom)|
+[`rbinom`](#binom)|
+
 In data science, we often deal with data that is affected by chance in some way: the data comes from a random sample, the data is affected by measurement error, or the data measures some outcome that is random in nature. <span class="pink">Being able to quantify the uncertainty introduced by randomness is one of the most important jobs of a data analyst.</span> Statistical inference offers a framework, as well as several practical tools, for doing this. The first step is to learn how to mathematically describe random variables. 
 
 In this chapter, we introduce random variables and their properties starting with their application to games of chance. We then describe some of the events surrounding the financial crisis of 2007-2008^[https://en.wikipedia.org/w/index.php?title=Financial_crisis_of_2007%E2%80%932008] using probability theory. This financial crisis was in part caused by underestimating the risk of certain securities^[https://en.wikipedia.org/w/index.php?title=Security_(finance)] sold by financial institutions. Specifically, the risks of mortgage-backed securities (MBS) and collateralized debt obligations (CDO) were grossly underestimated. These assets were sold at prices that assumed most homeowners would make their monthly payments, and the probability of this not occurring was calculated as being low. A combination of factors resulted in many more defaults than were expected, which led to a price crash of these securities. As a consequence, banks lost so much money that they needed government bailouts to avoid closing down completely.
+
+```{r}
+library(tidyverse)
+dslabs::ds_theme_set()
+set.seed(1)
+```
+
 
 # 14.1 Random variables
 
@@ -56,6 +68,107 @@ S <- sum(X)
 S
 ```
 # 14.3 The probability distribution of a random variable
+
+If you run the code above, you see that $S$ changes every time. This is, of course, because $S$ is a **random variable**. The probability distribution of a random variable tells us the probability of the observed value falling at any given interval. So, for example, <span class="pink">if we want to know the probability that we lose money, we are asking the probability that $S$ is in the interval $S<0$.</span> 
+
+Note that if we can define a cumulative distribution function $F(a) = \mbox{Pr}(S\leq a)$, then we will be able to answer any question related to the probability of events defined by our random variable $S$, including the event $S<0$. We call this $F$ the random variable's __distribution function__. 
+
+We can estimate the distribution function for the random variable $S$ by using a Monte Carlo simulation to generate many realizations of the random variable. With this code, we run the experiment of having 1,000 people play roulette, over and over, specifically $B = 10,000$ times:
+
+```{r}
+n <- 1000
+B <- 10000
+roulette_winnings <- function(n){
+  X <- sample(c(-1,1), n, replace = TRUE, prob=c(9/19, 10/19))
+  sum(X)
+}
+S <- replicate(B, roulette_winnings(n))
+```
+
+Now we can ask the following: in our simulations, how often did we get sums less than or equal to `a`?
+
+```
+mean(S <= a)
+```
+
+This will be a very good approximation of $F(a)$ and we can easily answer the casino’s question: how likely is it that we will lose money? We can see it is quite low:
+```{r}
+mean(S < 0)
+```
+
+We can visualize the distribution of $S$ by creating a histogram showing the probability $F(b)-F(a)$ for several intervals $(a,b]$: 
+
+```{r}
+s <- seq(min(S), max(S), length = 100)
+normal_density <- data.frame(s = s, f=dnorm(s, mean(S), sd(S)))
+data.frame(S=S) |> ggplot(aes(S, ..density..)) +
+  geom_histogram(color = "black", binwidth = 10)  +
+  ylab("Probability") + 
+  geom_line(data = normal_density, 
+            mapping=aes(s,f), 
+            color="blue")
+```
+
+<span class="pink">	Warning: The dot-dot notation (`..density..`) was deprecated in ggplot2 3.4.0. Please use `after_stat(density)` instead.</span>
+
+So:
+```{r}
+s <- seq(min(S), max(S), length = 100)
+normal_density <- data.frame(s = s, f = dnorm(s, mean(S), sd(S)))
+data.frame(S = S) |>
+  ggplot(aes(S, after_stat(density))) +
+  geom_histogram(color = "black", binwidth = 10) +
+  ylab("Probability") +
+  geom_line(data = normal_density, 
+            mapping = aes(s, f), 
+            color = "blue")
+```
+
+We see that the distribution appears to be approximately normal. A qq-plot will confirm that the normal approximation is close to a perfect approximation for this distribution. If, in fact, the distribution is normal, then all we need to define the distribution is the average and the standard deviation. Because we have the original values from which the distribution is created, we can easily compute these with mean(S) and `sd(S)`. The blue curve you see added to the histogram above is a normal density with this average and standard deviation.
+
+<span class="pink">This average and this standard deviation have special names. They are referred to as the __expected value__ and __standard error_ of the random variable $S$. We will say more about these in the next section.
+
+Statistical theory provides a way to derive the distribution of random variables defined as independent random draws from an urn. Specifically, in our example above, we can show that $(S+n)/2$ follows a __binomial distribution__. We therefore do not need to run for Monte Carlo simulations to know the probability distribution of $S$. We did this for illustrative purposes.
+
+We can use the function `dbinom` and `pbinom` to compute the probabilities exactly. For example, to compute $\mbox{Pr}(S < 0)$ we note that:
+
+$$\mbox{Pr}(S < 0) = \mbox{Pr}((S+n)/2 < (0+n)/2)$$
+
+and we can use the `pbinom` to compute 
+
+$$\mbox{Pr}(S \leq 0)$$
+<blockquote id="binom">
+The Binomial Distribution
+
+Density, distribution function, quantile function and random generation for the binomial distribution with parameters size and prob.
+
+- `dbinom(x, size, prob, log = FALSE)`
+- `pbinom(q, size, prob, lower.tail = TRUE, log.p = FALSE)`
+- `qbinom(p, size, prob, lower.tail = TRUE, log.p = FALSE)`
+- `rbinom(n, size, prob)`
+
+- x, q: vector of quantiles.
+- p: vector of probabilities.
+- n: number of observations. 
+- size: number of trials (zero or more).
+- prob: probability of success on each trial.
+</blockquote>
+
+```{r}
+n <- 1000
+pbinom(n/2, size = n, prob = 10/19)
+```
+Because this is a discrete probability function, to get $\mbox{Pr}(S < 0)$ rather than $\mbox{Pr}(S \leq 0)$, we write:
+
+```{r}
+pbinom(n/2-1, size = n, prob = 10/19)
+```
+
+For the details of the binomial distribution, you can consult any basic probability book or even Wikipedia49.
+
+Here we do not cover these details. Instead, we will discuss an incredibly useful approximation provided by mathematical theory that applies generally to sums and averages of draws from any urn: the Central Limit Theorem (CLT).
+
+# 14.4 Distributions versus probability distributions
 
 
 
