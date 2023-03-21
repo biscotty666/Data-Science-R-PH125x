@@ -216,6 +216,9 @@ Function index:
 [`set.seed`](docs/Pt13.html#set.seed),
 [`table`](docs/Pt13.html#table)
 
+### [Chapter 14 Random variables](docs/Pt14.html)
+
+
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
 

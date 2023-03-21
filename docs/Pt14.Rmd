@@ -1,0 +1,75 @@
+---
+title: "14 Random variables"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+R commands in this chapter
+
+In data science, we often deal with data that is affected by chance in some way: the data comes from a random sample, the data is affected by measurement error, or the data measures some outcome that is random in nature. <span class="pink">Being able to quantify the uncertainty introduced by randomness is one of the most important jobs of a data analyst.</span> Statistical inference offers a framework, as well as several practical tools, for doing this. The first step is to learn how to mathematically describe random variables. 
+
+In this chapter, we introduce random variables and their properties starting with their application to games of chance. We then describe some of the events surrounding the financial crisis of 2007-2008^[https://en.wikipedia.org/w/index.php?title=Financial_crisis_of_2007%E2%80%932008] using probability theory. This financial crisis was in part caused by underestimating the risk of certain securities^[https://en.wikipedia.org/w/index.php?title=Security_(finance)] sold by financial institutions. Specifically, the risks of mortgage-backed securities (MBS) and collateralized debt obligations (CDO) were grossly underestimated. These assets were sold at prices that assumed most homeowners would make their monthly payments, and the probability of this not occurring was calculated as being low. A combination of factors resulted in many more defaults than were expected, which led to a price crash of these securities. As a consequence, banks lost so much money that they needed government bailouts to avoid closing down completely.
+
+# 14.1 Random variables
+
+Random variables are numeric outcomes resulting from random processes. We can easily generate random variables using some of the simple examples we have shown. For example, define `X` to be 1 if a bead is blue and red otherwise:
+```{r}
+beads <- rep(c("red", "blue"), times = c(2,3))
+X <- ifelse(sample(beads, 1) == "blue", 1, 0)
+```
+Here `X` is a random variable: every time we select a new bead the outcome changes randomly. Sometimes it’s 1 and sometimes it’s 0.
+
+# 14.2 Sampling models
+
+Many data generation procedures, those that produce the data we study, can be modeled quite well as draws from an urn. For instance, we can model the process of polling likely voters as drawing 0s (Republicans) and 1s (Democrats) from an urn containing the 0 and 1 code for all likely voters. In epidemiological studies, we often assume that the subjects in our study are a random sample from the population of interest. The data related to a specific outcome can be modeled as a random sample from an urn containing the outcome for the entire population of interest. Similarly, in experimental research, we often assume that the individual organisms we are studying, for example worms, flies, or mice, are a random sample from a larger population. Randomized experiments can also be modeled by draws from an urn given the way individuals are assigned into groups: when getting assigned, you draw your group at random. Sampling models are therefore ubiquitous in data science. Casino games offer a plethora of examples of real-world situations in which sampling models are used to answer specific questions. We will therefore start with such examples.
+
+Suppose a very small casino hires you to consult on whether they should set up roulette wheels. To keep the example simple, we will assume that 1,000 people will play and that the only game you can play on the roulette wheel is to bet on red or black. The casino wants you to predict how much money they will make or lose. They want a range of values and, in particular, they want to know what’s the chance of losing money. If this probability is too high, they will pass on installing roulette wheels.
+
+We are going to define a random variable $S$ that will represent the casino’s total winnings. Let’s start by constructing the urn. A roulette wheel has 18 red pockets, 18 black pockets and 2 green ones. So playing a color in one game of roulette is equivalent to drawing from this urn:
+
+```{r}
+color <- rep(c("Red", "Black", "Green"), c(18, 18, 2))
+```
+
+The 1,000 outcomes from 1,000 people playing are independent draws from this urn. If red comes up, the gambler wins and the casino loses a dollar, so we draw a -$1. Otherwise, the casino wins a dollar and we draw a $1. To construct our random variable $S$, we can use this code:
+
+```{r}
+n <- 1000
+X <- sample(ifelse(color == "Red", -1, 1), n, replace = TRUE)
+X[1:10]
+```
+Because we know the proportions of 1s and -1s, we can generate the draws with one line of code, without defining `color`:
+```{r}
+X <- sample(c(-1,1), n, replace = TRUE, prob = c(9/19, 10/19))
+X[1:10]
+```
+We call this a sampling model since we are modeling the random behavior of roulette with the sampling of draws from an urn. The total winnings $S$ is simply the sum of these 1,000 independent draws:
+
+```{r}
+X <- sample(c(-1,1), n, replace = TRUE, prob = c(9/19, 10/19))
+S <- sum(X)
+S
+```
+# 14.3 The probability distribution of a random variable
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
