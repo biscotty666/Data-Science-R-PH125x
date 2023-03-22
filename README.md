@@ -218,6 +218,10 @@ Function index:
 
 ### [Chapter 14 Random variables](docs/Pt14.html)
 
+[`dbinom`](docs/Pt14.html#binom),
+[`pbinom`](docs/Pt14.html#binom),
+[`qbinom`](docs/Pt14.html#binom),
+[`rbinom`](docs/Pt14.html#binom)
 
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
