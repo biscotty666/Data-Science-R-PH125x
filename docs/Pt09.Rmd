@@ -25,10 +25,11 @@ R commands in this chapter
 [`geom_tile`](#geom_tile)|
 [`I`](#I)|
 [`n`](#n)|
-[`pnorm`](#norm)|
+[`pnorm`](#pnorm)|
 [`prop.table`](#prop.table)|
-[`qnorm`](#norm)|
+[`qnorm`](#qnorm)|
 [`qplot`](#qplot)|
+['quantile'](#quantile)
 [`rnorm`](#norm)|
 [`scale_fill_gradient`](#scale_fill_gradient)|
 [`stat_ecdf`](#stat_ecdf)|
@@ -240,7 +241,48 @@ The probability distribution function for the normal distribution is defined suc
 - About 68% of observations will be within one standard deviation of the mean ($\mu\pm\sigma$). In standard units, this is equivalent to a z-score of $|z|\le1$.
 - About 95% of observations will be within two standard deviations of the mean ($\mu\pm2\sigma$). In standard units, this is equivalent to a z-score of $|z|\le2$.
 - About 99.7% of observations will be within three standard deviations of the mean ($\mu\pm3\sigma$). In standard units, this is equivalent to a z-score of $|z|\le3$.
+</blockquote>
+<blockquote id="pnorm">
+__`pnorm`__
 
+- The normal distribution has a mathematically defined CDF which can be computed in R with the function `pnorm()`.
+- `pnorm(a, avg, s)` gives the value of the cumulative distribution function  for the normal distribution defined by average avg and standard deviation s.
+- We say that a random quantity is normally distributed with average avg and standard deviation `s` if the approximation `pnorm(a, avg, s)` holds for all values of `a`.
+- If we are willing to use the normal approximation for height, we can estimate the distribution simply from the mean and standard deviation of our values.
+- If we treat the height data as discrete rather than categorical, we see that the data are not very useful because integer values are more common than expected due to rounding. This is called __discretization__.
+- With rounded data, the normal approximation is particularly useful when computing probabilities of intervals of length 1 that include exactly one integer.
+
+__Using pnorm to calculate probabilities__
+
+We can estimate the probability that a male is taller than 70.5 inches with:
+```{r}
+pnorm(70.5, mean(x), sd(x))
+```
+
+__plot distribution of exact heights in data__
+```{r}
+plot(prop.table(table(x)), xlab = "a = Height in inches", ylab = "Pr(x = a)")
+```
+
+__probabilities in actual data over length 1 ranges containing an integer__
+```{r}
+mean(x <= 68.5) - mean(x <= 67.5)
+mean(x <= 69.5) - mean(x <= 68.5)
+mean(x <= 70.5) - mean(x <= 69.5)
+```
+
+__probabilities in normal approximation match well__
+```{r}
+pnorm(68.5, mean(x), sd(x)) - pnorm(67.5, mean(x), sd(x))
+pnorm(69.5, mean(x), sd(x)) - pnorm(68.5, mean(x), sd(x))
+pnorm(70.5, mean(x), sd(x)) - pnorm(69.5, mean(x), sd(x))
+```
+
+__probabilities in actual data over other ranges don't match normal approx as well__
+```{r}
+mean(x <= 70.9) - mean(x <= 70.1)
+pnorm(70.9, mean(x), sd(x)) - pnorm(70.1, mean(x), sd(x))
+```
 
 </blockquote>
 
@@ -284,6 +326,89 @@ To understand boxplots we need to define some terms that are commonly used in ex
 
 The percentiles are the values for which $p=0.01,0.02,\dots,0.99$ of the data are less then or equal to that value, respectively. We call, for example, the case of $p=0.10$ the 10th percentile, which gives us a number for which 10% of the data is below. The most famous percentile is the 50th, also known as the median. Another special case that receives a name are the quartiles, which are obtained when setting $p=0.25,0.50,\text{ and } 0.75$, which are used by the boxplot.
 
+<blockquote id="quantile">
+__Definition of quantiles__
+
+Quantiles are cutoff points that divide a dataset into intervals with set probabilities. The $q$th quantile is the value at which $q$% of the observations are equal to or less than that value.
+
+__Using the quantile function__
+
+Given a dataset data and desired quantile q, you can find the qth quantile of data with:
+
+```
+quantile(data, q)
+```
+
+__Percentiles__
+
+Percentiles are the quantiles that divide a dataset into 100 intervals each with 1% probability. You can determine all percentiles of a dataset data like this:
+```
+p <- seq(0.01, 0.99, 0.01)
+quantile(data, p)
+```
+
+__Quartiles__
+
+Quartiles divide a dataset into 4 parts each with 25% probability. They are equal to the 25th, 50th and 75th percentiles. The 25th percentile is also known as the 1st quartile, the 50th percentile is also known as the median, and the 75th percentile is also known as the 3rd quartile.
+
+The `summary()` function returns the minimum, quartiles and maximum of a vector.
+```{r}
+summary(heights$height)
+```
+
+Find the percentiles of heights$height:
+```{r}
+p <- seq(0.01, 0.99, 0.01)
+percentiles <- quantile(heights$height, p)
+```
+
+Confirm that the 25th and 75th percentiles match the 1st and 3rd quartiles. Note that quantile() returns a named vector. You can access the 25th and 75th percentiles like this (adapt the code for other percentile values):
+```{r}
+percentiles[names(percentiles) == "25%"]
+percentiles[names(percentiles) == "75%"]
+```
+</blockquote>
+
+<blockquote id="qnorm">
+__`qnorm`__
+
+The `qnorm()` function gives the theoretical value of a quantile with probability p of observing a value equal to or less than that quantile value given a normal distribution with mean mu and standard deviation sigma:
+```
+qnorm(p, mu, sigma)
+```
+By default, mu=0 and sigma=1. Therefore, calling `qnorm()` with no arguments gives quantiles for the standard normal distribution.
+```
+qnorm(p)
+```
+Recall that quantiles are defined such that p is the probability of a random observation less than or equal to the quantile.
+
+__Relation to `pnorm`__
+
+The `pnorm()` function gives the probability that a value from a standard normal distribution will be less than or equal to a z-score value z. Consider:
+$$
+\text{pnorm}(-1.96)\approx0.025
+$$
+The result of pnorm() is the quantile. Note that:
+$$
+\text{qnorm}(0.025)\approx-1.96
+$$
+qnorm() and pnorm() are inverse functions:
+$$
+\text{pnorm}(\text{qnorm}(0.025))=0.025
+$$
+__Theoretical quantiles__
+
+You can use `qnorm()` to determine the theoretical quantiles of a dataset: that is, the theoretical value of quantiles assuming that a dataset follows a normal distribution. Run the `qnorm()` function with the desired probabilities p, mean mu and standard deviation sigma. 
+
+Suppose male heights follow a normal distribution with a mean of 69 inches and standard deviation of 3 inches. The theoretical quantiles are:
+```{r}
+p <- seq(0.01, 0.99, 0.01)
+theoretical_quantiles <- qnorm(p, 69, 3)
+theoretical_quantiles
+```
+Theoretical quantiles can be compared to sample quantiles determined with the quantile function in order to evaluate whether the sample follows a normal distribution.
+</blockquote>
+
 To motivate boxplots we will go back to the US murder data. Suppose we want to summarize the murder rate distribution. Using the data visualization technique we have learned, we can quickly see that the normal approximation does not apply here:
 ```{r}
 data(murders)
@@ -316,6 +441,46 @@ with the box defined by the 25% and 75% percentile and the whiskers showing the 
 From just this simple plot, we know that the median is about 2.5, that the distribution is not symmetric, and that the range is 0 to 5 for the great majority of states with two exceptions.
 
 We discuss how to make boxplots in Section 9.8.
+
+## QQ-plots
+__Key points__
+
+- Quantile-quantile plots, or QQ-plots, are used to check whether distributions are well-approximated by a normal distribution.
+- Given a proportion $p$, the quantile $q$ is the value such that the proportion of values in the data below $q$ is $p$.
+- In a QQ-plot, the sample quantiles in the observed data are compared to the theoretical quantiles expected from the normal distribution. If the data are well-approximated by the normal distribution, then the points on the QQ-plot will fall near the identity line (sample = theoretical).
+- Calculate sample quantiles (observed quantiles) using the `quantile()` function.
+- Calculate theoretical quantiles with the `qnorm()` function. `qnorm()` will calculate quantiles for the standard normal distribution ($\mu = 0, \sigma = 1$) by default, but it can calculate quantiles for any normal distribution given `mean()` and `sd()` arguments. We will learn more about qnorm() in the probability course.
+- Note that we will learn alternate ways to make QQ-plots with less code later in the series.
+
+Define x and z
+```
+data(heights)
+index <- heights$sex=="Male"
+x <- heights$height[index]
+z <- scale(x)
+```
+Proportion of data below 69.5
+```
+mean(x <= 69.5)
+```
+Calculate observed and theoretical quantiles
+```{r}
+p <- seq(0.05, 0.95, 0.05)
+observed_quantiles <- quantile(x, p)
+theoretical_quantiles <- qnorm(p, mean = mean(x), sd = sd(x))
+```
+Make QQ-plot
+```{r}
+plot(theoretical_quantiles, observed_quantiles)
+abline(0,1)
+```
+Make QQ-plot with scaled values
+```{r}
+observed_quantiles <- quantile(z, p)
+theoretical_quantiles <- qnorm(p)
+plot(theoretical_quantiles, observed_quantiles)
+abline(0,1)
+```
 
 # 9.5 Stratification
 
