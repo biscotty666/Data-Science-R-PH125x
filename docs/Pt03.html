@@ -62,7 +62,7 @@ if (window.hljs) {
 
 
 
-<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23f0f8ff%3B%0A%7D%0A%2Ehl1%20%7B%0Abackground%2Dcolor%3A%20%23EEDEEE%3B%0A%7D%0A%2Ehl3%20%7B%0Abackground%2Dcolor%3A%20%23BBFA45%3B%0A%7D%0A%2Egreen%20%7B%0Abackground%2Dcolor%3A%20%23BBFA45%3B%0A%7D%0A%2Epink%20%7B%0Abackground%2Dcolor%3A%20rgb%28233%2C%205%2C%20150%2C0%2E2%29%3B%0A%7D%0A%2Epurple%20%7B%0Abackground%2Dcolor%3A%20rgb%28176%2C%2038%2C%20255%2C0%2E3%29%3B%0A%7D%0A%2Eblue%20%7B%0Abackground%2Dcolor%3A%20rgb%2813%2C%20213%2C%20252%2C%200%2E3%29%3B%0A%7D%0A%2Eyellow%20%7B%0Abackground%2Dcolor%3A%20rgb%28251%2C%20247%2C%2025%2C%200%2E5%29%3B%0A%7D" type="text/css" />
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23f0f8ff%3B%0A%7D%0Ablockquote%20%7B%0Afont%2Dsize%3A%20%2E9em%3B%0A%7D%0Aimg%20%7B%0Adisplay%3A%20block%3B%0Amargin%2Dleft%3A%20auto%3B%0Amargin%2Dright%3A%20auto%3B%0Awidth%3A%2065%25%3B%0A%7D%0A%2Egreen%20%7B%0Abackground%2Dcolor%3A%20rgb%2857%2C%20255%2C%2020%2C%200%2E3%29%3B%0A%7D%0A%2Epink%20%7B%0Abackground%2Dcolor%3A%20rgb%28233%2C%205%2C%20150%2C0%2E2%29%3B%0A%7D%0A%2Epurple%20%7B%0Abackground%2Dcolor%3A%20rgb%28176%2C%2038%2C%20255%2C0%2E3%29%3B%0A%7D%0A%2Eblue%20%7B%0Abackground%2Dcolor%3A%20rgb%2813%2C%20213%2C%20252%2C%200%2E3%29%3B%0A%7D%0A%2Eyellow%20%7B%0Abackground%2Dcolor%3A%20rgb%28251%2C%20247%2C%2025%2C%200%2E5%29%3B%0A%7D%0A%2Eorange%20%7B%0Abackground%2Dcolor%3A%20rgb%28255%2C%2090%2C%2040%2C%200%2E4%29%3B%0A%7D" type="text/css" />
 
 
 
@@ -462,10 +462,17 @@ if(all(x&gt;0)){
 <li>The function <span id="nchar"><code>nchar()</code></span> tells you how many characters long a character vector is. Write a line of code that assigns to the object new_names the state abbreviation when the state name is longer than 8 characters.</li>
 </ol>
 <pre class="r"><code>ind &lt;- which(nchar(murders) &gt; 8)
-new_names &lt;- ifelse(nchar(murders) &gt; 8, murders$abb, murders$state)
+new_names &lt;- ifelse(nchar(murders$state) &gt; 8, murders$abb, murders$state)
 new_names</code></pre>
-<pre><code>##      state        abb     region population      total 
-##       &quot;AL&quot;       &quot;AK&quot;       &quot;AZ&quot;       &quot;AR&quot;       &quot;CA&quot;</code></pre>
+<pre><code>##  [1] &quot;Alabama&quot;  &quot;Alaska&quot;   &quot;Arizona&quot;  &quot;Arkansas&quot; &quot;CA&quot;       &quot;Colorado&quot;
+##  [7] &quot;CT&quot;       &quot;Delaware&quot; &quot;DC&quot;       &quot;Florida&quot;  &quot;Georgia&quot;  &quot;Hawaii&quot;  
+## [13] &quot;Idaho&quot;    &quot;Illinois&quot; &quot;Indiana&quot;  &quot;Iowa&quot;     &quot;Kansas&quot;   &quot;Kentucky&quot;
+## [19] &quot;LA&quot;       &quot;Maine&quot;    &quot;Maryland&quot; &quot;MA&quot;       &quot;Michigan&quot; &quot;MN&quot;      
+## [25] &quot;MS&quot;       &quot;Missouri&quot; &quot;Montana&quot;  &quot;Nebraska&quot; &quot;Nevada&quot;   &quot;NH&quot;      
+## [31] &quot;NJ&quot;       &quot;NM&quot;       &quot;New York&quot; &quot;NC&quot;       &quot;ND&quot;       &quot;Ohio&quot;    
+## [37] &quot;Oklahoma&quot; &quot;Oregon&quot;   &quot;PA&quot;       &quot;RI&quot;       &quot;SC&quot;       &quot;SD&quot;      
+## [43] &quot;TN&quot;       &quot;Texas&quot;    &quot;Utah&quot;     &quot;Vermont&quot;  &quot;Virginia&quot; &quot;WA&quot;      
+## [49] &quot;WV&quot;       &quot;WI&quot;       &quot;Wyoming&quot;</code></pre>
 <ol start="4" style="list-style-type: decimal">
 <li>Create a function <code>sum_n</code> that for any given value, say <span class="math inline">\(n\)</span>, computes the sum of the integers from 1 to n (inclusive). Use the function to determine the sum of integers from 1 to 5,000.</li>
 </ol>

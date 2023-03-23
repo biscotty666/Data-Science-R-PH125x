@@ -1,0 +1,93 @@
+---
+title: "15 Statistical inference"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+R commands in this chapter
+
+In Chapter 16 we will describe, in some detail, how poll aggregators such as FiveThirtyEight use data to predict election outcomes. To understand how they do this, we first need to learn the basics of Statistical Inference, the part of statistics that helps distinguish patterns arising from signal from those arising from chance. Statistical inference is a broad topic and here we go over the very basics using polls as a motivating example. To describe the concepts, we complement the mathematical formulas with Monte Carlo simulations and R code.
+
+```{r, echo=FALSE}
+img_path <- "inference/img/"
+```
+
+# 15.1 Polls
+
+Opinion polling has been conducted since the 19th century. The general goal is to describe the opinions held by a specific population on a given set of topics. In recent times, these polls have been pervasive during presidential elections. Polls are useful when interviewing every member of a particular population is logistically impossible. The general strategy is to interview a smaller group, chosen at random, and then infer the opinions of the entire population from the opinions of the smaller group. Statistical theory is used to justify the process. <span class="purple">This theory is referred to as inference and it is the main topic of this chapter.</span>
+
+Perhaps the best known opinion polls are those conducted to determine which candidate is preferred by voters in a given election. Political strategists make extensive use of polls to decide, among other things, how to invest resources. For example, they may want to know in which geographical locations to focus their “get out the vote” efforts.
+
+Elections are a particularly interesting case of opinion polls because the actual opinion of the entire population is revealed on election day. Of course, it costs millions of dollars to run an actual election which makes polling a cost effective strategy for those that want to forecast the results.
+
+Although typically the results of these polls are kept private, similar polls are conducted by news organizations because results tend to be of interest to the general public and made public. We will eventually be looking at such data.
+
+Real Clear Politics^[http://www.realclearpolitics.com] is an example of a news aggregator that organizes and publishes poll results. For example, they present the following poll results reporting estimates of the popular vote for the 2016 presidential election^[http://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html]:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#knitr::include_graphics(file.path(img_path,"rcp-polls.png"))
+#url <- "https://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html"
+
+url <- "https://web.archive.org/web/20161108012231/https://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html"
+library(rvest)
+tab <- read_html(url) |> html_elements("table")
+tab <- tab[[1]] |> html_table() |> 
+  mutate(Poll = stringr::str_remove(Poll, "\\/.*")) |>
+  mutate(Poll = case_when(
+    Poll == "BloombergBloomberg" ~ "Bloomberg",
+    Poll == "FOX NewsFOX News" ~ "FOX News",
+    Poll == "MonmouthMonmouth"  ~ "Monmouth",  
+    Poll == "CBS NewsCBS News" ~ "CBS News",
+    TRUE ~ Poll))
+names(tab) <- stringr::str_remove_all(names(tab), "\\s(.*)")    
+tab
+```
+(Source: [Real Clear Politics](https://www.realclearpolitics.com/epolls/2016/president/us/general_election_trump_vs_clinton-5491.html))
+
+```{r}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

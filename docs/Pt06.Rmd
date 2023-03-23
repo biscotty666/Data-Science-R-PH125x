@@ -25,7 +25,7 @@ library(data.table)
 
 # 6.1 Manipulating data tables
 
-We will provide example code showing the **data.table** approaches to **dplyr**’s `mutate`, `filter`, `select`, `group_by`, and `summarize` shown in Chapter 4. As in that chapter, we will use the 1murders1 dataset:
+We will provide example code showing the **data.table** approaches to **dplyr**’s `mutate`, `filter`, `select`, `group_by`, and `summarize` shown in Chapter 4. As in that chapter, we will use the `murders` dataset:
 
 The first step when using **data.table** is to convert the data frame into a **data.table** object using the <span id="setdt">`setDT`</span> function:
 
@@ -211,7 +211,7 @@ murders[population < 5000000 & region == "Northeast"]
 Make sure murders has been defined with rate and rank and still has all states. Create a table called my_states that contains rows for states satisfying both the conditions: they are in the Northeast or West and the murder rate is less than 1. Show only the state name, the rate, and the rank.
 
 ```{r}
-my_state <- murders[region == c("Northeast", "West") & rate < 1, .(state, rate, rank)]
+my_state <- murders[region %in% c("Northeast", "West") & rate < 1, .(state, rate, rank)]
 my_state
 ```
 
@@ -339,6 +339,174 @@ NHANES[Gender == "male" & AgeDecade == " 40-49",
        .(average = mean(BPSysAve, na.rm = TRUE)),
        by = "Race1"]
 ```
+
+```{r}
+library(dslabs)
+data("heights")
+options(digits = 3)
+```
+```{r}
+heights <- setDT(heights)
+```
+```{r}
+str(heights)
+```
+```{r}
+avg <- mean(heights$height)
+```
+```{r}
+ind <- heights[height > avg]
+nrow(ind)
+nrow(heights)
+```
+
+```{r}
+ind <- heights[sex == "Female" & height > avg]
+nrow(ind)
+```
+
+```{r}
+nrow(heights[sex == "Female"]) / nrow(heights)
+```
+
+```{r}
+heights[, .(median_min_max(height))]
+```
+
+```{r}
+min <- heights[, .(min = min(height))]
+min
+```
+```{r}
+match(min, heights[,height])
+```
+
+```{r}
+heights[1032]
+```
+
+```{r}
+heights[, .(max = max(height))]
+```
+
+```{r}
+x <- 51:82
+```
+
+```{r}
+int_height <- heights[height %in% x]
+int_height
+```
+
+```{r}
+heights2 <- heights[, ht_cm := height * 2.54]
+heights2
+```
+```{r}
+heights2[18]
+```
+
+```{r}
+heights2[, .(avg = mean(ht_cm))]
+```
+```{r}
+nrow(heights2[sex == "Female"])
+```
+
+```{r}
+heights[sex == "Female", .(avg = mean(ht_cm))]
+```
+
+```{r}
+mean(heights2[sex == "Female", ht_cm])
+```
+
+```{r}
+data("olive")
+head(olive)
+```
+```{r}
+str(olive)
+```
+```{r}
+library(ggplot2)
+olive |> 
+  ggplot(aes(palmitic, palmitoleic)) +
+  geom_point()
+```
+```{r}
+olive |> 
+  ggplot(aes(eicosenoic)) +
+  geom_histogram(color = "black", binwidth = .05)
+```
+
+```{r}
+olive |> 
+  ggplot(aes(region, palmitic)) +
+  geom_boxplot()
+```
+
+```{r}
+x <- 25
+s <- 5
+
+my_test <- function(x){
+	s <- 1/x
+	s
+}
+my_test(x)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

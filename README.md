@@ -223,6 +223,10 @@ Function index:
 [`qbinom`](docs/Pt14.html#binom),
 [`rbinom`](docs/Pt14.html#binom)
 
+### [Chapter 15 Statistical inference](docs/Pt15.html)
+
+
+
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
 

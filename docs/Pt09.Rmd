@@ -33,14 +33,6 @@ R commands in this chapter
 [`scale_fill_gradient`](#scale_fill_gradient)|
 [`stat_ecdf`](#stat_ecdf)|
 
-cur_group() gives the group keys, a tibble with one row and one column for each grouping variable.
-
-cur_group_id() gives a unique numeric identifier for the current group.
-
-cur_group_rows() gives the row indices for the current group.
-
-cur_column() 
-
 You may have noticed that numerical data is often summarized with the average value. For example, the quality of a high school is sometimes summarized with one number: the average score on a standardized test. Occasionally, a second number is reported: the standard deviation. For example, you might read a report stating that scores were 680 plus or minus 50 (the standard deviation). The report has summarized an entire vector of scores with just two numbers. Is this appropriate? Is there any important piece of information that we are missing by only looking at this summary rather than the entire list?
 
 Our first data visualization building block is learning to summarize lists of factors or numeric vectors. More often than not, the best way to share or explore this summary is through data visualization. The most basic statistical summary of a list of objects or numbers is its distribution. Once a data has been summarized as a distribution, there are several data visualization techniques to effectively relay this information. For this reason, it is important to have a deep understand the concept of a distribution.
@@ -194,6 +186,63 @@ norm_dist |>
 
 
 The normal distribution is one of the most famous mathematical concepts in history. A reason for this is that the distribution of many datasets can be approximated with normal distributions. These include including gambling winnings, heights, weights, blood pressure, standardized test scores, and experimental measurement errors. Statistical textbooks offer explanations for why this is the case. But how can the same distribution approximate datasets with completely different ranges for values, for example heights and weights? A second important characteristic of the normal distribution is that it can be adapted to different datasets by just adjusting two numbers, referred to as the average or mean and the standard deviation (SD). <span class="yellow">The normal distribution is symmetric, centered at what we refer to as the average, and most values (about 95%) are within 2 SDs from the average.</span> The plot above shows a normal distribution with average 0 and SD 1, often referred to as a **standard normal**. Note that the fact that <span class="yellow">because only two numbers are needed to adapt the normal distribution to a dataset, implies that if our data distribution is approximated by a normal distribution, all the information needed to describe the distribution can be encoded in just two numbers.</span> We now define these values for an arbitrary list of numbers.
+
+<blockquote>
+__Additional material from the on-line course__
+
+
+__Key points__
+
+- The normal distribution:
+  - Is centered around one value, the mean
+  - Is symmetric around the mean
+  - Is defined completely by its mean ($\mu$) and standard deviation ($\sigma$)
+  - Always has the same proportion of observations within a given distance of the mean (for example, 95% within 2$\sigma$ )
+- The standard deviation is the average distance between a value and the mean value.
+- Calculate the mean using the `mean()` function.
+- Calculate the standard deviation using the `sd()` function or manually. 
+- Standard units describe how many standard deviations a value is away from the mean. The z-score, or number of standard deviations an observation  is away from the mean $\mu$:
+
+$$
+Z=\frac{x-\mu}{\sigma}
+$$
+- Compute standard units with the `scale()` function.
+- __Important__: to calculate the proportion of values that meet a certain condition, use the mean() function on a logical vector. Because TRUE is converted to 1 and FALSE is converted to 0, taking the mean of this vector yields the proportion of TRUE.
+Equation for the normal distribution
+The normal distribution is mathematically defined by the following formula for any mean  and standard deviation :
+
+$$
+\mbox{Pr}(a < x < b) = \int_a^b \frac{1}{\sqrt{2\pi}\sigma} e^{-\frac{1}{2}\left( \frac{x-\mu}{\sigma} \right)^2} \, dx
+$$
+
+NOTE: The average and standard deviation obtained by using the code below are 69.31 and 3.61, respectively. These values appear in the video, but differ slightly from the audio.
+
+```{r}
+index <- heights$sex == "Male"
+x <- heights$height[index]
+
+# calculate standard units
+
+z <- scale(x)
+
+# calculate proportion of values within 2 SD of mean
+mean(abs(z) < 2)
+```
+
+__The 68-95-99.7 Rule__
+
+The normal distribution is associated with the 68-95-99.7 rule. This rule describes the probability of observing events within a certain number of standard deviations of the mean. 
+
+<img src="https://courses.edx.org/assets/courseware/v1/28d10d22ba8b3bf4b0cc5024de0dc616/asset-v1:HarvardX+PH125.2x+3T2022+type@asset+block/norm-dist-probs-combined.png" />
+
+The probability distribution function for the normal distribution is defined such that:
+
+- About 68% of observations will be within one standard deviation of the mean ($\mu\pm\sigma$). In standard units, this is equivalent to a z-score of $|z|\le1$.
+- About 95% of observations will be within two standard deviations of the mean ($\mu\pm2\sigma$). In standard units, this is equivalent to a z-score of $|z|\le2$.
+- About 99.7% of observations will be within three standard deviations of the mean ($\mu\pm3\sigma$). In standard units, this is equivalent to a z-score of $|z|\le3$.
+
+
+</blockquote>
 
 Once we are convinced that our data, say it is stored in the vector `x`, has a distribution that is approximately normal we can find the specific one that matches our data by matching the average and SD of the data to the average and SD of the normal distribution, respectively. For a list of numbers contained in a vector `x`:
 ```{r}

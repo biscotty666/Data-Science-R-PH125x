@@ -247,7 +247,7 @@ if(all(x>0)){
 
 ```{r}
 ind <- which(nchar(murders) > 8)
-new_names <- ifelse(nchar(murders) > 8, murders$abb, murders$state)
+new_names <- ifelse(nchar(murders$state) > 8, murders$abb, murders$state)
 new_names
 ```
 
