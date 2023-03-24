@@ -49,7 +49,7 @@ One limitation is that <span class="blue>**ggplot2** is designed to work exclusi
 # 8.1 The components of a graph
 
 We will construct a graph that summarizes the US `murders` dataset that looks like this:
-```{r}
+```{r dev='svg'}
 library(dslabs)
 data(murders)
 library(ggthemes)

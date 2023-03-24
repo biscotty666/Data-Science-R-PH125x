@@ -620,13 +620,7 @@ tmp <- gapminder |>
   group_by(group) |> 
   summarize(n=n()) |>
   spread(group, n)
-if(knitr::is_html_output()){
-  knitr::kable(tmp, "html") |>
-    kableExtra::kable_styling(bootstrap_options = "striped", full_width = FALSE)
-} else{
-  knitr::kable(tmp, "latex", booktabs = TRUE) |>
-    kableExtra::kable_styling(font_size = 8)
-}
+tmp
 ```
 
 But when we overlay two densities, the default is to have the area represented by each distribution add up to 1, regardless of the size of each group:
@@ -808,8 +802,6 @@ gapminder |> filter(year %in% present_year & !is.na(gdp) & !is.na(infant_mortali
 ```
 
 Specifically, we see that there is a large amount of variability. We see that countries from the same regions can be quite different and that countries with the same income can have different survival rates. For example, while on average Sub-Saharan Africa had the worse health and economic outcomes, there is wide variability within that group. Mauritius and Botswana are doing better than Angola and Sierra Leone, with Mauritius comparable to Western countries.
-
-
 
 
 

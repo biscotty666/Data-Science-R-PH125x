@@ -471,6 +471,8 @@ Notice how much more we learn from the two plots on the right. <span class="yell
 
 We have motivated the <span class="yellow">use of the log transformation in cases where the changes are multiplicative</span>. Population size was an example in which we found a log transformation to yield a more informative transformation.
 
+The log transformation is useful for data with multiplicative changes. The logistic transformation is useful for fold changes in odds. The square root transformation is useful for count data.
+
 The combination of an incorrectly chosen barplot and a failure to use a log transformation when one is merited can be particularly distorting. As an example, consider this barplot showing the average population sizes for each continent in 2015:
 
 ```{r}
@@ -591,6 +593,14 @@ There are several resources that can help you select colors, for example this on
 # 11.8 Plots for two variables
 
 <span class="orange">In general, you should use scatterplots to visualize the relationship between two variables.</span> In every single instance in which we have examined the relationship between two variables, including total murders versus population size, life expectancy versus fertility rates, and infant mortality versus income, we have used scatterplots. This is the plot we generally recommend. <span class="orange">However, there are some exceptions and we describe two alternative plots here: the **slope chart** and the **Bland-Altman plot**.</span>
+
+<blockquote>
+__Key points__
+
+- Consider using a slope chart or Bland-Altman plot when comparing one variable at two different time points, especially for a small number of observations.
+- Slope charts use angle to encode change. Use `geom_line()` to create slope charts. It is useful when <span class="orange">comparing a small number of observations.</span>
+- The Bland-Altman plot (Tukey mean difference plot, MA plot) graphs the difference between conditions on the y-axis and the mean between conditions on the x-axis. It is more appropriate <span class="orange">for large numbers of observations</span> than slope charts.
+</blockquote>
 
 There is no geometry for slope charts in **ggplot2**, but we can construct one using `geom_line`. We need to do some tinkering to add labels. Below is an example comparing 2010 to 2015 for large western countries:
 
