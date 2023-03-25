@@ -1,0 +1,140 @@
+---
+title: "Titanic Survival Exercises"
+output:
+  html_document:
+    df_print: paged
+    css: "style.css"
+    toc: true
+---
+
+[Book](http://rafalab.dfci.harvard.edu/dsbook/r-basics.html)
+
+R commands in this chapter
+
+__Background__
+
+The Titanic was a British ocean liner that struck an iceberg and sunk on its maiden voyage in 1912 from the United Kingdom to New York. More than 1,500 of the estimated 2,224 passengers and crew died in the accident, making this one of the largest maritime disasters ever outside of war. The ship carried a wide range of passengers of all ages and both genders, from luxury travelers in first-class to immigrants in the lower classes. However, not all passengers were equally likely to survive the accident. We use real data about a selection of 891 passengers to learn who was on the Titanic and which passengers were more likely to survive.
+
+```{r}
+# install.packages("titanic")
+library(tidyverse)
+library(titanic)
+```
+```{r}
+str(titanic_train)
+```
+```{r}
+titanic <- titanic_train %>%
+  select(Survived, Pclass, Sex, Age, SibSp, Parch, Fare) %>%
+  mutate(Survived = factor(Survived),
+         Pclass = factor(Pclass),
+         Sex = factor(Sex))
+head(titanic)
+```
+```{r}
+str(titanic)
+```
+```{r}
+titanic %>%
+  ggplot(aes(Age, fill = Sex)) +
+  geom_density(alpha = 0.2)
+```
+```{r}
+titanic %>%
+  ggplot(aes(Sex)) +
+  geom_bar(stat = "count")
+```
+```{r}
+titanic %>%
+  filter(Age == 40) %>%
+  ggplot(aes(Sex)) +
+  geom_bar(stat = "count")
+```
+
+```{r}
+titanic %>%
+  ggplot(aes(Sex, Age)) +
+  geom_boxplot()
+```
+
+```{r}
+params <- titanic %>%
+  filter(!is.na(Age)) %>%
+  summarise(mean = mean(Age), sd = sd(Age))
+```
+```{r}
+titanic %>%
+  filter(!is.na(Age)) %>%
+  ggplot(aes(sample = Age)) +
+  geom_qq(dparams = params) +
+  geom_abline()
+```
+
+
+```{r}
+titanic |> 
+  ggplot(aes(Survived, fill = Sex)) +
+  geom_bar(position = position_dodge())
+```
+
+```{r}
+titanic |> 
+  ggplot(aes(Survived)) +
+  geom_bar(position = position_dodge())
+```
+
+```{r}
+titanic %>%
+  ggplot(aes(Age, fill = Survived)) +
+  geom_density(stat = "count", alpha = 0.2)
+```
+```{r}
+names(titanic)
+```
+
+```{r}
+titanic |> 
+  filter(Fare != 0) %>%
+  ggplot(aes(Survived, Fare)) +
+  geom_boxplot() +
+  scale_y_continuous(trans = "log2") +
+  geom_point() +
+  geom_jitter(width = 0.1, alpha = 0.2)
+```
+```{r}
+titanic |> 
+  ggplot(aes(Pclass, fill = Survived)) +
+  geom_bar()
+```
+```{r}
+titanic |> 
+  ggplot(aes(Pclass, fill = Survived)) +
+  geom_bar(position = position_fill())
+```
+```{r}
+titanic |> 
+  ggplot(aes(Survived, fill = Pclass)) +
+  geom_bar(position = position_fill())
+```
+```{r}
+titanic %>%
+  ggplot(aes(Age, fill = Survived)) +
+  geom_density(stat = "count", alpha = 0.2) +
+  facet_grid(Pclass ~ Sex)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
