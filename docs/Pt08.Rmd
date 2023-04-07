@@ -42,7 +42,7 @@ Many other approaches are available for creating plots in R. In fact, the plotti
 
 One reason **ggplot2** is generally more intuitive for beginners is that it uses a grammar of graphics23, the `gg` in **ggplot2**. 
 
-One limitation is that <span class="blue>**ggplot2** is designed to work exclusively with data tables in tidy format</span> (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, ggplot2 simplifies plotting code and the learning of grammar for a variety of plots.
+One limitation is that <span class="blue">**ggplot2** is designed to work exclusively with data tables in tidy format</span> (where rows are observations and columns are variables). However, a substantial percentage of datasets that beginners work with are in, or can be converted into, this format. An advantage of this approach is that, assuming that our data is tidy, ggplot2 simplifies plotting code and the learning of grammar for a variety of plots.
 
 [ggplot2 Cheatsheet](https://posit.co/wp-content/uploads/2022/10/data-visualization-1.pdf)
 

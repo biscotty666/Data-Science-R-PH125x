@@ -29,7 +29,7 @@ R commands in this chapter
 [`prop.table`](#prop.table)|
 [`qnorm`](#qnorm)|
 [`qplot`](#qplot)|
-['quantile'](#quantile)
+[`quantile`](#quantile)|
 [`rnorm`](#norm)|
 [`scale_fill_gradient`](#scale_fill_gradient)|
 [`stat_ecdf`](#stat_ecdf)|
@@ -254,7 +254,7 @@ __`pnorm`__
 
 __Using pnorm to calculate probabilities__
 
-We can estimate the probability that a male is taller than 70.5 inches with:
+We can estimate the probability that a male is at least 70.5 inches with:
 ```{r}
 pnorm(70.5, mean(x), sd(x))
 ```
