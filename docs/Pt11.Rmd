@@ -14,6 +14,7 @@ R commands in this chapter
 |[`annotate`](#annotate)|
 [`coord_polar`](#coord_polar)|
 [`gather`](#gather)|
+[`geom_errorbar`](#geom_errorbar)|
 [`grep`](#grep)|
 [`grepl`](#grep)|
 [`gsub`](#grep)|
@@ -47,7 +48,7 @@ To illustrate how some of these strategies compare, let’s suppose we want to r
 browsers <- data.frame(Browser = rep(c("Opera", "Safari","Firefox",
                                        "IE", "Chrome"),
                                      2),
-                       Year = rep(c(2000, 2015), each = 5),
+                       Year = rep(c(2000, 2015), 5),
                        Percentage = c(3,21,23,28,26,2,22,21,27,29)) |>
   mutate(Browser = reorder(Browser, Percentage))
 head(browsers)
@@ -293,21 +294,21 @@ We previously learned how to use the `reorder` function, which helps us achieve 
 
 ```{r}
 data(murders)
-murders |>
+p1 <- murders |>
   mutate(murder_rate = total / population * 10^5) |>
   ggplot(aes(state, murder_rate)) +
   geom_bar(stat = "identity") +
   coord_flip() +
   theme(axis.text.y = element_text(size = 8)) +
-  xlab("") -> p1
-murders |>
-  mutate(murder_rate = total / population * 10^5) |>
-  mutate(reorder(state, murder_rate)) |>
+  xlab("")
+p2 <- murders |> 
+  mutate(murder_rate = total / population * 100000) |>
+  mutate(state = reorder(state, murder_rate)) |>
   ggplot(aes(state, murder_rate)) +
-  geom_bar(stat = "identity") +
+  geom_bar(stat="identity") +
   coord_flip() +
-  theme(axis.text.y = element_text(size = 8)) +
-  xlab("") -> p2
+  theme(axis.text.y = element_text(size = 8))  +
+  xlab("")
 
 grid.arrange(p1, p2, ncol = 2)  
 ```
@@ -364,9 +365,8 @@ p1
 ```
 
 
-<span id="geom_errorbar>
 
-<blockquote>
+<blockquote id="geom_errorbar">
 **`geom_errorbar`**
 
 Various ways of representing a vertical interval defined by x, ymin and ymax. Each case draws a single graphical object.
@@ -424,11 +424,18 @@ heights |>
   facet_grid(. ~ sex, scales = "free_x")
 ```
 
+```{r}
+heights |>
+  ggplot(aes(height, after_stat(density))) +
+  geom_histogram(binwidth = 1, color = "black") +
+  facet_grid(. ~ sex, scales = "free_x")
+```
+
 However, from this plot it is not immediately obvious that males are, on average, taller than females. We have to look carefully to notice that the x-axis has a higher range of values in the male histogram. An important principle here is to keep the axes the same when comparing data across two plots. Below we see how the comparison becomes easier:
 
 ```{r}
 heights |>
-  ggplot(aes(height, ..density..)) +
+  ggplot(aes(height, after_stat(density))) +
   geom_histogram(binwidth = 1, color = "black") +
   facet_grid(. ~ sex)
 ```
@@ -439,7 +446,7 @@ In these histograms, the visual cue related to decreases or increases in height 
 
 ```{r}
 heights |>
-  ggplot(aes(height, ..density..)) +
+  ggplot(aes(height, after_stat(density))) +
   geom_histogram(binwidth = 1, color = "black") +
   facet_grid(sex ~ .) -> p2
 p2
