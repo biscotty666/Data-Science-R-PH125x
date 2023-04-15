@@ -1065,6 +1065,84 @@ data.frame(x = x, f = dnorm(x)) %>%
 
 For the student-t, described later in Section \@ref(t-dist), the shorthand `t` is used so the functions are `dt` for the density, `qt` for the quantiles, `pt` for the cumulative distribution function, and `rt` for Monte Carlo simulation.
 
+# 13.13 Exercises 
+
+1\. Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is 5 feet or shorter? 
+
+```{r}
+mean <- 64
+sd <- 3
+pnorm(60, mean, sd)
+```
+
+2\. Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is 6 feet or taller? 
+
+```{r}
+1 - pnorm(72, mean, sd)
+```
+
+3\. Assume the distribution of female heights is approximated by a normal distribution with a mean of 64 inches and a standard deviation of 3 inches. If we pick a female at random, what is the probability that she is between 61 and 67 inches?
+```{r}
+pnorm(67, mean, sd) - pnorm(61, mean, sd)
+```
+
+4\. Repeat the exercise above, but convert everything to centimeters. That is, multiply every height, including the standard deviation, by 2.54. What is the answer now?
+```{r}
+pnorm(67*2.54, mean*2.54, sd*2.54) - pnorm(61*2.54, mean*2.54, sd*2.54)
+```
+
+5\. Notice that the answer to the question does not change when you change units. This makes sense since the standard deviations from the average for an entry in a list are not affected by what units we use. In fact, if you look closely, you notice that 61 and 67 are both 1 SD away from the average. Compute the probability that a randomly picked, normally distributed random variable is within 1 SD from the average.
+
+```{r}
+pnorm(mean+sd, mean, sd) - pnorm(mean-sd, mean, sd)
+```
+
+6\. To see the math that explains why the answers to questions 3, 4, and 5 are the same, suppose we have a random variable with average $m$ and standard error $s$. Suppose we ask the probability of $X$ being smaller or equal to $a$. Remember that, by definition, $a$ is $(a - m)/s$ standard deviations $s$ away from the average $m$. The probability is: 
+
+$$
+\mbox{Pr}(X \leq a)
+$$
+
+Now we subtract $\mu$ to both sides and then divide both sides by $\sigma$:
+
+$$
+\mbox{Pr}\left(\frac{X-m}{s} \leq \frac{a-m}{s} \right)
+$$
+
+The quantity on the left is a standard normal random variable. It has an average of 0 and a standard error of 1. We will call it $Z$:
+
+
+
+$$
+\mbox{Pr}\left(Z \leq \frac{a-m}{s} \right)
+$$
+
+So, no matter the units, the probability of $X\leq a$ is the same as the probability of a standard normal variable being less than $(a - m)/s$. If `mu` is the average and `sigma` the standard error, which of the following R code would give us the right answer in every situation:
+
+a. `mean(X<=a)`
+b. `pnorm((a - m)/s)`
+c. `pnorm((a - m)/s, m, s)`
+d. `pnorm(a)`
+
+7\. Imagine the distribution of male adults is approximately normal with an expected value of 69 and a standard deviation of 3. How tall is the male in the 99th percentile? Hint: use `qnorm`.
+
+```{r}
+qnorm(.99, 69, 3)
+```
+
+8\. The distribution of IQ scores is approximately normally distributed.  The average is 100 and the standard deviation is 15. Suppose you want to know the distribution of the highest IQ across all graduating classes if 10,000 people are born each in your school district. Run a Monte Carlo simulation with `B=1000` generating 10,000 IQ scores and keeping the highest. Make a histogram.
+
+```{r}
+B <- 1000
+set.seed(1)
+
+highestIQ <- replicate(B, {
+  simulated_data <- rnorm(10000, 100, 15)
+  max(simulated_data)
+})
+
+hist(highestIQ)
+```
 
 
 
