@@ -308,7 +308,7 @@ $$
 \mbox{Pr}(A \mbox{ or } B) = \mbox{Pr}(A) + \mbox{Pr}(B) - \mbox{Pr}(A \mbox{ and } B)
 $$
 
-This rule is intuitive: think of a Venn diagram. If we simply add the probabilities, we count the intersection twice so we need to substract one instance.
+This rule is intuitive: think of a Venn diagram. If we simply add the probabilities, we count the intersection twice so we need to subtract one instance.
 
 ```{r}
 # install.packages("VennDiagram")

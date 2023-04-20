@@ -316,12 +316,12 @@ events &lt;- replicate(B, sample(beads, 1))</code></pre>
 tab</code></pre>
 <pre><code>## events
 ## blue  red 
-## 5939 4061</code></pre>
+## 6021 3979</code></pre>
 <p>and <span id="prop.table"><code>prop.table</code></span> gives us the proportions:</p>
 <pre class="r"><code>prop.table(tab)</code></pre>
 <pre><code>## events
 ##   blue    red 
-## 0.5939 0.4061</code></pre>
+## 0.6021 0.3979</code></pre>
 <p>The numbers above are the estimated probabilities provided by this Monte Carlo simulation. Statistical theory, not covered here, tells us that as <span class="math inline">\(B\)</span> gets larger, the estimates get closer to 3/5=.6 and 2/5=.4.</p>
 <p>Although this is a simple and not very useful example, we will use Monte Carlo simulations to estimate probabilities in cases in which it is harder to compute the exact ones. Before delving into more complex examples, we use simple ones to demonstrate the computing tools available in R.</p>
 <div id="set.seed" class="section level2">
@@ -433,7 +433,7 @@ x &lt;- sample(beads, 5)</code></pre>
 <p><span class="math display">\[
 \mbox{Pr}(A \mbox{ or } B) = \mbox{Pr}(A) + \mbox{Pr}(B) - \mbox{Pr}(A \mbox{ and } B)
 \]</span></p>
-<p>This rule is intuitive: think of a Venn diagram. If we simply add the probabilities, we count the intersection twice so we need to substract one instance.</p>
+<p>This rule is intuitive: think of a Venn diagram. If we simply add the probabilities, we count the intersection twice so we need to subtract one instance.</p>
 <pre class="r"><code># install.packages(&quot;VennDiagram&quot;)
 # install.packages(&quot;rafalib&quot;)
 library(VennDiagram)</code></pre>
