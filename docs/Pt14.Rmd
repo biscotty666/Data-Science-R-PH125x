@@ -126,7 +126,7 @@ data.frame(S = S) |>
 
 We see that the distribution appears to be approximately normal. A qq-plot will confirm that the normal approximation is close to a perfect approximation for this distribution. If, in fact, the distribution is normal, then all we need to define the distribution is the average and the standard deviation. Because we have the original values from which the distribution is created, we can easily compute these with mean(S) and `sd(S)`. The blue curve you see added to the histogram above is a normal density with this average and standard deviation.
 
-<span class="pink">This average and this standard deviation have special names. They are referred to as the __expected value__ and __standard error_ of the random variable $S$. We will say more about these in the next section.
+<span class="pink">This average and this standard deviation have special names. They are referred to as the __expected value__ and __standard error__ of the random variable $S$. We will say more about these in the next section.
 
 Statistical theory provides a way to derive the distribution of random variables defined as independent random draws from an urn. Specifically, in our example above, we can show that $(S+n)/2$ follows a __binomial distribution__. We therefore do not need to run for Monte Carlo simulations to know the probability distribution of $S$. We did this for illustrative purposes.
 
