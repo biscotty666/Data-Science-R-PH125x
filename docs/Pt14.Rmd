@@ -385,7 +385,7 @@ which is another way of writing the result we show above for the sum of draws.
 2\. The expected value of a non-random constant times a random variable is the non-random constant times the expected value of a random variable. This is easier to explain with symbols:
 
 $$
-\mbox{E}[aX] =  a\times\mbox{E}[X]
+\mbox{E}[aX] =  a\mbox{E}[X]
 $$
 
 To see why this is intuitive, consider change of units. If we change the units of a random variable, say from dollars to cents, the expectation should change in the same way. A consequence of the above two facts is that the expected value of the average of independent draws from the same urn is the expected value of the urn, call it $\mu$ again:
@@ -394,18 +394,24 @@ $$
 \mbox{E}[(X_1+X_2+\dots+X_n) / n]=   \mbox{E}[X_1+X_2+\dots+X_n] / n = n\mu/n = \mu 
 $$
 
-
 3\. The square of the standard error of the sum of **independent** random variables is the sum of the square of the standard error of each random variable. This one is easier to understand in math form:
 
 $$ 
 \mbox{SE}[X_1+X_2+\dots+X_n] = \sqrt{\mbox{SE}[X_1]^2 + \mbox{SE}[X_2]^2+\dots+\mbox{SE}[X_n]^2  }
 $$
+<span class="purple">Or more obviously imo</span>
+
+$$ 
+{\mbox{SE}[X_1+X_2+\dots+X_n]}^2 = \mbox{SE}[X_1]^2 + \mbox{SE}[X_2]^2+\dots+\mbox{SE}[X_n]^2
+$$
+
+
 
 The square of the standard error is referred to as the _variance_ in statistical textbooks. Note that this particular property is not as intuitive as the previous three and more in depth explanations can be found in statistics textbooks.
  
-4\. The standard error of a non-random constant times a random variable is the non-random constant times the random variable's standard error. As with the expectation:
+4\. The standard error of a non-random constant times a random variable is the non-random constant times the random variable's standard error. As with the expected value:
 $$
-\mbox{SE}[aX] =  a \times \mbox{SE}[X]
+\mbox{SE}[aX] =  a\mbox{SE}[X]
 $$
 
 To see why this is intuitive, again think of units. 
@@ -428,12 +434,9 @@ $$
 
 Note that statistical textbooks use the Greek letters $\mu$ and $\sigma$ to denote the expected value and standard error, respectively. This is because $\mu$ is the Greek letter for $m$, the first letter of _mean_, which is another term used for expected value. Similarly, $\sigma$ is the Greek letter for $s$, the first letter of standard error. 
 
-## Law of large numbers
+## Law of large numbers or Law of averages
 
 An important implication of the final result is that the standard error of the average becomes smaller and smaller as $n$ grows larger. When $n$ is very large, then the standard error is practically 0 and the average of the draws converges to the average of the urn. This is known in statistical textbooks as the law of large numbers or the law of averages.
-
-
-### Misinterpreting law of averages
 
 The law of averages is sometimes misinterpreted. For example, if you toss a coin 5 times and see a head each time, you might hear someone argue that the next toss is probably a tail because of the law of averages: on average we should see 50\% heads and 50\% tails. A similar argument would be to say that red "is due" on the roulette wheel after seeing black come up five times in a row. These events are independent so the chance of a coin landing heads is 50\% regardless of the previous 5. This is also the case for the roulette outcome. The law of averages applies only when the number of draws is very large and not in small samples. After a million tosses, you will definitely see about 50\% heads regardless of the outcome of the first five tosses. 
 
@@ -492,7 +495,7 @@ which implies $x$ is
 or an interest rate of 
 ```{r}
 options(digits = 3)
-- p*loss_per_foreclosure/(1-p) / 180000
+- p*(loss_per_foreclosure/(1-p)) / 180000
 ```
 
 However, we still have a problem. Although this interest rate guarantees that on average we break even, there is a 50\% chance that we lose money. If our bank loses money, we have to close it down. We therefore need to pick an interest rate that makes it unlikely for this to happen. At the same time, if the interest rate is too high, our clients will go to another bank so we must be willing to take some risks. So let's say that we want our chances of losing money to be 1 in 100, what does the $x$ quantity need to be now? This one is a bit harder. We want the sum $S$ to have:
@@ -501,7 +504,7 @@ $$\mbox{Pr}(S<0) = 0.01$$
 
 We know that $S$ is approximately normal. The expected value of $S$ is 
 
-$$\mbox{E}[S] = \{ lp + x(1-p)\}n$$ 
+$$\mbox{E}[S] = ( lp + x(1-p))n$$ 
 
 with $n$ the number of draws, which in this case represents loans. The standard error is 
 
@@ -519,7 +522,7 @@ And remember $\mbox{E}[S]$ and $\mbox{SE}[S]$ are the expected value and standar
 Now we fill in the blanks with the actual formula for expected value and standard error:
 
 $$
-\mbox{Pr}\left(Z <  \frac{- \{ lp + x(1-p)\}n}{(x-l) \sqrt{np(1-p)}}\right) = 0.01
+\mbox{Pr}\left(Z <  \frac{- ( lp + x(1-p))n}{(x-l) \sqrt{np(1-p)}}\right) = 0.01
 $$
 
 It may look complicated, but remember that $l$, $p$ and $n$ are all known amounts, so eventually we will replace them with numbers. 
@@ -549,7 +552,7 @@ which is:
 l <- loss_per_foreclosure
 z <- qnorm(0.01)
 x <- -l*( n*p - z*sqrt(n*p*(1-p)))/ ( n*(1-p) + z*sqrt(n*p*(1-p)))
-x
+x/180000
 ```
 
 Our interest rate now goes up to 0.035. This is still a very competitive interest rate. <span class="pink">By choosing this interest rate, we now have an expected profit per loan of:</span>
@@ -682,7 +685,67 @@ The theory completely breaks down and the random variable has much more variabil
 
 # 14.12 Exercises
 
+1. Create a random variable $S$ with the earnings of your bank if you give out 10,000 loans, the default rate is 0.3, and you lose $200,000 in each foreclosure. Hint: use the code we showed in the previous section, but change the parameters.
 
+```{r}
+options(digits = 3)
+n <- 10000
+p <- 0.3
+loss_per_foreclosure <- -200000
+defaults <- sample(c(0,1), n, prob = c(1-p, p), replace = TRUE)
+s <- sum(defaults * loss_per_foreclosure)
+s
+```
+
+2. Run a Monte Carlo simulation with 10,000 outcomes for $S$. Make a histogram of the results.
+
+```{r}
+B <- 10000
+losses <- replicate(B, {
+  defaults <- sample(c(0,1), n, prob = c(1-p, p), replace = TRUE)
+  sum(defaults * loss_per_foreclosure)
+})
+mean(losses) / 10^6
+```
+```{r}
+library(tidyverse)
+data.frame(losses_in_millions = losses/10^6) |> 
+  ggplot(aes(losses_in_millions)) + 
+  geom_histogram(binwidth = 1, col="black")
+```
+
+3. What is the expected value of $S$?
+
+```{r}
+n * (p * loss_per_foreclosure + (1-p) * 0)
+```
+
+4. What is the standard error of $S$?
+
+```{r}
+sqrt(n) * abs(loss_per_foreclosure) * sqrt(p * (1-p))
+```
+
+5. Suppose we give out loans for $180,000. What should the interest rate be so that our expected value is 0?
+
+```{r}
+- p*(loss_per_foreclosure/(1-p)) / 180000
+```
+6. (Harder) What should the interest rate be so that the chance of losing money is 1 in 20? In math notation, what should the interest rate be so that $Pr(S<0)=0.05$?
+
+```{r}
+l <- loss_per_foreclosure
+z <- qnorm(0.05)
+x <- -l*( n*p - z*sqrt(n*p*(1-p)))/ ( n*(1-p) + z*sqrt(n*p*(1-p)))
+x / 180000
+```
+
+7. If the bank wants to minimize the probabilities of losing money, which of the following does not make interest rates go up?
+
+- <span class="blue">A smaller pool of loans.</span>
+- A larger probability of default.
+- A smaller required probability of losing money.
+- The number of Monte Carlo simulations.
 
 
 
