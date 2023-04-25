@@ -189,27 +189,72 @@ or 1.5 percentage points. So even with large polls, for close elections, $\bar{X
 
 1\. Suppose you poll a population in which a proportion $p$ of voters are Democrats and $1-p$ are Republicans. Your sample size is $N=25$. Consider the random variable $S$ which is the **total** number of Democrats in your sample. What is the expected value of this random variable? Hint: it's a function of $p$.
 
+$\mbox{E}(S)=Np$
 
 2\. What is the standard error of $S$ ? Hint: it's a function of $p$.
 
+$\mbox{SE}(S)= \sqrt{p(1-p)}$
+
 3\. Consider the random variable $S/N$. This is equivalent to the sample average, which we have been denoting as $\bar{X}$. What is the expected value of the $\bar{X}$? Hint: it's a function of $p$.
+
+$\mbox{E}(\bar{X})=p$
 
 4\. What is the standard error of $\bar{X}$? Hint: it's a function of $p$.
 
+$\mbox{SE}(\bar{X})= \sqrt{p(1-p)/N}$
+
 5\. Write a line of code that gives you the standard error `se` for the problem above for several values of $p$, specifically for `p <- seq(0, 1, length = 100)`. Make a plot of `se` versus `p`. 
+
+```{r}
+N <- 100
+p <- seq(0, 1, length = 100)
+se <- sqrt((p*(1-p))/N)
+data.frame(p=p, SE=sqrt(p*(1-p)/N)) |>
+  ggplot(aes(p, SE)) +
+  geom_line()
+```
 
 
 6\. Copy the code above and put it inside a for-loop to make the plot for $N=25$, $N=100$, and $N=1000$. 
 
+```{r}
+#for (N in c(25, 100, 1000)) {
+N <- 1000
+  data.frame(N=N, SE=sqrt(p*(1-p)/N)) |>
+  ggplot(aes(p, SE)) +
+  geom_line()
+#}
+```
+
 
 7\. If we are interested in the difference in proportions, $p - (1-p)$, our estimate is $d = \bar{X} - (1-\bar{X})$. Use the rules we learned about sums of random variables and scaled random variables to derive the expected value of $d$.
+
+```{r}
+N <- 25
+d <- (p - (1 - p)) / N
+mean(d)
+```
+```{r}
+N <- 25
+x_bar <- mean(p)
+d <- x_bar - (1 - x_bar)
+d
+```
 
 
 8\. What is the standard error of $d$?
 
+```{r}
+sqrt(x_bar*(1-x_bar)/N)
+```
 
 9\. If the actual $p=.45$, it means the Republicans are winning by a relatively large margin since $d= -.1$, which is a 10% margin of victory. In this case, what is the standard error of $2\hat{X}-1$ if we take a sample of $N=25$? 
 
+```{r}
+N <- 25
+p <- 0.45
+sqrt(p*(1-p))/sqrt(N)
+```
 
 10\. Given the answer to 9, which of the following best describes your strategy of using a sample size of $N=25$?
 
