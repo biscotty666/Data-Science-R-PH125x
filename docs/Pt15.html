@@ -1672,6 +1672,8 @@ forecasting</a></li>
 Properties of our estimate: expected value and standard error</a></li>
 </ul></li>
 <li><a href="#exercises" id="toc-exercises">15.3 Exercises</a></li>
+<li><a href="#clt" id="toc-clt">15.4 Central Limit Theorem in
+practice</a></li>
 </ul>
 </div>
 
@@ -2026,6 +2028,93 @@ much smaller than the difference.</li>
 have no way of knowing that making <span class="math inline">\(N\)</span> larger would actually improve our
 standard error.</li>
 </ol>
+</div>
+<div id="clt" class="section level1">
+<h1>15.4 Central Limit Theorem in practice</h1>
+<p>The CLT tells us that the distribution function for a sum of draws is
+approximately normal. We also learned that dividing a normally
+distributed random variable by a constant is also a normally distributed
+variable. This implies that the distribution of <span class="math inline">\(\bar{X}\)</span> is approximately normal.</p>
+<p>In summary, we have that <span class="math inline">\(\bar{X}\)</span>
+has an approximately normal distribution with expected value <span class="math inline">\(p\)</span> and standard error <span class="math inline">\(\sqrt{p(1-p)/N}\)</span>.</p>
+<p>Now how does this help us? Suppose we want to know what is the
+probability that we are within 1% from <span class="math inline">\(p\)</span>. We are basically asking what is</p>
+<p><span class="math display">\[
+\mbox{Pr}(| \bar{X} - p| \leq .01)
+\]</span> which is the same as:</p>
+<p><span class="math display">\[
+\mbox{Pr}(\bar{X}\leq p + .01) - \mbox{Pr}(\bar{X} \leq p - .01)
+\]</span></p>
+<p>Can we answer this question? We can use the mathematical trick we
+learned in the previous chapter. Subtract the expected value and divide
+by the standard error to get a standard normal random variable, call it
+<span class="math inline">\(Z\)</span>, on the left. Since <span class="math inline">\(p\)</span> is the expected value and <span class="math inline">\(\mbox{SE}(\bar{X}) = \sqrt{p(1-p)/N}\)</span> is
+the standard error we get:</p>
+<p><span class="math display">\[
+\mbox{Pr}\left(Z \leq \frac{ \,.01} {\mbox{SE}(\bar{X})} \right) -
+\mbox{Pr}\left(Z \leq - \frac{ \,.01} {\mbox{SE}(\bar{X})} \right)
+\]</span></p>
+<p>One problem we have is that since we don’t know <span class="math inline">\(p\)</span>, we don’t know <span class="math inline">\(\mbox{SE}(\bar{X})\)</span>. But it turns out that
+the CLT still works if we estimate the standard error by using <span class="math inline">\(\bar{X}\)</span> in place of <span class="math inline">\(p\)</span>. We say that we <em>plug-in</em> the
+estimate. Our estimate of the standard error is therefore:</p>
+<p><span class="math display">\[
+\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N}
+\]</span> In statistics textbooks, we use a little hat to denote
+estimates. The estimate can be constructed using the observed data and
+<span class="math inline">\(N\)</span>.</p>
+<p>Now we continue with our calculation, but dividing by <span class="math inline">\(\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N})\)</span>
+instead. In our first sample we had 12 blue and 13 red so <span class="math inline">\(\bar{X} = 0.48\)</span> and our estimate of
+standard error is:</p>
+<pre class="r"><code>x_hat &lt;- 0.48
+se &lt;- sqrt(x_hat*(1-x_hat)/25)
+se</code></pre>
+<pre><code>## [1] 0.09991997</code></pre>
+<p>And now we can answer the question of the probability of being close
+to <span class="math inline">\(p\)</span>. The answer is:</p>
+<pre class="r"><code>pnorm(0.01/se) - pnorm(-0.01/se)</code></pre>
+<pre><code>## [1] 0.07971926</code></pre>
+<p>Therefore, there is a small chance that we will be close. A poll of
+only <span class="math inline">\(N=25\)</span> people is not really very
+useful, at least not for a close election.</p>
+<p>Earlier we mentioned the <em>margin of error</em>. Now we can define
+it because it is simply two times the standard error, which we can now
+estimate. In our case it is:</p>
+<pre class="r"><code>1.96*se</code></pre>
+<pre><code>## [1] 0.1958431</code></pre>
+<p>Why do we multiply by 1.96? Because if you ask what is the
+probability that we are within 1.96 standard errors from <span class="math inline">\(p\)</span>, we get:</p>
+<p><span class="math display">\[
+\mbox{Pr}\left(Z \leq \, 1.96\,\mbox{SE}(\bar{X})  / \mbox{SE}(\bar{X})
+\right) -
+\mbox{Pr}\left(Z \leq - 1.96\, \mbox{SE}(\bar{X}) / \mbox{SE}(\bar{X})
+\right)
+\]</span> which is:</p>
+<p><span class="math display">\[
+\mbox{Pr}\left(Z \leq 1.96 \right) -
+\mbox{Pr}\left(Z \leq - 1.96\right)
+\]</span></p>
+<p>which we know is about 95%:</p>
+<pre class="r"><code>pnorm(1.96)-pnorm(-1.96)</code></pre>
+<pre><code>## [1] 0.9500042</code></pre>
+<p>Hence, there is a 95% probability that <span class="math inline">\(\bar{X}\)</span> will be within <span class="math inline">\(1.96\times \hat{SE}(\bar{X})\)</span>, in our case
+within about 0.2, of <span class="math inline">\(p\)</span>. Note that
+95% is somewhat of an arbitrary choice and sometimes other percentages
+are used, but it is the most commonly used value to define margin of
+error. We often round 1.96 up to 2 for simplicity of presentation.</p>
+<p>In summary, the CLT tells us that our poll based on a sample size of
+<span class="math inline">\(25\)</span> is not very useful. We don’t
+really learn much when the margin of error is this large. All we can
+really say is that the popular vote will not be won by a large margin.
+This is why pollsters tend to use larger sample sizes.</p>
+<p>From the table above, we see that typical sample sizes range from 700
+to 3500. To see how this gives us a much more practical result, notice
+that if we had obtained a <span class="math inline">\(\bar{X}\)</span>=0.48 with a sample size of 2,000,
+our standard error <span class="math inline">\(\hat{\mbox{SE}}(\bar{X})\)</span> would have been
+0.0111714. So our result is an estimate of <code>48</code>% with a
+margin of error of 2%. In this case, the result is much more informative
+and would make us think that there are more red balls than blue. Keep in
+mind, however, that this is hypothetical. We did not take a poll of
+2,000 since we don’t want to ruin the competition.</p>
 </div>
 <div class="footnotes footnotes-end-of-document">
 <hr />

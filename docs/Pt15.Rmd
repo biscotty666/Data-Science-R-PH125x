@@ -263,6 +263,83 @@ b. Our standard error is larger than the difference, so the chances of $2\bar{X}
 c. The difference is 10% and the standard error is about 0.2, therefore much smaller than the difference.
 d. Because we don't know $p$, we have no way of knowing that making $N$ larger would actually improve our standard error.
 
+# 15.4 Central Limit Theorem in practice {#clt}
+
+The CLT tells us that the distribution function for a sum of draws is approximately normal. We also learned that dividing a normally distributed random variable by a constant is also a normally distributed variable. This implies that the distribution of $\bar{X}$ is approximately normal. 
+
+In summary, we have that $\bar{X}$ has an approximately normal distribution with expected value $p$ and standard error $\sqrt{p(1-p)/N}$. 
+
+Now how does this help us? Suppose we want to know what is the probability that we are within 1% from $p$. We are basically asking what is
+
+$$
+\mbox{Pr}(| \bar{X} - p| \leq .01)
+$$
+which is the same as:
+
+$$
+\mbox{Pr}(\bar{X}\leq p + .01) - \mbox{Pr}(\bar{X} \leq p - .01)
+$$
+
+Can we answer this question?  We can use the mathematical trick we learned in the previous chapter. Subtract the expected value and divide by the standard error to get a standard normal random variable, call it $Z$, on the left. Since $p$ is the expected value and $\mbox{SE}(\bar{X}) = \sqrt{p(1-p)/N}$ is the standard error we get:
+
+$$
+\mbox{Pr}\left(Z \leq \frac{ \,.01} {\mbox{SE}(\bar{X})} \right) -
+\mbox{Pr}\left(Z \leq - \frac{ \,.01} {\mbox{SE}(\bar{X})} \right) 
+$$
+
+One problem we have is that since we don't know $p$, we don't know $\mbox{SE}(\bar{X})$. But it turns out that the CLT still works if we estimate the standard error by using $\bar{X}$ in place of $p$. We say that we _plug-in_ the estimate. Our estimate of the standard error is therefore:
+
+$$
+\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N}
+$$
+In statistics textbooks, we use a little hat to denote estimates. The estimate can be constructed using the observed data and $N$. 
+
+Now we continue with our calculation, but dividing by $\hat{\mbox{SE}}(\bar{X})=\sqrt{\bar{X}(1-\bar{X})/N})$ instead. In our first sample we had 12 blue and 13 red so $\bar{X} = 0.48$ and our estimate of standard error is: 
+
+```{r}
+x_hat <- 0.48
+se <- sqrt(x_hat*(1-x_hat)/25)
+se
+```
+
+And now we can answer the question of the probability of being close to $p$. The answer is:
+
+```{r}
+pnorm(0.01/se) - pnorm(-0.01/se)
+```
+
+Therefore, there is a small chance that we will be close. A poll of only $N=25$ people is not really very useful, at least not for a close election. 
+
+Earlier we mentioned the _margin of error_. Now we can define it because it is simply two times the standard error, which we can now estimate. In our case it is:
+
+```{r}
+1.96*se
+```
+
+Why do we multiply by 1.96? Because if you ask what is the probability that we are within 1.96 standard errors from $p$, we get:
+
+$$
+\mbox{Pr}\left(Z \leq \, 1.96\,\mbox{SE}(\bar{X})  / \mbox{SE}(\bar{X}) \right) -
+\mbox{Pr}\left(Z \leq - 1.96\, \mbox{SE}(\bar{X}) / \mbox{SE}(\bar{X}) \right) 
+$$
+which is:
+
+$$
+\mbox{Pr}\left(Z \leq 1.96 \right) -
+\mbox{Pr}\left(Z \leq - 1.96\right) 
+$$
+
+which we know is about 95\%:
+
+```{r}
+pnorm(1.96)-pnorm(-1.96)
+```
+
+Hence, there is a 95% probability that $\bar{X}$ will be within $1.96\times \hat{SE}(\bar{X})$, in our case within about `r round(1.96*se, 2)`, of $p$. Note that 95% is somewhat of an arbitrary choice and sometimes other percentages are used, but it is the most commonly used value to define margin of error. We often round 1.96 up to 2 for simplicity of presentation.
+
+In summary, the CLT tells us that our poll based on a sample size of $25$ is not very useful. We don't really learn much when the margin of error is this large. All we can really say is that the popular vote will not be won by a large margin. This is why pollsters tend to use larger sample sizes. 
+
+From the table above, we see that typical sample sizes range from 700 to 3500. To see how this gives us a much more practical result, notice that if we had obtained a $\bar{X}$=0.48 with a sample size of 2,000, our standard error $\hat{\mbox{SE}}(\bar{X})$ would have been `r n<-2000;se<-sqrt(0.48*(1-0.48)/n);se`. So our result is an estimate of `48`% with a margin of error of `r round(2*se*100)`%. In this case, the result is much more informative and would make us think that there are more red balls than blue. Keep in mind, however, that this is hypothetical. We did not take a poll of 2,000 since we don't want to ruin the competition.
 
 
 
