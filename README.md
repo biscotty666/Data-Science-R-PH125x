@@ -225,6 +225,7 @@ Function index:
 
 ### [Chapter 15 Statistical inference](docs/Pt15.html)
 
+### [Chapter 16 Statistical models](docs/Pt16.html)
 
 
 <div id="poco"></div>
