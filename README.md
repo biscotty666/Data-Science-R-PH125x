@@ -227,6 +227,10 @@ Function index:
 
 ### [Chapter 16 Statistical models](docs/Pt16.html)
 
+### Supplemental material
+
+[Gamma Distribution](docs/GammaSupplemental.html)
+
 
 <div id="poco"></div>
 # [Posit Cheasheets](https://posit.co/resources/cheatsheets/)
